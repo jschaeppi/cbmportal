@@ -1,0 +1,57 @@
+nav {
+    background-color: #d0e1fa;
+    width: 100%;
+    
+}
+
+.navbar {
+    color: #001694;
+    font-weight: bold;
+    text-align: center;
+    margin: 0 auto;
+    width: 78%;
+    padding: 0px 10px;
+    font-family: Raleway, sans-serif;
+    font-weight: 700;
+}
+
+.navbar a {
+    text-decoration: none;
+}
+.navbar a:active {
+    color: #001694;
+}
+
+.navbar a:visited {
+    color: #001694;
+}
+
+.navbar li {
+    display: inline;
+    list-style: none;
+    padding-right: 10px;
+    line-height: 3em;
+}
+
+.logo_con img {
+    width: 10%;
+    height: 20%;
+}
+
+.logo_con div {
+    display: block;
+    float: right;
+    margin: 0 15px;
+    color: #276dd6;
+    font-weight: bold;
+}
+
+#login {
+    float: right;
+    margin-right: 5px;
+    margin-top: 2px;
+}
+
+a.active {
+    color: black;
+}

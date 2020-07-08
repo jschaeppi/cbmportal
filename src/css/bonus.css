@@ -1,0 +1,77 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+}
+
+.bonus_container form {
+    width: 41rem;
+    height: 35rem;
+    padding: 0 0 0 11rem;
+    margin: 0 20rem;
+    overflow: auto;
+    
+}
+
+.bonus_container h1 {
+    width: 13rem;
+    padding: 0 10rem;
+    margin: 0 24rem;
+}
+
+.bonus_container span {
+    border-bottom: 1px solid black;
+}
+.bonus_container select option{
+    font-size: 14px;
+}
+
+.bonus_container textarea {
+    width: 13.9rem;
+}
+.bonus_container label {
+    font-style: italic;
+}
+
+.bonus_container input[type="text"] {
+    font-size: 14px;
+    width: 33%;
+}
+
+.bonus_container input[type="date"] {
+    font-size: 14px;
+    width: 33%;
+}
+
+.bonus_container p {
+    text-align: left;
+}
+
+.bonus_container form input[type="submit"] {
+    border-radius: 1em;
+    width: 10%;
+}
+.bonus_container form input[type="reset"] {
+    border-radius: 1em;
+    width: 10%;
+}
+
+button {
+    border-radius: 1px;
+}
+#sigPad {
+    border: 1px solid black;
+    width: 14rem;
+    height: 5rem;
+}
+
+#sigButton {
+    margin: 0 auto;
+    width: 100%;
+    border-radius: 1em;
+}
+
+#bonusAddButton, #bonusRemoveButton {
+    border-radius: .33em;
+}

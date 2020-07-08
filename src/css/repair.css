@@ -1,0 +1,122 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #d9d9d9;
+}
+.repair_container form {
+    width: 40rem;
+    height: 35rem;
+    padding: 0 0 0 11rem;
+    margin: 0 15rem;
+    overflow: auto;
+}
+
+.repair_container h1 {
+    width: 13rem;
+    padding: 0 10rem;
+    margin: 0 24rem;
+    
+}
+
+.repair_container span {
+    border-bottom: 1px solid black;
+}
+.repair_container select {
+    font-size: 14px;
+}
+
+.repair_container label {
+    font-style: italic;
+}
+
+.repair_container input[type="text"] {
+    font-size: 14px;
+    width: 70%;
+}
+
+.repair_container input[type="date"] {
+    font-size: 14px;
+    width: 33%;
+}
+
+.repair_container p {
+    text-align: left;
+}
+
+.repair_container form input[type="submit"] {
+    border-radius: 1em;
+    width: 15%;
+    margin-left: 5rem;
+}
+
+.repair_container form input[type="reset"] {
+    border-radius: 1em;
+    width: 15%;
+}
+
+.repair_container option {
+    font-size: 14px;
+}
+.repair_container input[type="file"] {
+    margin-left: 3.5rem;
+}
+#noteAdjustment {
+    width: 21.5rem;
+    height: 5rem;
+}
+
+#machines {
+    display: inline-block;
+    margin-right: 2rem;
+}
+
+#machineRow {
+    width: 25.8rem;
+    border: 1px solid black;
+    box-shadow: 2px 2px;
+    
+}
+
+#brand {
+    display: inline-block;
+    width: 33%;
+    height: 100%;
+    vertical-align: top;
+}
+
+#brand label {
+    font-size: 16px;
+}
+
+#brands {
+    font-size: 14px;
+    width: 35rem;
+    height: 4.5rem;
+    border: 1px solid black;
+    box-shadow: 2px 2px;
+}
+
+#problem {
+    border:1px solid black;
+    box-shadow: 2px 2px;
+    width: 20rem;
+    text-align: center;
+}
+
+#problemDescription {
+    width: 70%;
+    
+}
+
+#reportedDiv {
+    border:1px solid black;
+    box-shadow: 2px 2px;
+    width: 20rem;
+    text-align: center;
+    padding-bottom: .25rem;
+}

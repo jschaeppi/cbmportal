@@ -1,0 +1,55 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+}
+
+.hotel_container form {
+    width: 30rem;
+    height: 35rem;
+    padding: 0 0 0 11rem;
+    margin: 0 20rem;
+    overflow: auto;
+}
+
+.hotel_container h1 {
+    width: 13rem;
+    padding: 0 10rem;
+    margin: 0 30rem;
+}
+
+.hotel_container span {
+    border-bottom: 1px solid black;
+}
+.hotel_container select, option {
+    font-size: 14px;
+}
+
+.hotel_container label {
+    font-style: italic;
+}
+
+.hotel_container input[type="text"] {
+    font-size: 14px;
+    width: 33%;
+}
+
+.hotel_container input[type="date"] {
+    font-size: 14px;
+    width: 33%;
+}
+
+.hotel_container p {
+    text-align: left;
+}
+
+.hotel_container form input[type="submit"] {
+    border-radius: 1em;
+    width: 15%;
+}
+
+.hotel_container form input[type="reset"] {
+    border-radius: 1em;
+    width: 15%;
+}

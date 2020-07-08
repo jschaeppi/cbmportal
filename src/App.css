@@ -1,0 +1,85 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #d9d9d9;
+}
+.container {
+    margin-top: 20px;
+}
+.container form {
+    width: 40rem;
+    height: 63vh;
+    padding: 1rem 0 2rem 2.5rem;
+    margin: 0 0 0 30vw;
+    overflow: auto;
+    border:1px solid black;
+    box-shadow: 2px 2px;
+}
+
+.wrapper1 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 80%;
+    box-shadow: 2px 2px;
+    border:1px solid black;
+    padding: 5px;
+}
+
+.container h1 {
+    width: 30rem;
+    padding: 0 9rem;
+    margin: 0 0 0 36vw;
+    
+}
+
+.container span {
+    border-bottom: 1px solid black;
+}
+.container select {
+    font-size: 14px;
+}
+
+.container label {
+    font-style: italic;
+}
+
+.container input[type="text"] {
+    font-size: 14px;
+    width: 33%;
+}
+
+.container input[type="date"] {
+    font-size: 14px;
+    width: 33%;
+}
+
+.container p {
+    text-align: left;
+}
+
+.container form input[type="submit"] {
+    border-radius: 1em;
+    width: 25%;
+    margin-left: 4rem;
+}
+
+.container form input[type="reset"] {
+    border-radius: 1em;
+    width: 25%;
+}
+
+.container option {
+    font-size: 14px;
+}
+
+button {
+    border-radius: 1px;
+    margin: 0 1rem;
+    box-shadow: 0 1px 0;
+}

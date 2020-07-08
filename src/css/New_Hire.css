@@ -1,0 +1,53 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+}
+
+#ssn {
+    width: 12.3rem;
+}
+
+#firstName, #middleName, #firstLastName, #secondLastName, #address, #email, #phone, #phone2, #dob, #sex, #firstday, #wage, #numDays {
+    width: 80%;
+}
+
+.wrapper1 input[type="tel"] {
+    grid-auto-rows: 16px;
+}   
+
+#radio {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+#ssn {
+    width: 40%;
+}
+
+#storeList {
+    width: 80%;
+}
+
+#hours {
+    grid-template-columns: repeat(6, 1fr);
+    border: none;
+}
+
+#hoursLabel {
+    width: 100%;
+    font-size: 16px;
+}
+
+#files {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+#prefLanguage {
+    float: right;
+    margin-right: 14rem;
+    margin-bottom: .2rem;
+    grid-template-columns: repeat(2, 1fr);
+    border-bottom: none;
+    box-shadow: none !important;
+}

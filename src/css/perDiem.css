@@ -1,0 +1,92 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+}
+
+.perDiem_container form {
+    width: 30rem;
+    height: 35rem;
+    padding: 0 0 0 11rem;
+    margin: 0 20rem;
+    overflow: auto;
+    
+}
+
+.perDiem_container h1 {
+    width: 13rem;
+    padding: 0 10rem;
+    margin: 0 31rem;
+}
+
+.perDiem_container span {
+    border-bottom: 1px solid black;
+}
+.perDiem_container select option{
+    font-size: 14px;
+}
+
+.perDiem_container textarea {
+    width: 13.9rem;
+}
+.perDiem_container label {
+    font-style: italic;
+}
+
+.perDiem_container input[type="text"] {
+    font-size: 14px;
+    width: 33%;
+}
+
+.perDiem_container input[type="date"] {
+    font-size: 14px;
+    width: 33%;
+}
+
+.perDiem_container p {
+    text-align: left;
+}
+
+.perDiem_container form input[type="submit"] {
+    border-radius: 1em;
+    width: 15%;
+    margin-left: 9rem;
+}
+
+.perDiem_container form input[type="reset"] {
+    border-radius: 1em;
+    width: 15%;
+}
+
+button {
+    border-radius: 1px;
+    margin: 0 1rem;
+}
+#sigPad {
+    border: 1px solid black;
+    width: 14rem;
+    height: 5rem;
+}
+
+#sigButton {
+    margin: 0 auto;
+    width: 100%;
+    border-radius: 1em;
+}
+
+#backPayAddButton, #backPayRemoveButton {
+    border-radius: .33em;
+}
+
+#mileageEntries {
+    margin-top: 1rem;
+    border-bottom: 1px solid black;
+    border-width: 0 1rem thin 1rem;
+    padding-bottom: 1rem;
+    width: 80%; 
+}
+
+#mileageEntries.input[type="radio"] {
+margin-left: 1px;
+}

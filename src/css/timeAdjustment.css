@@ -1,0 +1,84 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #d9d9d9;
+}
+.timeAdjustment_container form {
+    width: 30rem;
+    height: 35rem;
+    padding: 0 0 0 11rem;
+    margin: 0 20rem;
+    overflow: auto;
+    border-left: 1px solid black;
+    border-top: 1px solid black;
+    box-shadow: -4px -4px;
+}
+
+.timeAdjustment_container h1 {
+    width: 13rem;
+    padding: 0 10rem;
+    margin: 0 24rem;
+    
+}
+
+.timeAdjustment_container span {
+    border-bottom: 1px solid black;
+}
+.timeAdjustment_container select {
+    font-size: 14px;
+}
+
+.timeAdjustment_container label {
+    font-style: italic;
+}
+
+.timeAdjustment_container input[type="text"] {
+    font-size: 14px;
+    width: 33%;
+}
+
+.timeAdjustment_container input[type="date"] {
+    font-size: 14px;
+    width: 33%;
+}
+
+.timeAdjustment_container p {
+    text-align: left;
+}
+
+.timeAdjustment_container form input[type="submit"] {
+    border-radius: 1em;
+    width: 15%;
+    margin-left: 5rem;
+}
+
+.timeAdjustment_container form input[type="reset"] {
+    border-radius: 1em;
+    width: 15%;
+}
+
+.timeAdjustment_container option {
+    font-size: 14px;
+}
+
+#noteAdjustment {
+    width: 21.5rem;
+    height: 5rem;
+}
+
+#sigPad {
+    border: 1px solid black;
+    width: 14rem;
+    height: 5rem;
+}
+
+#sigButton {
+    margin: 0 auto;
+    width: 100%;
+    border-radius: 1em;
+}
