@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import '../css/PTO.css';
+import DM from '../Components/DM';
 import SignatureCanvas from 'react-signature-canvas'
 export class PTO extends Component {
     constructor() {
@@ -20,9 +21,9 @@ export class PTO extends Component {
     }
 
     handleChange = (e) => {
-        const value = e.target.value;
+        const { name, value } = e.target;
         this.setState({
-            [e.target.name]: value
+            [name]: value
         })
     }
 
@@ -86,15 +87,7 @@ export class PTO extends Component {
                         </div>
                         <div>
                             <label forhtml="dm">DM:</label><br />
-                            <select id="dm" name="dm" required title="Please select an option" onChange={this.handleChange}>
-                            <option>Select a DM</option>
-                            <option value="Ausencio Cruz">Ausencio Cruz</option>
-                            <option value="Cruz Hernandez">Cruz Hernandez</option>
-                            <option value="Daniel De la Paz">Daniel De la Paz</option>
-                            <option value="Lino Huerta">Lino Huerta</option>
-                            <option value="Jose Lopez">Jose Lopez</option>
-                            <option value="Zach Harlow">Zach Harlow"</option>
-                            </select>
+                            <DM handleChange={this.handleChange} />
                         </div>
                     </div>
                     <br /><br />

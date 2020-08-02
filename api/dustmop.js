@@ -26,9 +26,7 @@ dustmopRouter.get('/stores', (req, res) => {
 });
 
 dustmopRouter.post('/', formidable(), (req, res) => {
-    const employeeName = req.fields.employeeName;
-    const location = req.fields.location;
-    const mopsLeft = req.fields.mopsLeft;
+    const { employeeName, location, mopsLeft } = req.fields;
     const image = req.files.file;
     const imageName = image.name;
     fs.mkdir(`../../uploads/images/locations/dustmop/${location}`, (err) => {
@@ -107,7 +105,7 @@ dustmopRouter.post('/', formidable(), (req, res) => {
     let form = new Dustmop();
     form.employeeName = employeeName;
     form.location = location;
-    form.picture = `./uploads/images/locations/dustmop/${location}/${imageName}`;
+    form.picture = `../../uploads/images/locations/dustmop/${location}/${imageName}`;
     form.mopsLeft = mopsLeft;
     form.save(function(err) {
         if (err) {

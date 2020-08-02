@@ -2,34 +2,28 @@ const express = require('express');
 const propaneRouter = express.Router();
 const formidable = require('express-formidable');
 const fs = require('fs');
-const path = require('path');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
-let { options } = require('../src/config/html')
 const Propane = require('../src/Model/propaneModel');
 const Store = require('../src/Model/Stores')
 
 propaneRouter.use(formidable({ uploadDir: './uploads/'}))
-let date_ob = new Date();propaneRouter.get('/stores', (req, res) => {
-    Store.find()
-    .sort( { banner: -1 })
-    .then(stores => res.json(stores));
-    
-});
 // current date
+let date_ob = new Date();
 // adjust 0 before single digit date
 let day = ("0" + date_ob.getDate()).slice(-2);
 // current month
 let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 // current year
 let year = date_ob.getFullYear();
-
-
+propaneRouter.get('/stores', (req, res) => {
+    Store.find()
+    .sort( { banner: -1 })
+    .then(stores => res.json(stores));
+    
+});
 
 propaneRouter.post('/', formidable(), (req, res) => {
-    const employeeName = req.fields.employeeName;
-    const location = req.fields.location;
-    const notes = req.fields.notes;
-    const tanksLeft = req.fields.tanksLeft;
+    const { employeeName, location, notes, tanksLeft } = req.fields;
     const image = req.files.file;
     const imageName = image.name;
     fs.mkdir(`../../uploads/locations/propane/${location}`, (err) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import Stores from '../Components/Stores';
 import '../css/perDiem.css';
 
 function PerDiem() {
@@ -34,67 +35,27 @@ function PerDiem() {
     }, [])
 
     const handleInputChange = (e, index) => {
-        const incIndex = index + 1;
-        if (e.target.id === `Mileage Date ${incIndex}`) {
+        const { id, value } = e.target;
         const list = [...perDiem];
-        list[index].mileageDate = e.target.value;
-        addPerDiem(list); 
-        } else if (e.target.id === 'Starting Point') {
-            const list = [...perDiem];
-            list[index].arrivalStore = e.target.value;
+        const incIndex = index + 1;
+        if (id === `Mileage Date ${incIndex}`) {
+            list[index].mileageDate = value;
             addPerDiem(list); 
-        } else if (e.target.id === 'Destination Point') {
-            const list = [...perDiem];
-            list[index].destinationStore = e.target.value;
+        } else if (id === 'Starting Point') {
+            list[index].arrivalStore = value;
             addPerDiem(list); 
-        }else if (e.target.id === `rt${index+1}`) {
-            const list = [...perDiem];
-            list[index].rtow = e.target.value;
+        } else if (id === 'Destination Point') {
+          list[index].destinationStore = value;
             addPerDiem(list); 
-        } else if (e.target.id === `ow${index+1}`) {
-            const list = [...perDiem];
-            list[index].rtow = e.target.value;
+        }else if (id === `rt${index+1}`) {
+            list[index].rtow = value;
             addPerDiem(list); 
-        } else if (e.target.id === 'employeeName') {
-            const list = [...perDiem];
-            list[0].employeeName = e.target.value;
+        } else if (id === `ow${index+1}`) {
+            list[index].rtow = value;
             addPerDiem(list); 
-        } else if (e.target.id === 'employeeNum') {
-            const list = [...perDiem];
-            list[0].employeeNum = e.target.value;
-            addPerDiem(list); 
-        } else if (e.target.id === 'city') {
-            const list = [...perDiem];
-            list[0].city = e.target.value;
-            addPerDiem(list); 
-        } else if (e.target.id === 'state') {
-            const list = [...perDiem];
-            list[0].state = e.target.value;
-            addPerDiem(list); 
-        } else if (e.target.id === 'firstNight') {
-            const list = [...perDiem];
-            list[0].firstNight = e.target.value;
-            addPerDiem(list); 
-        } else if (e.target.id === 'lastNight') {
-            const list = [...perDiem];
-            list[0].lastNight = e.target.value;
-            addPerDiem(list); 
-        } else if (e.target.id === 'arrivalDate') {
-            const list = [...perDiem];
-            list[0].arrivalDate = e.target.value;
-            addPerDiem(list); 
-        } else if (e.target.id === 'departureDate') {
-            const list = [...perDiem];
-            list[0].departureDate = e.target.value;
-            addPerDiem(list); 
-        } else if (e.target.id === 'location') {
-            const list = [...perDiem];
-            list[0].location = e.target.value;
-            addPerDiem(list); 
-        } else if (e.target.id === 'comments') {
-            const list = [...perDiem];
-            list[0].comments = e.target.value;
-            addPerDiem(list); 
+        } else {
+            list[0][id] = value
+            addPerDiem(list);
         }
     }
 
@@ -156,7 +117,6 @@ function PerDiem() {
                 });
             })
         }
-        console.log(rows);  
     // On submit of the form, send a POST request with the data to the server.
         fetch('http://portal.cbmportal.com:5000/api/perdiem', { 
             method: 'POST',
@@ -168,10 +128,11 @@ function PerDiem() {
             .then(res => res.json())
             .then(data => {
                  if (data.message) history.push('/success');
-            }).catch((err) => {
+            })
+            .catch((err) => {
             console.log(err);
         }) 
-        }
+    }
         return (
             <div className="container">
                 <h1 className="mainHeading">&nbsp;&nbsp;<span>Per Diem</span></h1><br />
@@ -191,11 +152,7 @@ function PerDiem() {
                             <label htmlFor="store">Store:</label><br />
                             <select name="stores" id="location" required title="Please enter the required information" onChange={e => handleInputChange(e)}>
                                 <option>Home</option>
-                                {storeList.map((store, i)=> {
-                                    return (
-                                        <option key={i}>{store.store}</option>
-                                     )
-                                })}
+                                <Stores stores={storeList} />
                             </select>
                         </div>
                         <br /><br />

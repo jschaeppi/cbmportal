@@ -1,5 +1,7 @@
     import React, { Component } from 'react'
     import '../css/workTicket.css';
+    import DM from '../Components/DM';
+    import Stores from '../Components/Stores';
     export class workTicket extends Component {
         constructor() {
             super();
@@ -25,9 +27,9 @@
         }
 
         handleChange = (e) => {
-            const value = e.target.value;
+            const { name, value } = e.target;
             this.setState({
-                [e.target.name]: value
+                [name]: value
             })
         }
 
@@ -91,22 +93,12 @@
                             <div className="wrapper1">
                                 <div>
                                     <label htmlFor="dm">DM:</label><br />
-                                    <select id="dm" name="dm" required title="Please select an option" onChange={this.handleChange}>
-                                        <option>Select a DM</option>
-                                        <option value="Ausencio Cruz">Ausencio Cruz</option>
-                                        <option value="Cruz Hernandez">Cruz Hernandez</option>
-                                        <option value="Daniel De la Paz">Daniel De la Paz</option>
-                                        <option value="Lino Huerta">Lino Huerta</option>
-                                        <option value="Jose Lopez">Jose Lopez</option>
-                                        <option value="Zach Harlow">Zach Harlow"</option>
-                                    </select>
+                                    <DM handleChange={this.handleChange} />
                                 </div>
                                 <div>
                                     <label >Store Number:</label>
                                     <select name="location" id="storeList" required title="Please select an option" onChange={this.handleChange}>
-                                        {this.state.stores.map((store, i) => {
-                                            return <option key={i} value={store.store}>{store.store}</option>
-                                            })}
+                                        <Stores stores={this.state.stores} />
                                     </select>
                                  </div>
                             </div>
@@ -165,9 +157,7 @@
                         <div className="wrapper1">
                             <label htmlFor="currentLocation">Curent location:</label><br />
                             <select name="currentLocation" id="storeList" required title="Please select an option" onChange={this.handleChange}>
-                                {this.state.stores.map((store, i) => {
-                                    return <option key={i} value={store.store}>{store.store}</option>
-                                    })}
+                                <Stores stores={this.state.stores} />
                             </select>
                         </div>
                         <div className="wrapper1" id="orderSubmit">

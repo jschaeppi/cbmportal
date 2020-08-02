@@ -5,7 +5,7 @@ const pdf = require('html-pdf');
 const fs = require('fs');
 const moment = require('moment');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
-let { bonusRows, options } = require('../src/config/html')
+let { options } = require('../src/config/html')
 let Bonuses = require('../src/Model/bonusModel');
 let Store = require('../src/Model/Stores');
 receiver = 'joseph.schaeppi@carlsonbuilding.com';
@@ -25,13 +25,23 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 // current year
 let year = date_ob.getFullYear();
 
-bonusRouter.get('/', (req, res) => {
+bonusRouter.get('/stores', (req, res) => {
     Store.find()
     .sort( { banner: -1 })
     .then(stores => res.json(stores));
     
 });
 
+bonusRouter.get('/stores/:id', (req, res) => {
+    Store.find( { dm: req.params.id }, (err, result) => {
+        if (err) {
+            console.log(err)
+        } else {
+            res.json(result)
+        }
+    }
+    ).sort({ banner: -1})
+});
 bonusRouter.post('/', (req, res) => {
     const rows = [];
     let bonusInfo = [];
@@ -246,13 +256,13 @@ td {
     const bonusRow = []
 
     //Prep for DB insertions
-    for (let key in req.body) {
+    /*for (let key in req.body) {
         if (req.body[key].bonus && req.body[key].date && req.body[key].location ) {
             bonusRow.push(req.body[key].bonus)
             bonusRow.push(req.body[key].date)
             bonusRow.push(req.body[key].location)
 }
-    }
+    }*/
 
     //DB insertions
     let form = new Bonuses();

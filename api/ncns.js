@@ -20,15 +20,8 @@ let year = date_ob.getFullYear();
 
 
 ncnsRouter.post('/', (req, res) => {
-    const firstName = req.body.firstName;
-    const employeeNum = req.body.employeeNum;
-    const secondLast = req.body.secondLast;
-    const firstLast = req.body.firstLast;
+    const { firstLast, firstName, employeeNum, secondLast, dm, rehire, norehireReason, quitReason } = req.body;
     const lastWorked = moment(req.body.lastWorked).format('L');
-    const dm = req.body.dm;
-    const rehire = req.body.rehire;
-    const norehireReason = req.body.norehireReason;
-    const quitReason = req.body.quitReason;
 
 
     let pdfFile = `Employee-${employeeNum}-${firstName} ${firstLast} ${secondLast}`;

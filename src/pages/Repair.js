@@ -22,15 +22,15 @@ export class Repair extends Component {
         this.onSubmit = this.onSubmit.bind(this);
 }
     handleChange = (e) => {
-        const value = e.target.value;
+        const { name, value, id } = e.target;
         this.setState({
-            [e.target.name]: value
+            [name]: value
         })
-        if (e.target.id === "Brand 11") {
+        if (id === "Brand 11") {
             this.setState({
                 notListed: true
             })
-        } else if (e.target.id !== "Brand 11"){
+        } else if (id !== "Brand 11"){
             
             this.setState({
                 notListed: false
@@ -48,7 +48,6 @@ export class Repair extends Component {
             formData.append('machineTag', this.state.machineTag);
             formData.append('problem', this.state.problem);
             formData.append('reported', this.state.reported);
-            console.log(...formData);
         axios.post('http://portal.cbmportal.com:5000/api/repair', formData)
         .then( res => {
             console.log(res)

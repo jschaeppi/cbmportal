@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import '../css/bonus.css';
-import SignatureCanvas from 'react-signature-canvas'
+//import SignatureCanvas from 'react-signature-canvas'
+import SigPad from '../Components/sigPad';
+import DM from '../Components/DM';
 
 function Bonus()  {
 
     const history = useHistory();
-    const [storeList, setStoreList] = useState([
-        {
-            stores: []
-        }
-    ]);
+    const [storeList, setStoreList] = useState([]);
 
     let [formData, setFormData] = useState([
         {
@@ -29,32 +27,27 @@ function Bonus()  {
 
     const dm = formData[0].dm;
     useEffect(() => {
-        fetch(`http://portal.cbmportal.com:5000/api/hotel/stores/${dm}`)
+        fetch(`http://portal.cbmportal.com:5000/api/bonus/stores/${dm}`)
         .then(res => res.json())
         .then(data => setStoreList(data) ) 
     }, [dm])
 
-    const clear = (e) => {
+    const clearPad = (e) => {
+        e.preventDefault();
         managerPad.current.clear();
     }
     
     const handleChange = (e, index) => {
-
+        const { name, value } = e.target;
         const list = [...formData];
         if (e.target.name === `Bonus ${index}`) {
             list[index-1].bonus = e.target.value;
-        } else if (e.target.name === `employeename`) {
-            list[index-1].employeeName = e.target.value;
-        } else if (e.target.name === `employeenum`) {
-            list[index-1].employeeNum = e.target.value;
-        } else if (e.target.name === `dm`) {
-            list[index-1].dm = e.target.value;
         } else if (e.target.name === `Location ${index}`) {
             list[index-1].location = e.target.value;
         } else if (e.target.name === `Date ${index}`) {
             list[index-1].date = e.target.value;
-        } else if (e.target.name === `comments`) {
-            list[index-1].comments = e.target.value;
+        } else {
+            list[0][name] = value;
         }
         setFormData(list);
     }
@@ -115,7 +108,9 @@ function Bonus()  {
             })
             .then(res => res.json())
             .then(data => {
+                if(data.message) {
                 history.push('/success');
+                }
             })
             .catch((err) => {
             console.log(err);
@@ -131,25 +126,17 @@ function Bonus()  {
                             <div className="wrapper1">
                                 <div>
                                     <label htmlFor="employeenum">Employee #:</label><br />
-                                    <input type="text" id="employeenum" name="employeenum" required title="Please enter the required information" onChange={e => handleChange(e, 1)}/>
+                                    <input type="text" id="employeenum" name="employeeNum" required title="Please enter the required information" onChange={e => handleChange(e, 1)}/>
                                 </div>
                                 <div>
                                     <label htmlFor="employeename"> Employee Name:</label>
-                                    <input type="text" id="employeename" name="employeename"required title="Please enter the required information"  onChange={e => handleChange(e, 1)}/>
+                                    <input type="text" id="employeename" name="employeeName"required title="Please enter the required information"  onChange={e => handleChange(e, 1)}/>
                                 </div>
                             </div>
                             <br /><br />
                             <div className="wrapper1">
                                 <label htmlFor="dm">DM:</label><br />
-                                <select id="dm" name="dm" required title="Please select an option" onChange={e => handleChange(e, 1)}>
-                                <option>Select a DM</option>
-                                <option value="Ausencio Cruz">Ausencio Cruz</option>
-                                <option value="Cruz Hernandez">Cruz Hernandez</option>
-                                <option value="Daniel De la Paz">Daniel De la Paz</option>
-                                <option value="Lino Huerta">Lino Huerta</option>
-                                <option value="Jose Lopez">Jose Lopez</option>
-                                <option value="Zach Harlow">Zach Harlow"</option>
-                                </select>
+                                <DM handleChange={e => handleChange(e)} />
                             </div>
                             <br /><br />
                         
@@ -189,9 +176,7 @@ function Bonus()  {
                             <br />
                             <div className="wrapper1">
                                 <div id="bonusSig">
-                                    <SignatureCanvas clearButton="true" penColor='black' canvasProps={{backgroundcolor: 'rgba(255, 255, 255, 1)', width: 400, height: 100, className: 'sigPad'}} ref={managerPad} />
-                                    <br />
-                                    <button id="sigClear" onClick={e => clear(e)} type="button ">Clear</button>
+                                    <SigPad sigPad={managerPad} clearPad={e => clearPad(e)} />
                                 </div>
                             </div>
                             <div className="wrapper1">

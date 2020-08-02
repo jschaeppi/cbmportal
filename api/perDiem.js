@@ -45,10 +45,7 @@ perdiemRouter.post('/', (req, res) => {
     let pdfFile = `PerDiem-Request-${employeeName}-${employeeNum}-${month}-${date}-${year}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
+
     req.body.forEach( (item,i) => {
         rows.push(item.mileageDate);
         rows.push(item.arrivalStore);
@@ -239,7 +236,7 @@ ${perDiemInfo.join().replace(/,/g," ")}
     }
 
     //DB insertions
-    let form = new Perdiem();
+    let form = new PerDiem();
     form.employeeName = employeeName;
     form.employeeNum = employeeNum;
     form.location = location;

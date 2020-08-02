@@ -2,7 +2,6 @@ const express = require('express');
 const hotelRouter = express.Router();
 const pdf = require('html-pdf');
 const bodyParser = require('body-parser');
-const moment = require('moment');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 let Hotel = require('../src/Model/hotelModel');
@@ -52,23 +51,11 @@ hotelRouter.get('/ps/:id', (req, res) => {
 });
 
 hotelRouter.post('/', (req, res) => {
-    const listPs1 = req.body.listPs1;
-    const listPs2 = req.body.listPs2;
-    if (req.body.newPS !== "") {
+    const { listPs1, listPs2, dm, store, checkIn, checkOut, roomNum, peopleNum, newPS, hotelReason, WT, notes, beds } = req.body;
+    if (newPS !== "") {
         const listPs1 = "";
         const listPs2 = "";
     }
-    const dm = req.body.dm;
-    const store = req.body.store;
-    const checkIn = moment(req.body.checkIn).format('L');
-    const checkOut = moment(req.body.checkOut).format('L');
-    const roomNum = req.body.roomNum;
-    const peopleNum = req.body.peopleNum;
-    const newPS = req.body.newPS;
-    const hotelReason = req.body.hotelReason;
-    const WT = req.body.WT;
-    const notes = req.body.notes;
-    const beds = req.body.beds;
     let pdfFile = `Hotel-Request-${dm}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
@@ -290,7 +277,6 @@ hotelRouter.post('/', (req, res) => {
     form.hotelReason = hotelReason;
     form.WT = WT;
     form.notes = notes;
-    form.picture
     form.save(function(err) {
         if (err) {
             console.log(err);

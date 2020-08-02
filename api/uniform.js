@@ -10,9 +10,9 @@ let Uniform = require('../src/Model/uniformModel');
 uniformRouter.use(bodyParser.json());
 uniformRouter.use(bodyParser.urlencoded({extended: false}));
 
-const logo = './src/images/CBM_Logo.png';
-let date_ob = new Date();
 // current date
+let date_ob = new Date();
+
 // adjust 0 before single digit date
 let day = ("0" + date_ob.getDate()).slice(-2);
 // current month
@@ -26,18 +26,8 @@ uniformRouter.get('/', (req, res) => {
 });
 
 uniformRouter.post('/', (req, res) => {
-    const employeeNum =req.body.employeeNum;
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const address = req.body.address;
-    const apt = req.body.apt;
-    const city = req.body.city;
-    const state = req.body.state;
-    const zip = req.body.zip;
-    const cost = req.body.cost; 
-    const quantity = req.body.quantity;
-    const size = req.body.size;
-    const date = req.body.date;
+  const { employeeNum, firstName, lastName, address, apt, city, state, zip, cost, quantity, size, date } = req.body;
+
     let base64String = req.body.sig;
     // Remove header
     var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
@@ -59,10 +49,7 @@ uniformRouter.post('/', (req, res) => {
 
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
+
     let content = `<html>
     <head>
     <style>

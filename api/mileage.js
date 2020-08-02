@@ -42,12 +42,9 @@ mileageRouter.get('/stores/:id', (req, res) => {
 
 
 mileageRouter.post('/', (req, res) => {
-    const dm = req.body[0].dm;
-    const employeeNum = req.body[0].employeeNum;
-    const employeeName = req.body[0].employeeName;
+    const { dm, employeeName, employeeNum, comments } = req.body[0];
     const rows = [];
     const mileageInfo = [];
-    const comments = req.body[0].comments;
     let pdfFile = `Mileage-Request-${dm}-${month}-${date}-${year}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'

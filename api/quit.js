@@ -20,26 +20,12 @@ let year = date_ob.getFullYear();
 
 
 quitRouter.post('/', (req, res) => {
-    const firstName = req.body.firstName;
-    const employeeNum = req.body.employeeNum;
-    const secondLast = req.body.secondLast;
-    const firstLast = req.body.firstLast;
+    const { firstLast, firstName, secondLast, employeeNum, dm, twoWeeks, rehire, norehireReason, quitReason } = req.body;
     const lastWorked = moment(req.body.lastWorked).format('L');
-    const dm = req.body.dm;
-    const twoWeeks = req.body.twoWeeks;
-    const rehire = req.body.rehire;
-    const norehireReason = req.body.norehireReason;
-    const quitReason = '';
-
 
     let pdfFile = `Employee-${employeeNum}-${firstName} ${firstLast} ${secondLast}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
-
 
    receiver = 'joseph.schaeppi@carlsonbuilding.com';
     content = `

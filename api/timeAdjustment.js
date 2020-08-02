@@ -11,9 +11,9 @@ let Store = require('../src/Model/Stores');
 timeadjustRouter.use(bodyParser.json());
 timeadjustRouter.use(bodyParser.urlencoded({extended: false}));
 
+// current date
 let date_ob = new Date();
 
-// current date
 // adjust 0 before single digit date
 let day = ("0" + date_ob.getDate()).slice(-2);
 
@@ -35,11 +35,7 @@ timeadjustRouter.get('/stores/:id', (req, res) => {
 });
 
 timeadjustRouter.post('/', (req, res) => {
-    const dm = req.body[0].dm;
-    const employeeNum = req.body[0].employeeNum;
-    const employeeName = req.body[0].employeeName;
-    const noteAdjustment = req.body[0].noteAdjustment;
-    const location = req.body[0].location;
+    const { dm, employeeNum, employeeName, noteAdjustment } = req.body[0];
     let rows = [];
     let timeadjustInfo = [];
     let totaladjustment = 0;
@@ -112,10 +108,7 @@ timeadjustRouter.post('/', (req, res) => {
     let pdfFile = `Employee_${req.body[0].employeeNum}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
+
     let content = `<html>
     <head>
     <style>
@@ -305,27 +298,17 @@ ${timeadjustInfo.join().replace(/,/g," ")}
     } catch(err) {
     console.log(err);
     }
-    /*const bonusRow = []
-
-    Prep for DB insertions
-    for (let key in req.body) {
-        if (req.body[key].bonus && req.body[key].date && req.body[key].location ) {
-            bonusRow.push(req.body[key].bonus)
-            bonusRow.push(req.body[key].date)
-            bonusRow.push(req.body[key].location)
-}
-    }*/
 
     //DB insertions
-    let form = new TimeAdjust();
-        form.employeeName = req.body[0].employeeName;
-        form.employeeNum = req.body[0].employeeNum;
-        form.dm = req.body[0].dm;
-    timeadjustInfo.forEach((item, i) => {
-        form.adjustments.push(item);
-    })
-        form.notes = req.body[0].noteAdjustment;
-    form.save(function(err) {
+    let form = new timeAdjust();
+        form.employeeName = employeeName;
+        form.employeeNum = employeeNum;
+        form.dm = dm;
+        timeadjustInfo.forEach((item, i) => {
+            form.adjustments.push(item);
+        })
+        form.notes = noteAdjustment;
+        form.save(function(err) {
         if (err) {
             console.log(err);
             return;

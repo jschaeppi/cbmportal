@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import '../css/propane.css';
+import Stores from '../Components/Stores';
 import axios from 'axios';
 export class Propane extends Component {
     constructor() {
@@ -17,17 +18,10 @@ export class Propane extends Component {
     }
 
     handleChange = (e) => {
-        console.log(e.target.name)
-        
-        if (e.target.name === "picture") {  
-            console.log(document.getElementById('uploadPicture').files[0])
-            this.setState({ picture: document.getElementById('uploadPicture').files}, () => {
-                console.log(this.state.picture);
-            })
-        }
-        const value = e.target.value;
+    
+        const {name, value } = e.target;
         this.setState({
-            [e.target.name]: value
+            [name]: value
         })
     }
 
@@ -40,7 +34,6 @@ export class Propane extends Component {
             formData.append('employeeName', this.state.employeeName);
             formData.append('notes', this.state.notes);
             formData.append('tanksLeft', this.state.tanksLeft);
-            console.log(...formData);
             axios.post('http://portal.cbmportal.com:5000/api/propane/', formData)
             .then( res => {
                 if (res.data.message) this.props.history.push('/success');
@@ -64,9 +57,7 @@ export class Propane extends Component {
                             <label>Store Number:</label>
                             <br />
                             <select name="location" id="storeList" required title="Please select an option" onChange={this.handleChange}>
-                            {this.state.stores.map((store, i) => {
-                                return <option key={i} value={store.store}>{store.store}</option>
-                                })}
+                            <Stores stores={this.state.stores} />
                             </select>
                         </div>
                     <br /><br />

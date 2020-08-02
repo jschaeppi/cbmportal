@@ -10,9 +10,9 @@ let Store = require('../src/Model/Stores');
 
 wtRouter.use(bodyParser.json());
 wtRouter.use(bodyParser.urlencoded({ extended: false }));
+// current date
 let date_ob = new Date();
 
-// current date
 // adjust 0 before single digit date
 let date = ("0" + date_ob.getDate()).slice(-2);
 
@@ -29,29 +29,14 @@ wtRouter.get('/stores', (req, res) => {
 });
 
 wtRouter.post('/', (req, res) => {
-    const employeeName = req.body.employeeName;
-    const employeeNum = req.body.employeeNum;
-    const dm = req.body.dm;
-    const location = req.body.location;
-    const city = req.body.city;
-    const state = req.body.state;
-    const workType = req.body.workType; 
-    const Billable = req.body.Billable;
-    const notes = req.body.notes;
-    const equipment = req.body.equipment;
-    const currentLocation = req.body.currentLocation;
-    const orderSubmitted = req.body.orderSubmitted;
+    const { employeeNum, employeeName, dm, location, city, state, workType, Billable, notes, equipment, currentLocation, orderSubmitted, orderNumber } = req.body;
     const orderDate = moment(req.body.orderDate).format('L');
-    const orderNumber = req.body.orderNumber;
     const startDate = moment(req.body.startDate).format('L');
     const endDate = moment(req.body.endDate).format('L');
     let pdfFile = `WT-request-${dm}-${month}-${date}-${year}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
+
     let content = `<head>
     <style>
     html {

@@ -1,23 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import NewPS from '../Components/newPS';
+import PSList from '../Components/PSList';
+import DM from '../Components/DM';
+import Stores from '../Components/Stores';
 import '../css/hotelRequest.css';
 
 function HotelRequest() {
 
     const history = useHistory();
-
-    const [storeList, setStoreList] = useState([
-        {
-            stores: []
-        }
-    ]);
-
-    const [psList, setPsList] = useState([
-        {
-            psList: []
-        }
-    ])
-
+    const [storeList, setStoreList] = useState([]);
+    const [psList, setPsList] = useState([]);
+    let   [psToggle, setToggle] = useState(false);
     const [formData, setFormData] = useState([
         {
             peopleNum: '1',
@@ -36,12 +30,6 @@ function HotelRequest() {
 
         }
     ])  
-
-    let [psToggle, setToggle] = useState([{
-        show: false
-        }
-    ]);
-
 
     //Fetch stores and PS'
     const dm = formData[0].dm;
@@ -62,46 +50,24 @@ function HotelRequest() {
 
         //Handle the interactivity Changes
     const handleChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
-        console.log(name);
-            let list = [...formData];
-            list[0][name] = value
-            setFormData(list); 
+        const { name, value } = e.target;
+        let list = [...formData];
+        list[0][name] = value
+        setFormData(list); 
+    }
+
+    const toggleChange = () => {
+        setToggle(!psToggle);
         }
 
-        const toggleChange = (e) => {
-            const list = [...psToggle]
-            list[0].show = !list[0].show
-            setToggle(list);
-        }
     //Show the new PS text field
     const addNewPS = (e) => {
-        if (psToggle[0].show === true) {
-            return (
-                <div>
-                    <label forhtml="newPS" >Enter New PS:</label>
-                    <input type="text" name="newPS" id="newPS" required title="Please enter the required information" onChange={e => handleChange(e)}></input>
-                </div>
-            );
+        if (psToggle === true) {
+            return <NewPS handleChange={handleChange} />
         } 
+        const ps = [...psList];
             return (
-                <div id="psList">
-                    <br />
-                    <label forhtml="newPS">Employee 1</label><br />
-                    <select name="listPs1" id="PS" required title="Please select an option" onChange={e => handleChange(e)}>
-                    {psList.map((managers, i) => {
-                        return <option key={i} name="PS" id="listPS" value={managers.ps}>{managers.ps}</option>
-                    })}
-                    </select>
-                    <br />
-                    <label forhtml="newPS">Employee 2</label><br />
-                    <select name="listPs2" id="PS" required title="Please select an option" onChange={e => handleChange(e)}>
-                    {psList.map((managers, i) => {
-                        return <option key={i} name="PS" id="listPS" value={managers.ps} onChange={e => handleChange(e)}>{managers.ps}</option>
-                    })}
-                    </select>
-                </div>
+                    <PSList ps={ps} handleChange={handleChange} />
             );
         }
 
@@ -161,23 +127,12 @@ function HotelRequest() {
                         <div className="wrapper1">
                             <div id="hotelManagers">
                                 <label>DM:</label><br />
-                                <select id="dm" name="dm" required title="Please select an option" onChange={e => handleChange(e)}>
-                                <option value="">Select Manager</option>
-                                <option value="Ausencio Gil Cruz">Ausencio Cruz</option>
-                                <option value="Cruz Hernandez">Cruz Hernandez</option>
-                                <option value="Daniel De la Paz">Daniel De la Paz</option>
-                                <option value="Daniel De la Paz North">Daniel De la Paz North</option>
-                                <option value="Lino Huerta">Lino Huerta</option>
-                                <option value="Jose Lopez">Jose Lopez</option>
-                                <option value="Zach Harlow">Zach Harlow</option>
-                                </select>
+                                <DM handleChange={e => handleChange(e)} />
                             </div>
                             <div id="hotelStores">
                                 <label>Store:</label><br />
                                 <select name="store" required title="Please select an option" onChange={e => handleChange(e)}>
-                                {storeList.map((store, i) => {
-                                    return <option key={i} name="store" id="store">{store.store}</option>
-                                })}
+                                    <Stores stores={storeList}/>
                                 </select>
                             </div>
                         </div>
@@ -199,9 +154,9 @@ function HotelRequest() {
                             <div>
                                 <label forhtml="roomNum">How many rooms:</label>
                                 <select id="roomNum" name="roomNum" required title="Please select an option" onChange={e => handleChange(e)}>
-                                <option value="">Number of Rooms:</option>
-                                <option value="1">1 room</option>
-                                <option value="2">2 rooms</option>
+                                    <option value="">Number of Rooms:</option>
+                                    <option value="1">1 room</option>
+                                    <option value="2">2 rooms</option>
                                 </select>
                             </div>
                             <div>

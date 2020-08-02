@@ -14,7 +14,7 @@ function Mileage() {
             employeeNum: '',
             employeeName: '',
             dm: '',
-            notes: '',
+            comments: '',
         }
     ]);
     
@@ -32,37 +32,24 @@ function Mileage() {
     }, [dm])
 
     const handleInputChange = (e, index) => {
+        const {id, value} = e.target;
+        const list = [...mileage];
         const incIndex = index + 1;
-        if (e.target.id === `Mileage Date ${incIndex}`) {
-            const list = [...mileage];
-            list[index].mileageDate = e.target.value;
+        if (id === `Mileage Date ${incIndex}`) {
+            list[index].mileageDate = value;
             addMileage(list); 
-        } else if (e.target.id === `Starting Point ${incIndex}`) {
-            const list = [...mileage];
-            list[index].starting = e.target.value;
+        } else if (id === `Starting Point ${incIndex}`) {
+            list[index].starting = value;
             addMileage(list); 
-        } else if (e.target.id === `Destination Point ${incIndex}`) {
-            const list = [...mileage];
-            list[index].destination = e.target.value;
+        } else if (id === `Destination Point ${incIndex}`) {
+            list[index].destination = value;
             addMileage(list); 
-        } else if (e.target.id === 'dm') {
-            const list = [...mileage];
-            list[0].dm = e.target.value;
-            addMileage(list); 
-        } else if (e.target.id === 'employeeNum') {
-            const list = [...mileage];
-            list[0].employeeNum = e.target.value;
-            addMileage(list); 
-        } else if (e.target.id === 'employeeName') {
-            const list = [...mileage];
-            list[0].employeeName = e.target.value;
-            addMileage(list); 
-        } else if (e.target.id === 'mileageNotes') {
-            const list = [...mileage];
-            list[0].notes = e.target.value;
-            addMileage(list); 
+        } else {
+            list[0][id] = value
+            addMileage(list);
         }
     }
+    
     const handleMileage = (e) => {
         e.preventDefault();
         const list = [...mileage];
@@ -91,18 +78,18 @@ function Mileage() {
                 destination: mileage[0].destination,
                 employeeName: mileage[0].employeeName, 
                 employeeNum: mileage[0].employeeNum,
-                comments: mileage[0].notes
+                comments: mileage[0].comments
             })
         } else {
             mileage.map((item, i) => {
                 return rows.push({
-                    dm: mileage[0].dm, 
                     mileageDate: item.mileageDate,
                     starting: item.starting,
                     destination: item.destination, 
+                    dm: mileage[0].dm, 
                     employeeName: mileage[0].employeeName, 
                     employeeNum: mileage[0].employeeNum,
-                    comments: mileage[0].notes
+                    comments: mileage[0].comments
                 });
             })
         }
@@ -121,6 +108,7 @@ function Mileage() {
             console.log(err);
         }) 
         }
+        
         return (
             <div className="container">
                 <h1 className="mainHeading">&nbsp;&nbsp;<span>Mileage</span></h1><br />
@@ -148,7 +136,7 @@ function Mileage() {
                         <div className="wrapper1">
                             <div id="mileageNotes">
                                 <label>Comments:</label> <br />
-                                <textarea required title="Please enter the required information" onChange={e => handleInputChange(e)}></textarea>
+                                <textarea required title="Please enter the required information" id="comments" onChange={e => handleInputChange(e)}></textarea>
                             </div>
                         </div>
                         <br /><br />

@@ -1,7 +1,6 @@
 const express = require('express');
 const newhireRouter = express.Router();
 const formidable = require('express-formidable');
-const moment = require('moment');
 const fs = require('fs');
 const pdf = require('html-pdf');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
@@ -30,29 +29,8 @@ newhireRouter.get('/stores/:id', (req, res) => {
 });
 
 newhireRouter.post('/', (req, res) => {
-    const firstName = req.fields.firstName;
-    const middleName = req.fields.middleName;
-    const dm = req.fields.dm;
-    const firstLast = req.fields.firstLast;
-    const firstDay = moment(req.fields.firstDay).format('L');
-    const dob = moment(req.fields.dob).format('L');
-    const location = req.fields.location;
-    const hireType = req.fields.hireType;
-    const address = req.fields.address;
-    const email = req.fields.email;
-    const secondLast = req.fields.secondLast;
-    const phone = req.fields.phone;
-    const phone2 = req.fields.phone2;
-    const sex = req.fields.sex;
-    const numDays = req.fields.numDays;
-    const wage = req.fields.wage;
-    const positions = req.fields.positions;
-    const hours = req.fields.hours;
-    const language = req.fields.language;
-    const ssn = req.fields.ssn;
-    const file1 = req.files.file1;
-    const file2 = req.files.file2;
-    const file3 = req.files.file3;
+    const { firstName, middleName, dm, firstLast, firstDay, dob, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn } = req.fields;
+    const { file1, file2, file3 } = req.files;
     fs.mkdir(`../../uploads/images/newhires/${firstName} ${firstLast}`, (err) => {
         if (err) {
             console.log(err);

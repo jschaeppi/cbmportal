@@ -2,7 +2,6 @@ const express = require('express');
 const repairRouter = express.Router();
 const formidable = require('express-formidable');
 const fs = require('fs');;
-const path = require('path');
 const pdf = require('html-pdf');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
@@ -30,12 +29,7 @@ repairRouter.get('/stores', (req, res) => {
 });
 
 repairRouter.post('/', (req, res) => {
-    const location = req.fields.location;
-    const machineType = req.fields.machineType;
-    const machineTag = req.fields.machineTag;
-    const problem = req.fields.problem;
-    const reported = req.fields.reported;
-    const brandName = req.fields.brandName;
+    const { location, machineTag, machineType, problem, reported, brandName } = req.fields;
     const image = req.files.file;
     fs.mkdir(`../../uploads/images/locations/repair/${location}`, (err) => {
         if (err) {
@@ -52,10 +46,7 @@ repairRouter.post('/', (req, res) => {
     let pdfFile = `Repair-request-${reported}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
+
     let content = `<head>
     <style>
     html {

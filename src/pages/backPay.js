@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import SignatureCanvas from 'react-signature-canvas'
+//import SignatureCanvas from 'react-signature-canvas'
+import SigPad from '../Components/sigPad';
+import DM from '../Components/DM';
 import '../css/backPay.css';
 function BackPay() {
 
@@ -14,49 +16,35 @@ function BackPay() {
             return_lunch: '',
             out: '',
             dm: '',
-            totalHours: '',
-            comments: '',
+            payMissed: '',
             employeeName: '', 
             employeeNum: '',
         }
     ]);
 
     const handleInputChange = (e, index) => {
+        const id = e.target.id;
+        const list = [...backPays];
         const incIndex = index + 1;
         if (e.target.id === `In ${incIndex}`) {
-            const list = [...backPays];
             list[index].in = e.target.value;
             addBackPay(list); 
         } else if (e.target.id === `Left for lunch ${incIndex}`) {
-            const list = [...backPays];
             list[index].left_lunch = e.target.value;
             addBackPay(list); 
         } else if (e.target.id === `Return From Lunch ${incIndex}`) {
-            const list = [...backPays];
             list[index].return_lunch = e.target.value;
             addBackPay(list); 
         } else if (e.target.id === `Out ${incIndex}`) {
-            const list = [...backPays];
             list[index].out = e.target.value;
             addBackPay(list); 
-        } else if (e.target.id === 'dm') {
-            const list = [...backPays];
-            list[0].dm = e.target.value;
-            addBackPay(list); 
-        } else if (e.target.id === 'employeeNum') {
-            const list = [...backPays];
-            list[0].employeeNum = e.target.value;
-            addBackPay(list); 
-        } else if (e.target.id === 'employeeName') {
-            const list = [...backPays];
-            list[0].employeeName = e.target.value;
-            addBackPay(list); 
-        } else if (e.target.id === 'payMissed') {
-            const list = [...backPays];
-            list[0].comments = e.target.value;
+          
+        } else {
+            list[0][id] = e.target.value;
             addBackPay(list); 
         }
     }
+    
     const handleAddBackPay = (e) => {
         e.preventDefault();
         const list = [...backPays];
@@ -91,7 +79,7 @@ function BackPay() {
                 dm: backPays[0].dm, 
                 employeeName: backPays[0].employeeName, 
                 employeeNum: backPays[0].employeeNum,
-                comments: backPays[0].comments,
+                comments: backPays[0].payMissed,
                 sig: managerPad.current.getTrimmedCanvas().toDataURL('image/png'),
             })
         } else {
@@ -104,7 +92,7 @@ function BackPay() {
                 dm: backPays[0].dm, 
                 employeeName: backPays[0].employeeName, 
                 employeeNum: backPays[0].employeeNum,
-                comments: backPays[0].comments,
+                comments: backPays[0].payMissed,
                 sig: managerPad.current.getTrimmedCanvas().toDataURL('image/png'),
                 });
             })
@@ -142,15 +130,7 @@ function BackPay() {
                         <br /><br />
                         <div className="wrapper1">
                             <label htmlFor="dm">DM:</label><br />
-                            <select id="dm" name="dm"  required title="Please select an option" onChange={e => handleInputChange(e)}>
-                            <option>Select a DM</option>
-                            <option value="Ausencio Cruz">Ausencio Cruz</option>
-                            <option value="Cruz Hernandez">Cruz Hernandez</option>
-                            <option value="Daniel De la Paz">Daniel De la Paz</option>
-                            <option value="Lino Huerta">Lino Huerta</option>
-                            <option value="Jose Lopez">Jose Lopez</option>
-                            <option value="Zach Harlow">Zach Harlow"</option>
-                            </select>
+                            <DM handleChange={e => handleInputChange(e)} />
                         </div>
                         <div className="wrapper1">
                         { backPays.map((row, index) => { 
@@ -184,9 +164,7 @@ function BackPay() {
                         </div>
                         <div className="wrapper1">
                             <div id="signature">
-                                <SignatureCanvas clearButton="true" penColor='black' canvasProps={{backgroundcolor: 'rgba(255, 255, 255, 1)', width: 400, height: 100, className: 'sigPad', id: 'sigPad'}} ref={managerPad} />
-                                <br />
-                                <button id="sigClear" onClick={e => clearPad(e)} type="button ">Clear</button>
+                                <SigPad sigPad={managerPad} clearPad={e => clearPad(e)} />
                             </div>
                         </div>
                         <br />

@@ -19,11 +19,6 @@ button {
     width: 15%;
     margin: 0 0 0 9rem;
 }
-#sigButton {
-    margin: 0 auto;
-    width: 100%;
-    border-radius: 1em;
-}
 
 #backPayAddButton, #backPayRemoveButton {
     border-radius: .33em;

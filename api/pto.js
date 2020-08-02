@@ -21,15 +21,9 @@ let year = date_ob.getFullYear();
 
 
 ptoRouter.post('/', (req, res) => {
-    const employeeName = req.body.employeeName;
-    const employeeNum = req.body.employeeNum;
-    const dm = req.body.dm;
-    const departments = req.body.departments;
+    const { employeeName, employeeNum, dm, departments, hours, approval, comments } = req.body;
     const absencefrom = moment(req.body.absencefrom).format('L');
     const absenceto = moment(req.body.absenceto).format('L');
-    const hours = req.body.hours;
-    const approval = req.body.approval;
-    const comments = req.body.comments;
     let base64String = req.body.sig;
     // Remove header
     var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
@@ -51,11 +45,6 @@ ptoRouter.post('/', (req, res) => {
     let pdfFile = `Employee-${employeeNum}-${employeeName}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
-
 
    receiver = 'joseph.schaeppi@carlsonbuilding.com';
     content = `<html>

@@ -248,13 +248,13 @@ backpayRouter.post('/', (req, res) => {
     //const bonusRow = []
 
     //Prep for DB insertions
-    for (let key in req.body) {
+    /*for (let key in req.body) {
         if (req.body[key].bonus && req.body[key].date && req.body[key].location ) {
             bonusRow.push(req.body[key].bonus)
             bonusRow.push(req.body[key].date)
             bonusRow.push(req.body[key].location)
 }
-    }
+    }*/
 
     //DB insertions
     let form = new Backpay();

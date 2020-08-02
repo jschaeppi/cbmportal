@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import '../css/dustmop.css';
+import Stores from '../Components/Stores';
 import axios from 'axios';
 export class dustMop extends Component {
     constructor() {
         super();
         this.state = {
             stores: [],
-            picture: '',
             employeeName: '', 
             mopsLeft: '',
             location: '',
@@ -15,13 +15,9 @@ export class dustMop extends Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
     handleChange = (e) => {
-        if (e.target.name === "picture") {  
-            console.log(document.getElementById('uploadPicture').files[0])
-            this.setState({ picture: document.getElementById('uploadPicture').files[0]})
-        }
-        const value = e.target.value;
+        const {name, value}= e.target;
         this.setState({
-            [e.target.name]: value
+            [name]: value
         })
     }
 
@@ -34,7 +30,6 @@ export class dustMop extends Component {
         formData.append('location', this.state.location);
         formData.append('employeeName', this.state.employeeName);
         formData.append('mopsLeft', this.state.mopsLeft);
-        console.log(...formData);
         axios.post('http://portal.cbmportal.com:5000/api/dustmop/', formData)
         .then( res => {
             if (res.data.message) this.props.history.push('/success');
@@ -59,9 +54,7 @@ export class dustMop extends Component {
                             <div>
                                 <label >Store Number:</label>
                                 <select onChange={this.handleChange} required name="location" id="storeList">
-                                    {this.state.stores.map((store, i) => {
-                                        return <option key={i} value={store.store}>{store.store}</option>
-                                            })}
+                                    <Stores stores={this.state.stores} />
                                 </select>
                             </div>
                         </div>
@@ -83,7 +76,7 @@ export class dustMop extends Component {
                         <div className="wrapper1">
                             <div>
                                 <label htmlFor="picture">Take Picture:</label><br />
-                                <input type="file" name="picture" id="uploadPicture" required title="Please select a file" onChange={this.handleChange}></input>
+                                <input type="file" name="picture" id="picture" required title="Please select a file"></input>
                             </div>
                         </div>
                         <br /><br />

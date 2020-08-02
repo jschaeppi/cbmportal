@@ -15,8 +15,10 @@ export class Quit extends Component {
                 //rehire: '',
                 norehireReason: '',
                 lastWorked: '',
+                quitReason: '',
             }
             this.noRehire = this.noRehire.bind(this);
+            this.handleChange = this.handleChange.bind(this);
     }
 
 
@@ -53,6 +55,7 @@ export class Quit extends Component {
                 rehire: this.state.rehire,
                 norehireReason: this.state.norehireReason,
                 lastWorked: this.state.lastWorked,
+                quit: this.state.quitReason,
             })
             })
             .then(res => res.json())

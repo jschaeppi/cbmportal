@@ -1,14 +1,19 @@
-import React, { Component } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types';
 
-export class newPS extends Component {
-    render() {
+const newPS = ({ handleChange }) => {
+
         return (
             <div>
                 <label for="newPS">Enter New PS:</label><br />
-                <input type="text" name="newPS" id="newPS"></input>
+                <input type="text" name="newPS" id="newPS" onChange={e => handleChange(e)}></input>
             </div>
         );
-    }
+}
+
+
+newPS.propTypes = {
+    handleChange: PropTypes.func.isRequired,
 }
 
 export default newPS

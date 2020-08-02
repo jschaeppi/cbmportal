@@ -1,5 +1,7 @@
 import React from 'react';
 import '../css/New_Hire.css';
+import Stores from '../Components/Stores';
+import DM from '../Components/DM';
 
 class NewHire extends React.Component {
     constructor() {
@@ -29,17 +31,17 @@ class NewHire extends React.Component {
             }
             this.handleChange = this.handleChange.bind(this);
             this.onSubmit = this.onSubmit.bind(this);
+            this.ssnHide = this.ssnHide.bind(this);
     }
-    ssnHide(e) {
-        console.log(e.target.value);
+    ssnHide() {
         this.setState({
             isHidden: (!this.state.isHidden)
         })
     }
 
     handleChange = (e) => {
-        const value = e.target.value;
-        if (e.target.name === "dm") {
+        const {name, value} = e.target;
+        if (name === "dm") {
             this.setState({
                 dm: value
             }, () => {
@@ -50,7 +52,7 @@ class NewHire extends React.Component {
             
         }
         this.setState({
-            [e.target.name]: value
+            [name]: value
         })
         
     }
@@ -143,10 +145,9 @@ class NewHire extends React.Component {
                         <div class="wrapper1">
                             <div id="ssnInfo">
                                 <label htmlFor="ssn">SSN:</label>
-                    
                                 <br />
                                 <input type={(this.state.isHidden) ? "password":"text"} id="ssn" name="ssn"  required minlength="1" maxLength="11" pattern="[0-9]{3}-[0-9]{2}-[0-9]{4}" title="Enter in format ###-##-####"  onChange={this.handleChange}/>
-                                <i className="far fa-eye" onClick={this.ssnHide.bind(this)}></i>
+                                <i className="far fa-eye" onClick={this.ssnHide}></i>
                             </div>
                         </div>
                         <br /><br />
@@ -182,24 +183,12 @@ class NewHire extends React.Component {
                                 <select name="location" id="storeList"   title="Please select an option" required onChange={this.handleChange}>
                                     <option key="start" value="">Select Starting Point</option>
                                     <option key="home" value="Home">Home</option>
-                                    {this.state.stores.map((store,i) => {
-                                        return (
-                                            <option key={store._id}>{store.store}</option>
-                                        )
-                                    })}
+                                    <Stores stores={this.state.stores} />
                                 </select>
                             </div>
                             <div class="content">
                                 <label htmlFor="dm">DM:</label><br />
-                                <select id="dm" name="dm"   title="Please select an option" required onChange={this.handleChange}>
-                                <option value="">Select Manager</option>
-                                    <option value="Ausencio Cruz">Ausencio Cruz</option>
-                                    <option value="Cruz Hernandez">Cruz Hernandez</option>
-                                    <option value="Daniel De la Paz">Daniel De la Paz</option>
-                                    <option value="Lino Huerta">Lino Huerta</option>
-                                    <option value="Jose Lopez">Jose Lopez</option>
-                                    <option value="Zach Harlow">Zach Harlow"</option>
-                                </select>
+                                <DM handleChange={this.handleChange} />
                             </div>
                         </div>
                         <br /><br />

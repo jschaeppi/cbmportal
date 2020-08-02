@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import '../css/uniform.css';
 import SignatureCanvas from 'react-signature-canvas'
-//import Moment from 'react-moment';
 import 'moment-timezone';
-//<Moment format="MM/DD/YYYY" date={dateToFormat} />
 
 export class Uniform extends Component {
     constructor() {
@@ -27,8 +25,7 @@ export class Uniform extends Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
     handleChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
+        const { name, value } = e.target;
         this.setState({
             [name]: value
         })
@@ -46,14 +43,6 @@ export class Uniform extends Component {
         e.preventDefault();
         this.sigPad.clear();
     }
-
-    /*trimPad = (e) => {
-        e.preventDefault();
-        console.log(this.sigPad.getTrimmedCanvas().toDataURL('image/png'));
-        this.setState({
-            sig: this.sigPad.getTrimmedCanvas().toDataURL('image/png'),
-        });
-    }*/
 
     onSubmit = (e) => {
         let date_ob = new Date();
