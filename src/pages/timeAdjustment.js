@@ -109,7 +109,6 @@ function TimeAdjustment() {
                 });
             })
         }
-        console.log(rows);  
     // On submit of the form, send a POST request with the data to the server.
     fetch('http://portal.cbmportal.com:5000/api/timeAdjustment', { 
         method: 'POST',
@@ -120,9 +119,9 @@ function TimeAdjustment() {
         })
         .then(res => res.json())
         .then(data => {
-        console.log(data.message);
-        
+        if (data.message) {       
         history.push('/success');
+        }
             //showSuccess(data)
         }).catch((err) => {
         console.log(err);

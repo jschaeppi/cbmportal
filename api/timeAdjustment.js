@@ -44,20 +44,13 @@ timeadjustRouter.post('/', (req, res) => {
     let base64String = '';
     let base64Image = ''
    
-    fs.access(`../../uploads/signatures/timeadjustment/${dm}`, (err) => {
+    fs.mkdir(`../../uploads/signatures/timeadjustment/${dm}`, (err) => {
         if (err) {
-            fs.mkdir(`../../uploads/signatures/timeadjustment/${dm}`, (err) => {
-                if (err) {
-                    console.log(err);
-                } else if(result) {
-                console.log('Folder created successfully!');
-            }
-            })
-        } else {
-            return;
+            console.log(err);
         }
+            console.log('Folder created successfully!');
     })
-    
+
     fs.mkdir(`../../uploads/signatures/timeadjustment/${employeeNum}`, (err, result) => {
         if (err) {
             console.log(err);
