@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import SignatureCanvas from 'react-signature-canvas'
 
 export class SigPad extends Component {
-
     clearPad(e) {
         e.preventDefault();
         this.sigPad.clear();
