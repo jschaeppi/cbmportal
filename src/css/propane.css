@@ -1,0 +1,17 @@
+#propaneNotes {
+    width: 100%;
+    height: 3rem;
+}
+
+#propaneForm {
+    margin: 0 0 0 26vw;
+}
+
+#propaneHeading {
+    margin: 0 0 0 34vw;
+}
+
+#propaneForm > input[type="submit"] {
+    width: 15%;
+    margin-left: 11rem;
+}

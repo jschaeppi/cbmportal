@@ -1,0 +1,77 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #d9d9d9;
+}
+#ptoemployeeNum {
+    margin-top: .75rem;
+}
+
+#ptoForm {
+    margin: 0 0 0 24vw;
+}
+
+#ptoForm > input[type="submit"] {
+    width: 15%;
+    margin-left: 12rem;
+}
+
+#ptoHeading {
+    margin: 0 0 0 35vw;
+}
+
+#ptoCommentsDiv {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    margin-left: 3rem;
+}
+
+#employeeName, #ptoemployeeNum, #departments, #dm, #absencefrom, #absenceto, #hours {
+    width: 80%;
+}
+
+.sigPad {
+    background-color: #c9c8c5;
+}
+
+#approval {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+#sig {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    padding-right: 0;
+    margin-top: 2%;
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+
+    #sig {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        grid-row-end: 3;
+        padding-right: 0;
+        margin-top: 2%;
+    }
+}
+
+@media screen and (min-width: 551px) and (max-width: 768px) {
+
+    #sig {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        grid-row-end: 3;
+        padding-right: 0;
+        margin-top: 2%;
+    }
+}

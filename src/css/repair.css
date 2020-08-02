@@ -1,0 +1,179 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #d9d9d9;
+}
+
+#repairForm {
+    margin: 0 0 0 26vw;
+}
+
+#repairForm > input[type="submit"] {
+    width: 15%;
+    margin-left: 9rem;
+}
+
+#repairHeading {
+    margin: 0 0 0 33vw;
+}
+
+#noteAdjustment {
+    width: 100%;
+    height: 100%;
+}
+
+#machines {
+    display: inline-block;
+    margin-right: 2rem;
+}
+
+#machineRow {
+    width: 80%;
+    border: 1px solid black;
+    box-shadow: 2px 2px;
+    
+}
+
+#brand {
+    display: inline-block;
+    width: 33%;
+    height: 100%;
+    vertical-align: top;
+}
+
+#brand label {
+    font-size: 16px;
+}
+
+#brands {
+    font-size: 14px;
+    width: 80%;
+    height: 4.5rem;
+    border: 1px solid black;
+    box-shadow: 2px 2px;
+}
+
+#problem {
+    border:1px solid black;
+    box-shadow: 2px 2px;
+    width: 80%;
+    text-align: center;
+    padding-bottom: .5rem;
+}
+
+#problemDescription {
+    width: 70%;
+    
+}
+
+#reportedDiv {
+    border:1px solid black;
+    box-shadow: 2px 2px;
+    width: 80%;
+    text-align: center;
+    padding-bottom: .25rem;
+}
+
+#repairStores {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    #brands {
+        width: 80%;
+        height: 110px;
+        margin: 0;
+    }
+ 
+    #machineRow {
+        width: 80%;
+        margin: 0;
+    }
+    #problem {
+        margin: 0;
+        box-sizing: border-box;
+        padding-left: 3.7rem;
+        text-align: left;
+    }
+
+     #repairStores {
+         margin: 0;
+     }
+     #reportedDiv {
+         margin: 0;
+     }
+ 
+     .wrapper1 {
+         margin: 0;
+     }
+ 
+     .container {
+         margin-top: 1rem;
+     }
+
+    }
+@media screen and (min-width: 551px) and (max-width: 768px) {
+    #brands {
+        width: 80%;
+        height: 110px;
+        margin: 0;
+    }
+ 
+    #machineRow {
+        width: 80%;
+        margin: 0;
+    }
+    #problem {
+        margin: 0;
+        text-align: left;
+    }
+
+     #repairStores {
+         margin: 0;
+     }
+     #reportedDiv {
+         margin: 0;
+     }
+ 
+     .wrapper1 {
+         margin: 0;
+     }
+}
+
+@media screen and (max-width: 550px) {
+   #brands {
+       width: 80%;
+       height: 110px;
+       margin: 0 1.5rem;
+   }
+
+   #machineRow {
+       width: 80%;
+       margin: 0 1.5rem;
+   }
+   #problem {
+       margin: 0 1.5rem;
+       text-align: left;
+   }
+
+    #repairStores {
+        margin: 0 1.5rem;
+    }
+    #reportedDiv {
+        margin: 0 1.5rem;
+    }
+
+    .wrapper1 {
+        margin: 0 1.5rem;
+    }
+
+    .container {
+        margin-top: 1rem;
+    }
+}

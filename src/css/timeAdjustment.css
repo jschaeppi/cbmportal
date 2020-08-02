@@ -1,0 +1,111 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #d9d9d9;
+}
+
+#adjustmentForm {
+    margin: 0 0 0 25vw;
+}
+
+#adjustmentForm > input[type="submit"] {
+    width: 15%;
+    margin-left: 12rem;
+}
+#adjustmentHeading {
+    margin: 0 0 0 33vw;
+}
+
+#adjustments {
+    margin: 4%;
+    width: 95%;
+    padding: 10% 5%;
+    box-shadow: 2px 2px;
+    border:1px solid black;
+}
+
+#signPad > label {
+    margin-left: 10%;
+    margin-top: 2%;
+}
+#adjustments > input[type="datetime-local"] {
+    width: 95%;
+}
+#adjustments > input[type="date"] {
+    width: 95%;
+}
+#adjustments > input[type="input"] {
+    width: 95%;
+}
+#adjustments > button {
+    margin-top: 2%;
+    margin-left: 4%;
+}
+
+#reasonMissedLabel {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    margin-left: 0;
+}
+
+#reasonMissedDiv {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    margin-left: 12.5%;
+    width: 75%;
+}
+
+#signPad {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+#timeEmployeeNum {
+    margin-top: .75rem;
+    width: 80%;
+}
+
+@media screen and (min-width: 551px) and (max-width: 768px) {
+
+    #reasonMissedDiv {
+        margin-left: 12.5%;
+        width: 75%;
+    }
+
+    #reasonMissedLabel {
+        grid-column-start: 1;
+        grid-column-end: 2;
+        grid-row-start: 1;
+        grid-row-end: 2;
+        margin-left: 0;
+    }
+
+    #signPad > label {
+        margin-left: 10%;
+        margin-top: 2%;
+    }
+}
+
+@media screen and (max-width: 550px) {
+
+    #reasonMissedDiv {
+        margin-left: 13%;
+        width: 75%;
+    }
+
+    #reasonMissedLabel {
+        margin-left: 0;
+    }
+
+    #signPad > label {
+        margin-left: 10%;
+        margin-top: 2%;
+    }
+}

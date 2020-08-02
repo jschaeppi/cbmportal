@@ -1,0 +1,115 @@
+#mileageNotes {
+    width: 50%;
+    height: 100%;
+    margin: 0 auto;
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+#notesLabel {
+    margin-left: 35%;
+}
+
+#sigButton {
+    margin: 0 auto;
+    width: 100%;
+    border-radius: 1em;
+}
+
+#mileageForm {
+    margin: 0 0 0 20vw;
+}
+
+#mileageHeading {
+    margin: 0 0 0 36vw;
+}
+
+#mileageEmployeeNum > input[type="number"] {
+    margin-top: .75rem;
+    width: 80%;
+    height: 21px;
+}
+#mileageForm > input[type="number"] {
+    margin-top: .75rem;
+}
+
+#mileageForm > input[type="submit"] {
+    width: 15%;
+    margin: 0 0 0 9rem;
+}
+
+#mileageRemoveButton {
+    margin: 0 1rem 0 0;
+    width: 4.5rem;
+}
+
+#mileageAddButton {
+    margin: 0;
+    width: 7rem;
+}
+
+#mileageEntries {
+    border: 1px solid black;
+    box-shadow: 2px 2px;
+    padding-top: .5rem;
+}
+
+
+#mileageEntries button {
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+#entry {
+    grid-template-columns: repeat(3, 1fr);
+    width: 90%;
+    margin-left: 1rem;
+}
+
+#entry input[type="date"] {
+    width: 100%;
+}
+
+#entry > select {
+    margin-left: 1rem;
+    width: 80%;
+}
+
+#entry > label {
+    margin-left: 1rem;
+}
+
+#entry > label:first-child {
+    margin-left: 0;
+}
+
+@media screen and (min-width: 551px) and (max-width: 768px) {
+
+    #mileageNotes {
+        width: 100%;
+        max-height: 100%;
+        margin: 0 auto;
+    }
+
+    #mileageEntries {
+        border: 1px solid black;
+        box-shadow: 2px 2px;
+        padding-top: .5rem;
+    }
+
+}
+
+@media screen and (max-width: 550px) {
+
+    #mileageNotes {
+        width: 100%;
+        max-height: 100%;
+    }
+
+    #mileageEntries {
+        border: 1px solid black;
+        box-shadow: 2px 2px;
+        padding-top: .5rem;
+        margin-left: 1.5rem;
+    }
+
+}

@@ -1,0 +1,67 @@
+.wrapper1 input[type="date"] {
+    font-size: 14px;
+    width: 80%;
+}
+
+#hotelForm {
+    margin: 0 0 0 20vw;
+}
+
+#hotelHeading {
+    margin: 0 0 0 35vw;
+}
+
+#hotelForm > input[type="submit"] {
+    width: 15%;
+    margin: 0 0 0 10rem;
+}
+#rooms {
+    grid-template-columns: repeat(3, 1fr);
+
+}
+#newPS {
+    margin-top: 0;
+}
+#rooms select, input[type="text"] {
+    margin-top: .75rem;
+    width: 80%;
+}
+
+#hotelStores select {
+    width: 80%;
+}
+
+#hotelInfo select, input[type="number"], input[type="text"] {
+    margin-top: .75rem;
+    width: 80%;
+}
+#roomNum, #peopleNum {
+    max-height: 25px;
+}
+#twoQueen {
+    width: 95%;
+}
+
+#hotelNotes {
+    padding-left: 4vw;
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+#hotelNotes > label {
+    padding-left: 2vw;
+}
+
+@media screen and (max-width: 550px) {
+    #hotelManagers, #hotelCheckIn, #hotelInfo {
+        padding-top: 1rem;
+    } 
+
+    #psList select {
+        margin-bottom: 1rem;
+    } 
+
+    .wrapper1 textarea {
+        width: 100%;
+    }
+}

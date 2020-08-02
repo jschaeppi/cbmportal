@@ -1,0 +1,73 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+}
+
+#newHireHeading {
+    margin: 0 0 0 34vw;
+}
+
+#newHireForm {
+    margin: 0 0 0 20vw;
+}
+
+#newHireForm > input[type="submit"] {
+    width: 15%;
+    margin: 0 0 0 9rem;
+}
+
+#firstName, #middleName, #firstLastName, #secondLastName, #address, #email, #phone, #phone2, #dob, #sex, #firstday, #wage, #numDays {
+    width: 80%;
+}
+
+.wrapper1 input[type="tel"] {
+    grid-auto-rows: 16px;
+}   
+
+.content input[type="text"], input[type="password"], select{
+    margin-top: 0;
+}
+#radio input[type="radio"] {
+    text-align: center;
+    margin: 0 5px;
+}
+#ssnInfo > input[type="text"], input[type="password"] {
+    width: 50%;
+}
+
+#storeList {
+    width: 80%;
+}
+
+#hours {
+    border: none;
+}
+
+#hoursLabel {
+    width: 100%;
+    font-size: 16px;
+    
+}
+
+#files {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+#prefLanguage {
+    border-bottom: 1px solid black;
+    width: 8.5rem;
+    margin-bottom: .5rem;
+}
+
+@media screen and (max-width: 768px) {
+
+
+}
+
+
+@media screen and (max-width: 550px) {
+
+
+}

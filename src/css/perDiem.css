@@ -1,0 +1,79 @@
+button {
+    border-radius: 1px;
+    margin: 0 1rem;
+}
+
+#location {
+    width: 80%;
+}
+#perdiemEmployeeNum > input[type="number"] {
+    width: 80%;
+    height: 20px;
+    margin-top: .75rem;
+}
+
+#perdiemForm {
+    margin: 0 24vw 0 24vw;
+}
+#perdiemForm > input[type="submit"] {
+    width: 15%;
+    margin: 0 0 0 9rem;
+}
+#sigButton {
+    margin: 0 auto;
+    width: 100%;
+    border-radius: 1em;
+}
+
+#backPayAddButton, #backPayRemoveButton {
+    border-radius: .33em;
+}
+
+#mileageEntries {
+    margin-top: 1rem;
+    border: 1px solid black;
+    box-shadow: 2px 2px;
+    padding-bottom: 1rem;
+    width: 80%; 
+}
+
+#mileageEntries select {
+    width: 80%;
+}
+
+#rtowControl {
+    margin-left: 1.6rem;
+}
+
+#mileageEntries.input[type="radio"] {
+margin-left: 1px;
+}
+
+#mileage {
+    grid-template-columns: repeat(3, 1fr);
+    width: 90%;
+    margin: 1rem 0 0 1.3rem;
+}
+
+#mileage input[type="date"] {
+    width: 80%;
+}
+#first_hotel, #last_hotel, #arrival, #departure {
+    width: 80%;
+}
+
+#commentsDiv {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    padding-left: 3rem;
+}
+
+#perdiemButton {
+    border-radius: 1px;
+}
+
+/*#addPer {
+    border: 1px solid black;
+    box-shadow: 2px 2px;
+    width: 29.2rem;
+}*/

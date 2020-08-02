@@ -1,0 +1,24 @@
+{
+  "name": "cbm_forms",
+  "version": "1.0.0",
+  "description": "Carlson Digital Form Repository",
+  "main": "../server.js",
+  "proxy": "http://localhost:5000",
+  "scripts": {
+    "server": "nodemon ../server.js",
+    "client": "cd ../  && npm start"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "errorhandler": "^1.5.1",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.1.7-alpha.4",
+    "handlebars": "^4.7.6",
+    "mongodb": "^3.5.9",
+    "morgan": "^1.10.0"
+  }
+
+}

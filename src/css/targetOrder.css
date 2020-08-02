@@ -1,0 +1,78 @@
+* {
+    font-size: 18px;
+    /*border: 1px solid black;*/
+    margin: 0;
+    padding: 0;
+}
+
+#orderQuantity {
+    width: 5rem;
+    
+}
+
+#dataCells {
+    margin-top: .5em;
+    width: 32.8rem !important;
+    height: 4rem;
+    padding-top: .25rem;
+    border: 1px solid black;
+    box-shadow: 1px 1px;
+}
+
+#label {
+    width: 80%;
+    margin-top: 8em;
+    border-right: 1px solid black;
+    text-shadow: 1px 0;
+    
+}
+
+#label2 {
+    width: 25rem;
+    height: 4rem;
+    vertical-align: middle;
+    border-right: 1px solid black;
+    text-shadow: 1px 0;
+}
+
+#employeename {
+    width: 33%;
+}
+
+#label12 {
+    width: 13rem;
+    border-right: 1px solid black;
+    text-shadow: 1px 0;
+}
+
+#select {
+    width: 10%;
+    padding-left: .5rem;
+    padding-top: 1.5rem;
+}
+
+#radio2 {
+    padding-left: .8rem;
+    
+}
+
+#radio12 {
+    padding-left: .6rem;
+}
+
+#notes {
+    width: 30.25rem;
+    height: 5rem;
+}
+
+#radioDiv2 {
+    vertical-align: middle;
+    padding-top: 1.5rem;
+    float: right;  
+}
+
+#radioDiv12 {
+    vertical-align: middle;
+    padding-top: 1.5rem;
+    float: right;  
+}
