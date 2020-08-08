@@ -7,9 +7,12 @@ let { transporter, mailOptions, receiver, message } = require('../src/config/mai
 let { options } = require('../src/config/html')
 const NewHire = require('../src/Model/newhireModel');
 const Store = require('../src/Model/Stores');
+const DepartmentModel = require('../src/Model/departmentModel');
+
 newhireRouter.use(formidable({ uploadDir: './uploads/'}));
-let date_ob = new Date();
+
 // current date
+let date_ob = new Date();
 // adjust 0 before single digit date
 let day = ("0" + date_ob.getDate()).slice(-2);
 // current month
@@ -28,43 +31,44 @@ newhireRouter.get('/stores/:id', (req, res) => {
     )
 });
 
-newhireRouter.post('/', (req, res) => {
+newhireRouter.post('/', formidable(), async (req, res) => {
+
     const { firstName, middleName, dm, firstLast, firstDay, dob, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn } = req.fields;
     const { file1, file2, file3 } = req.files;
-    fs.mkdir(`../../uploads/images/newhires/${firstName} ${firstLast}`, (err) => {
-        if (err) {
-            console.log(err);
-        }
-        console.log('Folder created successfully!');
-    })
-    fs.rename(file1.path, `../../uploads/images/newhires/${firstName} ${firstLast}/${file1.name}`, (err) => {
-        if (err) {
-            console.log('File couldn\'t be moved!');
-        }
-    })
-    fs.rename(file2.path, `../../uploads/images/newhires/${firstName} ${firstLast}/${file2.name}`, (err) => {
-        if (err) {
-            console.log('File couldn\'t be moved!');
-        }
-    })
-    fs.rename(file3.path, `../../uploads/images/newhires/${firstName} ${firstLast}/${file3.name}`, (err) => {
-        if (err) {
-            console.log('File couldn\'t be moved!');
-        }
-    })
+    const receiver = await DepartmentModel.findOne({ department: 'Human Resources'});
+
+    try {
+        await fs.mkdir(`../../uploads/images/newhires/${firstName} ${firstLast}`, (err) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log('Folder created successfully!');
+        })
+        await fs.rename(file1.path, `../../uploads/images/newhires/${firstName} ${firstLast}/${file1.name}`, (err) => {
+            if (err) {
+                console.log('File couldn\'t be moved!');
+            }
+        })
+        await fs.rename(file2.path, `../../uploads/images/newhires/${firstName} ${firstLast}/${file2.name}`, (err) => {
+            if (err) {
+                console.log('File couldn\'t be moved!');
+            }
+        })
+        await fs.rename(file3.path, `../../uploads/images/newhires/${firstName} ${firstLast}/${file3.name}`, (err) => {
+            if (err) {
+                console.log('File couldn\'t be moved!');
+            }
+        })
+    } catch(err) {
+        console.log(err);
+    }
     
 
 
     let pdfFile = `Employee-${firstName}-${firstLast} ${secondLast}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
 
-
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
     content = `<html>
     <head>
     <style>
@@ -295,16 +299,18 @@ newhireRouter.post('/', (req, res) => {
         return console.log(err);
         }
      });
+
      const message = `<p>Hello HR team, You have a New Hire Information for <strong>${firstName} ${middleName} ${firstLast} ${secondLast} </strong>assigned to the account <strong>${location}</strong><br /> Please process the information and send out the employee PIN number ASAP. Thanks </p>
      <p> </p>
      <p><strong>${dm}</strong></p>
      <p> </p>`
-   //Sending Mail
+   
+     //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: `New Hire request for employee ${firstName} ${firstLast} ${secondLast}`, // Subject line
-    html: message, // html body
+    html: `${receiver.department} ${message}`, // html body
     attachments: [
         {
         filename: pdfFile,

@@ -7,6 +7,8 @@ const fs = require('fs');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 let Uniform = require('../src/Model/uniformModel');
+let DepartmentModel = require('../src/Model/departmentModel');
+
 uniformRouter.use(bodyParser.json());
 uniformRouter.use(bodyParser.urlencoded({extended: false}));
 
@@ -25,13 +27,14 @@ uniformRouter.get('/', (req, res) => {
     
 });
 
-uniformRouter.post('/', (req, res) => {
+uniformRouter.post('/', async (req, res) => {
   const { employeeNum, firstName, lastName, address, apt, city, state, zip, cost, quantity, size, date } = req.body;
-
+  const receiver = await DepartmentModel.findOne({ department: 'Human Resources'});
     let base64String = req.body.sig;
     // Remove header
-    var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+    let base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
     let base64Image = new Buffer.from(base64Data, 'base64');
+
     fs.mkdir(`../../uploads/signatures/${employeeNum}`, (err) => {
       if (err) {
           console.log(err);
@@ -290,21 +293,22 @@ uniformRouter.post('/', (req, res) => {
       return console.log(err);
       }
    });
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
+
    message = `Please process this uniform order for employee ${employeeNum} ${firstName} ${lastName}`;
 
    //Sending Mail
+   try { 
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: pdfFile, // Subject line
-    html: content, // html body
+    html: `${receiver.department} ${message} <br /> ${content}`, // html body
     attachments: {
         filename: `${pdfFile}`,
         path: `../../uploads/pdf/uniform/${pdfFile}`
     },
 };
-    try { 
+    
         transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
             console.log(err)

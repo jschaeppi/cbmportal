@@ -7,11 +7,14 @@ const fs = require('fs');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 const PTO = require('../src/Model/ptoModel');
+let DepartmentModel = require('../src/Model/departmentModel');
 
 ptoRouter.use(bodyParser.json());
 ptoRouter.use(bodyParser.urlencoded({ extended: false }));
-let date_ob = new Date();
+
 // current date
+let date_ob = new Date();
+
 // adjust 0 before single digit date
 let day = ("0" + date_ob.getDate()).slice(-2);
 // current month
@@ -20,33 +23,36 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 let year = date_ob.getFullYear();
 
 
-ptoRouter.post('/', (req, res) => {
+ptoRouter.post('/', async (req, res) => {
     const { employeeName, employeeNum, dm, departments, hours, approval, comments } = req.body;
     const absencefrom = moment(req.body.absencefrom).format('L');
     const absenceto = moment(req.body.absenceto).format('L');
+
+    const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
+    
     let base64String = req.body.sig;
     // Remove header
     var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
     let base64Image = new Buffer.from(base64Data, 'base64');
-    fs.mkdir(`../../uploads/signatures/ptoSig/${employeeNum}`, (err, result) => {
+    
+        fs.mkdir(`../../uploads/signatures/ptoSig/${employeeNum}`, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else if(result) {
+            console.log('Folder created successfully!');
+        }
+        })
+        fs.writeFile(`../../uploads/signatures/ptoSig/${employeeNum}/${month}-${day}-${year}.png`, base64Image, (err) => {
         if (err) {
             console.log(err);
-        } else if(result) {
-        console.log('Folder created successfully!');
-    }
-    })
-    fs.writeFile(`../../uploads/signatures/ptoSig/${employeeNum}/${month}-${day}-${year}.png`, base64Image, (err) => {
-      if (err) {
-        console.log(err);
-      }
-      console.log('File succeeded.');
-    });
+        }
+        console.log('File succeeded.');
+        });
 
     let pdfFile = `Employee-${employeeNum}-${employeeName}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
 
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
     content = `<html>
     <head>
     <style>
@@ -282,6 +288,7 @@ ptoRouter.post('/', (req, res) => {
         return console.log(err);
         }
      });
+
      const message = `<p><span style="font-size: 12pt;">Attention Payroll Department, Attached is a PTO Form for the employee <strong>${employeeName} #</strong><strong>${employeeNum}.</strong></span></p>
      <p><span style="font-size: 12pt;">Please Process this form ASAP.</span></p>
      <p><span style="font-size: 12pt;">Thank you for your cooperation.</span></p>
@@ -291,24 +298,25 @@ ptoRouter.post('/', (req, res) => {
      <p> </p>
      <hr />
      <p>PTO Form submitted on <em>${month}/${day}/${year}</em></p>`
-   //Sending Mail
+  
+     //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: `PTO request for employee ${employeeNum} ${employeeName}`, // Subject line
-    html: message, // html body
+    html: `${message}`, // html body
     attachments: {
         filename: pdfFile,
         path: `../../uploads/pdf/pto/${pdfFile}`
     },
 };
-    try { 
+    try {
         transporter.sendMail(mailOptions,(err, info) => {
-        if (err) {
-            console.log(err)
-        } else {
-        }
-    });
+            if (err) {
+                console.log(err)
+            } else {
+            }
+        });
     
     } catch(err) {
     console.log(err);

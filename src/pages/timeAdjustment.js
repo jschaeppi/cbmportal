@@ -1,9 +1,20 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import SignatureCanvas from 'react-signature-canvas'
 import '../css/timeAdjustment.css';
 import { useHistory } from 'react-router-dom';
-function TimeAdjustment() {
+import CbmContext from '../context/cbm/cbmContext';
+const TimeAdjustment = () => {
 
+    const cbmContext = useContext(CbmContext);
+    const { loginStatus, isAuthenticated, loading } = cbmContext;
+    const { userFirst, userLast } = cbmContext.user;
+
+    useEffect(() => {
+        if (!isAuthenticated && !loading) {
+        loginStatus();
+        }
+        // eslint-disable-next-line
+    }, [])
     const history = useHistory();
     const [adjustment, addTimeAdjustment] = useState([
         {
@@ -13,7 +24,6 @@ function TimeAdjustment() {
             date: '',
             employeeName: '',
             employeeNum: '',
-            dm: '',
             noteAdjustment: '',
         }
     ]);
@@ -21,38 +31,23 @@ function TimeAdjustment() {
     const managerPad = useRef({});
     const employeePad = useRef({});
     const handleInputChange = (e, index) => {
+        const id = e.target.id;
+        const list = [...adjustment];
         const incIndex = index + 1;
         if (e.target.id === `In ${incIndex}`) {
-        const list = [...adjustment];
-        list[index].in = e.target.value;
-        addTimeAdjustment(list); 
+            list[index].in = e.target.value;
+            addTimeAdjustment(list); 
         } else if (e.target.id === `Out ${incIndex}`) {
-            const list = [...adjustment];
             list[index].out = e.target.value;
             addTimeAdjustment(list); 
         } else if (e.target.id === `Break ${incIndex}`) {
-            const list = [...adjustment];
             list[index].break = e.target.value;
             addTimeAdjustment(list); 
         } else if (e.target.id === `Date ${incIndex}`) {
-            const list = [...adjustment];
             list[index].date = e.target.value;
             addTimeAdjustment(list); 
-        } else if (e.target.id === 'dm') {
-            const list = [...adjustment];
-            list[0].dm = e.target.value;
-            addTimeAdjustment(list); 
-        }else if (e.target.id === 'employeeName') {
-            const list = [...adjustment];
-            list[0].employeeName = e.target.value;
-            addTimeAdjustment(list); 
-        } else if (e.target.id === 'timeEmployeeNum') {
-            const list = [...adjustment];
-            list[0].employeeNum = e.target.value;
-            addTimeAdjustment(list); 
-        } else if (e.target.id === 'noteAdjustment') {
-            const list = [...adjustment];
-            list[0].noteAdjustment = e.target.value;
+        } else {
+            list[0][id] = e.target.value;
             addTimeAdjustment(list); 
         }
     }
@@ -74,8 +69,13 @@ function TimeAdjustment() {
         addTimeAdjustment(list)
     }
 
-    const clear = (e) => {
+    const clearManager = (e, ref) => {
+        e.preventDefault();
         managerPad.current.clear();
+    }
+
+    const clearEmployee = (e) => {
+        e.preventDefault();
         employeePad.current.clear();
     }
 
@@ -87,7 +87,7 @@ function TimeAdjustment() {
                 in: adjustment[0].in,
                 break: adjustment[0].break,
                 out: adjustment[0].out,
-                dm: adjustment[0].dm, 
+                dm: `${userFirst} ${userLast}`, 
                 employeeName: adjustment[0].employeeName, 
                 employeeNum: adjustment[0].employeeNum,
                 noteAdjustment: adjustment[0].noteAdjustment,
@@ -100,7 +100,7 @@ function TimeAdjustment() {
                 in: item.in,
                 break: item.break,
                 out: item.out,
-                dm: adjustment[0].dm, 
+                dm: `${userFirst} ${userLast}`, 
                 employeeName: adjustment[0].employeeName, 
                 employeeNum: adjustment[0].employeeNum,
                 noteAdjustment: adjustment[0].noteAdjustment,
@@ -138,22 +138,10 @@ function TimeAdjustment() {
                         </div>
                         <div>
                         <label htmlFor="employeenum">Employee #:</label>
-                        <input type="number" id="timeEmployeeNum" name="employeeNum" maxLength="6"required title="Please enter the required information" onChange={e => handleInputChange(e)}/>
+                        <input type="number" id="employeeNum" name="employeeNum" maxLength="6"required title="Please enter the required information" onChange={e => handleInputChange(e)}/>
                         </div>
                     </div>
-                <br /><br />
-                <div className="wrapper1">
-                    <label htmlFor="dm">DM:</label><br />
-                    <select id="dm" name="dm" required title="Please select an option" onChange={e => handleInputChange(e)}>
-                    <option>Select a DM</option>
-                    <option value="Ausencio Cruz">Ausencio Cruz</option>
-                    <option value="Cruz Hernandez">Cruz Hernandez</option>
-                    <option value="Daniel De la Paz">Daniel De la Paz</option>
-                    <option value="Lino Huerta">Lino Huerta</option>
-                    <option value="Jose Lopez">Jose Lopez</option>
-                    <option value="Zach Harlow">Zach Harlow"</option>
-                    </select>
-                </div><br /><br />
+                    <br /><br />
                 <div className="wrapper1">
                 { adjustment.map((row, index) => { 
                         const incIndex = index + 1;
@@ -189,12 +177,12 @@ function TimeAdjustment() {
                     <div id="signPad">
                         <label >Employee Signature:</label><br />
                         <SignatureCanvas clearButton="true" penColor='black' canvasProps={{backgroundcolor: 'rgba(201, 200, 197, 1)', width: 400, height: 100, className: 'sigPad'}} ref={employeePad} />
-                    <button id="sigClear" onClick={e => clear(e)} type="button ">Clear</button>
+                    <button id="sigClear" onClick={e => clearEmployee(e)} type="button ">Clear</button>
                     </div>
                     <div id="signPad">
                         <label >Manager Signature:</label><br />
                         <SignatureCanvas clearButton="true" penColor='black' canvasProps={{backgroundcolor: 'rgba(201, 200, 197, 1)', width: 400, height: 100, className: 'sigPad'}} ref={managerPad} />
-                    <button id="sigClear" onClick={e => clear(e)} type="button ">Clear</button>
+                    <button id="sigClear" onClick={e => clearManager(e)} type="button ">Clear</button>
                     </div>
                 </div>
                     <br /><br /><br />

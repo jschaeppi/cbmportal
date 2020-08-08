@@ -6,11 +6,14 @@ const pdf = require('html-pdf');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 const Term = require('../src/Model/termModel');
+const DepartmentModel = require('../src/Model/departmentModel');
 
 ncnsRouter.use(bodyParser.json());
 ncnsRouter.use(bodyParser.urlencoded({ extended: false }));
-let date_ob = new Date();
+
 // current date
+let date_ob = new Date();
+
 // adjust 0 before single digit date
 let day = ("0" + date_ob.getDate()).slice(-2);
 // current month
@@ -19,21 +22,17 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 let year = date_ob.getFullYear();
 
 
-ncnsRouter.post('/', (req, res) => {
+ncnsRouter.post('/', async (req, res) => {
+    console.log(req.body);
     const { firstLast, firstName, employeeNum, secondLast, dm, rehire, norehireReason, quitReason } = req.body;
     const lastWorked = moment(req.body.lastWorked).format('L');
-
+    console.log(rehire)
+    const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
 
     let pdfFile = `Employee-${employeeNum}-${firstName} ${firstLast} ${secondLast}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
 
-
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
     content = `
     <head>
     <style>
@@ -198,7 +197,7 @@ ncnsRouter.post('/', (req, res) => {
 <tbody>
 <tr style="height: 43px;">
 <td style="width: 70%; border-bottom: 1px solid black; vertical-align: bottom; height: 43px;">&nbsp; &nbsp; &nbsp;&nbsp;
-<div class="DMOSsign">{Manager:value}</div>
+<div class="DMOSsign">${dm}</div>
 </td>
 <td style="width: 30%; border-bottom: 1px solid black; vertical-align: bottom; height: 43px;">&nbsp;${month}/${day}/${year}</td>
 </tr>
@@ -235,9 +234,9 @@ ncnsRouter.post('/', (req, res) => {
    //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: `Termination request for employee ${employeeNum} ${firstName} ${firstLast} ${secondLast}`, // Subject line
-    html: message, // html body
+    html: `${receiver.department} ${message}`, // html body
     attachments: {
         filename: pdfFile,
         path: `../../uploads/pdf/term/${pdfFile}`

@@ -1,15 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import '../css/bonus.css';
 //import SignatureCanvas from 'react-signature-canvas'
 import SigPad from '../Components/sigPad';
-import DM from '../Components/DM';
+import CbmContext from '../context/cbm/cbmContext';
 
 function Bonus()  {
-
+    const cbmContext = useContext(CbmContext);
+    const { loginStatus, getStores, stores, isAuthenticated, loading } = cbmContext;
+    const { userFirst, userLast, district} = cbmContext.user;
     const history = useHistory();
-    const [storeList, setStoreList] = useState([]);
-
+    
+    useEffect(() => {
+        if (!isAuthenticated && !loading) {
+        loginStatus();
+        }
+        getStores(district);
+        // eslint-disable-next-line
+    }, [district])
     let [formData, setFormData] = useState([
         {
             bonus: '',
@@ -24,13 +32,6 @@ function Bonus()  {
     ])
     
     const managerPad = useRef({});
-
-    const dm = formData[0].dm;
-    useEffect(() => {
-        fetch(`http://portal.cbmportal.com:5000/api/bonus/stores/${dm}`)
-        .then(res => res.json())
-        .then(data => setStoreList(data) ) 
-    }, [dm])
 
     const clearPad = (e) => {
         e.preventDefault();
@@ -74,7 +75,7 @@ function Bonus()  {
         let rows = [];
         if (formData.length === 1) {
             rows.push({
-                dm: formData[0].dm, 
+                dm: `${userFirst} ${userLast}`, 
                 bonus: formData[0].bonus,
                 date: formData[0].date,
                 location: formData[0].location, 
@@ -86,7 +87,7 @@ function Bonus()  {
         } else {
             formData.map((item, i) => {
                 return rows.push({
-                    dm: formData[0].dm, 
+                    dm:`${userFirst} ${userLast}`, 
                     bonus: item.bonus,
                     date: item.date,
                     location: item.location, 
@@ -133,11 +134,6 @@ function Bonus()  {
                                 </div>
                             </div>
                             <br /><br />
-                            <div className="wrapper1">
-                                <label htmlFor="dm">DM:</label><br />
-                                <DM handleChange={e => handleChange(e)} />
-                            </div>
-                            <br /><br />
                         
                             { formData.map((row, index) => { 
                                 const incIndex = index + 1;
@@ -155,7 +151,7 @@ function Bonus()  {
                                                 <div>
                                                     <label htmlFor={locationName}>{locationName}</label><br />
                                                     <select name={locationName} id="stores" required title="Please select an option" onChange={e => handleChange(e, incIndex)}>
-                                                        {storeList.map((store, i) => {
+                                                        {stores.map((store, i) => {
                                                         return <option key={i} name={locationName} id="store">{store.store}</option>
                                                         })}
                                                     </select>

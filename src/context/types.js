@@ -1,0 +1,12 @@
+export const GET_USER = 'GET_USER';
+export const GET_STORES = 'GET_STORES';
+export const GET_AUTH = 'GET_AUTH';
+export const AUTH_ERROR = 'AUTH_ERROR';
+export const LOGIN_ERROR = 'LOGIN_ERROR';
+export const GET_LOGOUT = 'GET_LOGOUT';
+export const ERROR_STORES = 'ERROR_STORES';
+export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+export const SET_LOADING = 'SET_LOADING';
+export const GET_STATES = 'GET_STATES';
+export const GET_CITIES = 'GET_CITIES';
+export const ERROR_STATES = 'ERROR_STATES';

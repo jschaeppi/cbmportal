@@ -1,38 +1,45 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect, useContext, useRef} from 'react'
+import {useHistory} from 'react-router-dom';
 import '../css/PTO.css';
-import DM from '../Components/DM';
 import SignatureCanvas from 'react-signature-canvas'
-export class PTO extends Component {
-    constructor() {
-        super();
-        this.state = {
-            employeeNum: '',
-            employeeName: '',
-            dm: '',
-            departments: '',
-            absencefrom: '',
-            absenceto: '',
-            hours: '',
-            approval: 'Approved',
-            comments: '',
+import CbmContext from '../context/cbm/cbmContext';
+const PTO = () => {
+    
+    const cbmContext = useContext(CbmContext);
+    const { loginStatus, isAuthenticated, loading } = cbmContext;
+    const { userFirst, userLast } = cbmContext.user;
+    const history = useHistory();
+    const managerPad = useRef({});
+    useEffect(() => {
+        if (!isAuthenticated && !loading) {
+        loginStatus();
         }
-        this.handleChange = this.handleChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-    }
-
-    handleChange = (e) => {
+        // eslint-disable-next-line
+    }, [])
+    const [data, setData] = useState([{
+        employeeNum: '',
+        employeeName: '',
+        dm: `${userFirst} ${userLast}`,
+        departments: '',
+        absencefrom: '',
+        absenceto: '',
+        hours: '',
+        approval: 'Approved',
+        comments: '',
+    }])
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        this.setState({
-            [name]: value
-        })
+        const list = [...data];
+           list[0][name] = value;
+           setData(list);
     }
 
-    clearPad(e) {
+    const clearPad = (e) => {
         e.preventDefault();
-        this.sigPad.clear();
+        managerPad.current.clear();
     }
 
-    onSubmit = (e) => {
+    const onSubmit = (e) => {
         e.preventDefault();
             fetch('http://portal.cbmportal.com:5000/api/pto/', {
                 method: 'POST',
@@ -40,72 +47,69 @@ export class PTO extends Component {
                     'content-type': 'application/json'
                 },
                 body: JSON.stringify({
-                    employeeNum: this.state.employeeNum,
-                    employeeName: this.state.employeeName,
-                    dm: this.state.dm,
-                    departments: this.state.departments,
-                    absencefrom: this.state.absencefrom,
-                    absenceto: this.state.absenceto,
-                    hours: this.state.hours,
-                    approval: this.state.approval,
-                    comments: this.state.comments,
-                    sig: this.sigPad.getTrimmedCanvas().toDataURL('image/png'),
+                    employeeNum: data[0].employeeNum,
+                    employeeName: data[0].employeeName,
+                    dm: data[0].dm,
+                    departments: data[0].departments,
+                    absencefrom: data[0].absencefrom,
+                    absenceto: data[0].absenceto,
+                    hours: data[0].hours,
+                    approval: data[0].approval,
+                    comments: data[0].comments,
+                    sig: managerPad.current.getTrimmedCanvas().toDataURL('image/png'),
                 })
             })
             .then(res => res.json())
             .then( data => {
-                if (data.message) this.props.history.push('/success');
+                if (data.message) history.push('/success');
             })
             .catch(err => console.log(err))
         }
 
-    render() {
         return (
             <div className="container">
                 <h1 className="mainHeading">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>PTO</span></h1><br />
-                <form onSubmit={this.onSubmit} className="mainForm">
+                <form onSubmit={e => onSubmit(e)} className="mainForm">
                     <div className="wrapper1">
                         <div>
                             <label forhtml="employeeNum">Employee #:</label>
-                            <input type="number" id="ptoemployeeNum" name="employeeNum" maxLength="6" required title="Please enter the required information" onChange={this.handleChange}/>
+                            <input type="number" id="ptoemployeeNum" name="employeeNum" maxLength="6" required title="Please enter the required information" onChange={e => handleChange(e)}/>
                         </div>
                         <div>
                             <label forhtml="employeeName">Employee Name</label>
-                            <input type="text" id="employeeName" name="employeeName" required title="Please enter the required information" onChange={this.handleChange}/>
+                            <input type="text" id="employeeName" name="employeeName" required title="Please enter the required information" onChange={e => handleChange(e)}/>
                         </div>
                     </div>
                     <br /><br />
                     <div className="wrapper1">
                         <div>
                             <label forhtml="departments">Departments:</label>
-                            <select id="departments" name="departments" required title="Please select an option" onChange={this.handleChange}>
+                            <select id="departments" name="departments" required title="Please select an option" onChange={e => handleChange(e)}>
                                 <option value="Service">Service</option>
                                 <option value="Operations">Operations</option>
                                 <option value="HR">HR</option>
                                 <option value="Maintenance">Maintenance</option>
                             </select>
                         </div>
-                        <div>
-                            <label forhtml="dm">DM:</label><br />
-                            <DM handleChange={this.handleChange} />
-                        </div>
                     </div>
                     <br /><br />
                     <div className="wrapper1">
                         <div>
                             <label forhtml="absencefrom">Absence From:</label><br />
-                            <input type="date" id="absencefrom" name="absencefrom" required title="Please enter the required information" onChange={this.handleChange} />
+                            <input type="date" id="absencefrom" name="absencefrom" maxLength="8" pattern="(?:(?:0[1-9]|1[0-2])[\/\\-. ]?(?:0[1-9]|[12][0-9])|(?:(?:0[13-9]|1[0-2])[\/\\-. ]?30)|(?:(?:0[13578]|1[02])[\/\\-. ]?31))[\/\\-. ]?(?:19|20)[0-9]{2}
+" required title="Please enter the required information" onChange={e => handleChange(e)} />
                         </div>
                         <div>
                             <label forhtml="absenceto">Absence To:</label><br />
-                            <input type="date" id="absenceto" name="absenceto" required title="Please enter the required information" onChange={this.handleChange} />
+                            <input type="date" id="absenceto" name="absenceto" maxLength="8" pattern="(?:(?:0[1-9]|1[0-2])[\/\\-. ]?(?:0[1-9]|[12][0-9])|(?:(?:0[13-9]|1[0-2])[\/\\-. ]?30)|(?:(?:0[13578]|1[02])[\/\\-. ]?31))[\/\\-. ]?(?:19|20)[0-9]{2}
+" required title="Please enter the required information" onChange={e => handleChange(e)} />
                         </div>
                     </div>
                     <br /><br />
                     <div className="wrapper1" id="approval">
                         <div>
                             <label forhtml="hours">Enter hours:</label>
-                            <input type="number" step="any" id="hours" name="hours" required title="Please enter the required information" onChange={this.handleChange}></input>
+                            <input type="number" step="any" id="hours" name="hours" required title="Please enter the required information" onChange={e => handleChange(e)}></input>
                         </div>
                         <div>
                             <label >Manager Approval:</label><br />
@@ -118,8 +122,9 @@ export class PTO extends Component {
                     <br /><br />
                     <div className="wrapper1">
                         <div id="sig">
-                            <SignatureCanvas clearButton="true" penColor='black' canvasProps={{backgroundcolor: 'rgba(255, 255, 255, 1)', width: 400, height: 100, className: 'sigPad'}} ref={(ref) => { this.sigPad = ref }} />
-                            <button id="sigClear" onClick={this.clearPad.bind(this)} type="button ">Clear</button>
+                            <label >Manager Signature:</label><br />
+                            <SignatureCanvas clearButton="true" penColor='black' canvasProps={{backgroundcolor: 'rgba(201, 200, 197, 1)', width: 400, height: 100, className: 'sigPad'}} ref={managerPad} />
+                            <button id="sigClear" onClick={e => clearPad(e)} type="button ">Clear</button>
                         </div>
                     </div>
                     <br />
@@ -128,7 +133,7 @@ export class PTO extends Component {
                     <div className="wrapper1">
                         <div id="ptoCommentsDiv">
                             <label forhtml="comments">Comments:</label><br />
-                            <textarea id="ptocomments" name="comments" onChange={this.handleChange}></textarea>
+                            <textarea id="ptocomments" name="comments" onChange={e => handleChange(e)}></textarea>
                         </div>
                     </div>
                     <br />
@@ -137,7 +142,6 @@ export class PTO extends Component {
                 </form>
             </div>
         )
-    }
 }
 
 export default PTO

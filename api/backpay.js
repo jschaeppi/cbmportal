@@ -8,6 +8,7 @@ let { transporter, mailOptions, receiver, message } = require('../src/config/mai
 let { options } = require('../src/config/html')
 let Backpay = require('../src/Model/backpayModel');
 let Store = require('../src/Model/Stores');
+let DepartmentModel = require('../src/Model/departmentModel');
 backpayRouter.use(bodyParser.json());
 backpayRouter.use(bodyParser.urlencoded({extended: false}));
 
@@ -29,9 +30,9 @@ backpayRouter.get('/', (req, res) => {
     
 });
 
-backpayRouter.post('/', (req, res) => {
+backpayRouter.post('/', async (req, res) => {
+    let backpayInfo = []; 
     let rows = [];
-    let backpayInfo = [];
     let total = 0;
     let shift = 0;
     let breakTime = 0;
@@ -39,6 +40,7 @@ backpayRouter.post('/', (req, res) => {
     // Remove header
     var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
     let base64Image = new Buffer.from(base64Data, 'base64');
+    const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
     fs.mkdir(`../../uploads/signatures/backPaySig/${req.body[0].employeeNum}`, (err, result) => {
         if (err) {
             console.log(err);
@@ -75,10 +77,7 @@ backpayRouter.post('/', (req, res) => {
     let pdfFile = `Employee_${req.body[0].employeeNum}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
+ 
     let content = `<html>
     <head>
     <style>
@@ -213,7 +212,6 @@ backpayRouter.post('/', (req, res) => {
     </body>
     </html>`;
 
-  receiver = 'joseph.schaeppi@carlsonbuilding.com';
   message = 'Please process this backpay request.';
   //Create PDF
     pdf.create(content, options).toFile(`../../uploads/pdf/backpay/${pdfFile}`, function(err, res) {
@@ -226,9 +224,9 @@ backpayRouter.post('/', (req, res) => {
    //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: `Backpay request for ${req.body[0].employeeNum}`, // Subject line
-    text: message, // plain text body
+    text: `${receiver.department} ${message}`, // plain text body
     attachments: {
         filename: `${pdfFile}`,
         path: `../../uploads/pdf/backpay/${pdfFile}`
@@ -245,16 +243,6 @@ backpayRouter.post('/', (req, res) => {
     } catch(err) {
     console.log(err);
     }
-    //const bonusRow = []
-
-    //Prep for DB insertions
-    /*for (let key in req.body) {
-        if (req.body[key].bonus && req.body[key].date && req.body[key].location ) {
-            bonusRow.push(req.body[key].bonus)
-            bonusRow.push(req.body[key].date)
-            bonusRow.push(req.body[key].location)
-}
-    }*/
 
     //DB insertions
     let form = new Backpay();

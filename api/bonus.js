@@ -4,18 +4,19 @@ const bodyParser = require('body-parser');
 const pdf = require('html-pdf');
 const fs = require('fs');
 const moment = require('moment');
-let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
+let { transporter, mailOptions, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
-let Bonuses = require('../src/Model/bonusModel');
-let Store = require('../src/Model/Stores');
-receiver = 'joseph.schaeppi@carlsonbuilding.com';
+const Bonuses = require('../src/Model/bonusModel');
+const Store = require('../src/Model/Stores');
+const DepartmentModel = require('../src/Model/departmentModel');
+
 message = 'Please process this bonus request.';
 bonusRouter.use(bodyParser.json());
 bonusRouter.use(bodyParser.urlencoded({extended: false}));
 
+// current date
 let date_ob = new Date();
 
-// current date
 // adjust 0 before single digit date
 let date = ("0" + date_ob.getDate()).slice(-2);
 
@@ -25,30 +26,43 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 // current year
 let year = date_ob.getFullYear();
 
-bonusRouter.get('/stores', (req, res) => {
-    Store.find()
-    .sort( { banner: -1 })
-    .then(stores => res.json(stores));
-    
-});
-
-bonusRouter.get('/stores/:id', (req, res) => {
-    Store.find( { dm: req.params.id }, (err, result) => {
+bonusRouter.get('/stores/:district', (req, res) => {
+    const districts = req.params.district;
+    console.log(districts);
+    if (districts.length > 1) {
+        Store.find({district: {$in: districts.split(',')}}, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(result);
+                res.json(result);
+            }
+        }).sort( { district: -1})
+    } else {
+    Store.find({ district: districts }, (err, result) => {
         if (err) {
             console.log(err)
         } else {
+            console.log(result);
             res.json(result)
         }
     }
-    ).sort({ banner: -1})
+    ).sort({ district: -1})
+}
 });
-bonusRouter.post('/', (req, res) => {
+bonusRouter.post('/', async (req, res) => {
     const rows = [];
     let bonusInfo = [];
+    const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
+    
+    //acquiring signature
     let base64String = req.body[0].sig;
     // Remove header
     var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+    //converting from base64 to image
     let base64Image = new Buffer.from(base64Data, 'base64');
+    try {
+    //Make new folder for request
     fs.mkdir(`../../uploads/signatures/bonusPaySig/${req.body[0].employeeNum}`, (err, result) => {
         if (err) {
             console.log(err);
@@ -56,12 +70,18 @@ bonusRouter.post('/', (req, res) => {
         console.log('Folder created successfully!');
     }
     })
+    //Write signature to file
     fs.writeFile(`../../uploads/signatures/bonusPaySig/${req.body[0].employeeNum}/${month}-${date}-${year}.png`, base64Image, (err) => {
         if (err) {
           console.log(err);
         }
         console.log('File succeeded.');
       });
+    } catch(err) {
+        console.log(err);
+    }
+
+
     //Generating Bonuse Rows
         req.body.forEach( (item,i) => {
                 rows.push(moment(item.date).format('L'));
@@ -75,10 +95,8 @@ bonusRouter.post('/', (req, res) => {
     let pdfFile = `Employee_${req.body[0].employeeNum}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
+
+
     let content = `<head>
   <style>
   .EEsignature img{
@@ -234,9 +252,9 @@ td {
    //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: `Bonus request for ${req.body[0].employeeNum}`, // Subject line
-    text: message, // plain text body
+    text: `${receiver.department} ${message}`, // plain text body
     attachments: {
         filename: `${pdfFile}`,
         path: `../../uploads/pdf/bonus/${pdfFile}`
@@ -253,16 +271,6 @@ td {
     } catch(err) {
     console.log(err);
     }
-    const bonusRow = []
-
-    //Prep for DB insertions
-    /*for (let key in req.body) {
-        if (req.body[key].bonus && req.body[key].date && req.body[key].location ) {
-            bonusRow.push(req.body[key].bonus)
-            bonusRow.push(req.body[key].date)
-            bonusRow.push(req.body[key].location)
-}
-    }*/
 
     //DB insertions
     let form = new Bonuses();

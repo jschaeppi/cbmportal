@@ -11,6 +11,13 @@ const StoreSchema = new Schema({
         type: String,
         required: true
     }, 
+    dm: {
+        type: String,
+    },
+    district: {
+        type: String,
+        required: true
+    },
 })
 
 module.exports = Stores = mongoose.model('Stores', StoreSchema, 'Stores');

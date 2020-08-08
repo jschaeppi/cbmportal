@@ -52,6 +52,9 @@ body {
     margin-top: 2%;
 }
 
+#departments {
+    margin-left: 0;
+}
 @media screen and (min-width: 769px) and (max-width: 1024px) {
 
     #sig {
@@ -73,5 +76,9 @@ body {
         grid-row-end: 3;
         padding-right: 0;
         margin-top: 2%;
+    }
+
+    #absencefrom, #absenceto {
+        margin-left: 0;
     }
 }

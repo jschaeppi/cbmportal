@@ -1,60 +1,63 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { useHistory } from 'react-router-dom';
 import '../css/dustmop.css';
-import Stores from '../Components/Stores';
 import axios from 'axios';
-export class dustMop extends Component {
-    constructor() {
-        super();
-        this.state = {
-            stores: [],
+import CbmContext from '../context/cbm/cbmContext';
+const DustMop = () => {
+
+    const cbmContext = useContext(CbmContext);
+    const history = useHistory();
+    const { loginStatus, getStores, stores, isAuthenticated, loading } = cbmContext;
+    const { district } = cbmContext.user;
+
+    useEffect(() => {
+        if (!isAuthenticated && !loading) {
+        loginStatus();
+        }
+        getStores(district);
+        // eslint-disable-next-line
+    }, [district])
+    
+    const [data, setData] = useState([{
             employeeName: '', 
             mopsLeft: '',
             location: '',
-        }
-        this.handleChange = this.handleChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-    }
-    handleChange = (e) => {
+        }])
+
+    const handleChange = (e) => {
         const {name, value}= e.target;
-        this.setState({
-            [name]: value
-        })
+        const list = [...data];
+            list[0][name] = value;
+            setData(list);
     }
 
 
-    onSubmit = (e) => {
+    const onSubmit = (e) => {
         e.preventDefault();
-        const upload_file = document.getElementById('uploadPicture').files[0];
+        const upload_file = document.getElementById('picture').files[0];
         const formData = new FormData();
         formData.append('file', upload_file);
-        formData.append('location', this.state.location);
-        formData.append('employeeName', this.state.employeeName);
-        formData.append('mopsLeft', this.state.mopsLeft);
+        formData.append('location', data[0].location);
+        formData.append('employeeName', data[0].employeeName);
+        formData.append('mopsLeft', data[0].mopsLeft);
         axios.post('http://portal.cbmportal.com:5000/api/dustmop/', formData)
         .then( res => {
-            if (res.data.message) this.props.history.push('/success');
+            if (res.data.message) history.push('/success');
         })
         .catch(err => console.log(err))
     }
 
-
-    componentDidMount() {
-        fetch('http://portal.cbmportal.com:5000/api/dustmop/stores')
-        .then(res => res.json())
-        .then(data => this.setState({stores: data})
-        );
-    }
-
-    render() {
         return (
             <div className="container">
                 <h1 id="dustmopHeading" className="mainHeading"><span>Dustmop Request</span></h1><br />
-                    <form onSubmit={this.onSubmit} id="dustmopForm" className="mainHeading">
+                    <form onSubmit={e => onSubmit(e)} id="dustmopForm" className="mainHeading">
                         <div className="wrapper1">
                             <div>
                                 <label >Store Number:</label>
-                                <select onChange={this.handleChange} required name="location" id="storeList">
-                                    <Stores stores={this.state.stores} />
+                                <select onChange={e => handleChange(e)} required name="location" id="storeList">
+                                    {stores.map((store, i) => {
+                                        return <option>{store.store}</option>
+                                    })}
                                 </select>
                             </div>
                         </div>
@@ -62,21 +65,21 @@ export class dustMop extends Component {
                         <div className="wrapper1">
                             <div>
                                 <label htmlFor="employeename">Employee Name</label><br />
-                                <input type="text" id="employeeName" name="employeeName" required title="Please enter the required information" onChange={this.handleChange}/>
+                                <input type="text" id="employeeName" name="employeeName" required title="Please enter the required information" onChange={e => handleChange(e)}/>
                             </div>
                         </div>
                         <br /><br /> 
                         <div className="wrapper1">
                             <div>
                                 <label htmlFor="mopsLeft">Dust mops left:</label><br />
-                                <input type="number" id="mopsLeft" name="mopsLeft" required title="Please enter the required information" onChange={this.handleChange}/>
+                                <input type="number" id="mopsLeft" name="mopsLeft" required title="Please enter the required information" onChange={e => handleChange(e)}/>
                             </div>
                         </div>
                         <br /><br />
                         <div className="wrapper1">
                             <div>
                                 <label htmlFor="picture">Take Picture:</label><br />
-                                <input type="file" name="picture" id="picture" required title="Please select a file"></input>
+                                <input type="file" name="picture" id="picture" accept="image/x-png, image/jpeg" required title="Please select a file"></input>
                             </div>
                         </div>
                         <br /><br />
@@ -84,7 +87,6 @@ export class dustMop extends Component {
                     </form>
             </div>
         )
-    }
 }
 
-export default dustMop
+export default DustMop

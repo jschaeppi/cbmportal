@@ -23,7 +23,6 @@
     margin-top: 0;
 }
 #rooms select, input[type="text"] {
-    margin-top: .75rem;
     width: 80%;
 }
 
@@ -35,21 +34,57 @@
     margin-top: .75rem;
     width: 80%;
 }
+
+#checkIn, #checkOut, #PS {
+    margin-left: 0;
+}
+
+#hotelInfo > select {
+    margin-left: 0
+}
+
+#hotelStores > select {
+    margin-left: 0;
+}
 #roomNum, #peopleNum {
-    max-height: 25px;
+    margin-left: 0;
+    max-height: 25px;   
 }
 #twoQueen {
     width: 95%;
 }
 
 #hotelNotes {
-    padding-left: 4vw;
     grid-column-start: 1;
     grid-column-end: 3;
 }
 
 #hotelNotes > label {
     padding-left: 2vw;
+}
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+
+    #roomNum {
+        margin-top: 1.2rem;
+    }
+
+}
+
+@media screen and (min-width: 551px) and (max-width: 768px) {
+
+    #checkIn, #checkOut, #PS {
+        margin-left: 0;
+    }
+
+    #hotelStores > select {
+        margin-left: 0;
+    }
+
+    #hotelInfo > select {
+        margin-left: 0
+    }
+
 }
 
 @media screen and (max-width: 550px) {
@@ -63,5 +98,17 @@
 
     .wrapper1 textarea {
         width: 100%;
+    }
+
+    #checkIn, #checkOut, #PS {
+        margin-left: 0;
+    }
+
+    #hotelInfo > select {
+        margin-left: 0
+    }
+
+    #hotelStores > select {
+        margin-left: 0;
     }
 }

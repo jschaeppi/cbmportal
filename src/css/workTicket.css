@@ -66,6 +66,13 @@
     width: 80%;
 }
 
+#location {
+    margin-left: 0;
+}
+
+#workType, #storeList {
+    margin-left: 0;
+}
 @media screen and (min-width: 769px) and (max-width: 1024px) {
     #notes {
         width: 90%;

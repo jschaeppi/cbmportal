@@ -61,9 +61,14 @@
     margin-bottom: .5rem;
 }
 
+#positions, #sex, #dob, #firstday {
+    margin-left: 0;
+}
 @media screen and (max-width: 768px) {
 
-
+#dob, #firstday {
+    margin-top: .75rem;
+}
 }
 
 

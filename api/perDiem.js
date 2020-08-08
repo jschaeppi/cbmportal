@@ -7,6 +7,7 @@ let { transporter, mailOptions, receiver, message } = require('../src/config/mai
 let { options } = require('../src/config/html')
 let PerDiem = require('../src/Model/perdiemModel');
 let Store = require('../src/Model/Stores');
+let DepartmentModel = require('../src/Model/departmentModel');
 
 perdiemRouter.use(bodyParser.json());
 perdiemRouter.use(bodyParser.urlencoded({extended: false}))
@@ -29,19 +30,16 @@ perdiemRouter.get('/stores', (req, res) => {
 });
 
 
-perdiemRouter.post('/', (req, res) => {
-    const city = req.body[0].city;
-    const employeeNum = req.body[0].employeeNum;
-    const employeeName = req.body[0].employeeName;
+perdiemRouter.post('/', async (req, res) => {
+    const {city, employeeName, employeeNum, location, state, comments, dm }= req.body[0];
     const firstNight = moment(req.body[0].firstNight).format('L');
     const lastNight = moment(req.body[0].lastNight).format('L');
     const arrivalDate = moment(req.body[0].arrivalDate).format('L');
     const departureDate = moment(req.body[0].departureDate).format('L');
-    const location = req.body[0].location;
-    const state = req.body[0].state;
     const rows = [];
     const perDiemInfo = [];
-    const comments = req.body[0].comments;
+    const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
+
     let pdfFile = `PerDiem-Request-${employeeName}-${employeeNum}-${month}-${date}-${year}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
@@ -115,7 +113,7 @@ perdiemRouter.post('/', (req, res) => {
 </tr>
 <tr>
 <td style="border: 2px solid black; padding:3px;text-align: left; font-weight: bold;" colspan="2">DISTRICT MANAGER</td>
-<td style="border: 2px solid black; padding:3px;text-align: center; background: yellow;font-size:90%;" colspan="4">{fullName}</td>
+<td style="border: 2px solid black; padding:3px;text-align: center; background: yellow;font-size:90%;" colspan="4">${dm}</td>
 </tr>
 <tr>
 <td style="background: lightgray; font-height: 120%; font-weight: bold; text-align: center; border: 2px solid black;" colspan="6">JOB SITE</td>
@@ -202,20 +200,25 @@ ${perDiemInfo.join().replace(/,/g," ")}
 </table>`;
 
   //Create PDF
-  pdf.create(content, options).toFile(`../../uploads/pdf/perDiem/${pdfFile}`, function(err, res) {
-    if (err) {
-    return console.log(err);
+  try {
+    pdf.create(content, options).toFile(`../../uploads/pdf/perDiem/${pdfFile}`, function(err, res) {
+        if (err) {
+        return console.log(err);
+        }
+    });
+} catch(err) {
+    console.log(err);   
     }
- });
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
+
    message = content;
 
    //Sending Mail
+   try {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: pdfFile, // Subject line
-    html: message, // html body
+    html: `${receiver.department} ${message}`, // html body
     attachments: [
         {
         filename: `${pdfFile}`,
@@ -223,7 +226,7 @@ ${perDiemInfo.join().replace(/,/g," ")}
         },
     ]
 };
-    try { 
+     
         transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
             console.log(err)

@@ -1,8 +1,8 @@
 nav {
     background-color: #d0e1fa;
-    width: 99vw;
+    width: 96vw;
     display: grid;
-    margin: 0;
+    margin: 0 auto;
     box-sizing: border-box;
     grid-template-areas: 'logo links login';
     grid-template-columns: 10% 80% 10%;
@@ -14,9 +14,10 @@ nav {
     font-weight: bold;
     text-align: center;
     margin: 0 auto;
-    width: 100%;
+    max-width: 100%;
     font-family: Raleway, sans-serif;
     font-weight: 700;
+    
 }
 
 #mobileMenu {
@@ -39,11 +40,19 @@ nav {
     color: #F3C126;
 }
 
-.navbar li {
+.navbar > ul > li {
     display: inline;
     list-style: none;
     padding-right: 10px;
     line-height: 3em;
+    border-right: 2px solid #001694;
+    background-color: lightblue;
+    box-shadow: 2px 2px;
+    margin-left:10px;
+    padding: 0 2%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    max-width: 100%;
 }
 
 .logo_con img {
@@ -60,18 +69,31 @@ nav {
 
 #login {
     justify-content: center;
-    margin-right: 20px;
     margin-top: 2px;
+    
+    font-weight: 700;
+}
+#login > ul {
+    text-align: center;
+    margin: auto;
+    width: 100%;
+}
+
+#login > a {
+    float: none;
+    margin-left: 20%;
+    text-decoration: none;
+    text-align: center;
 }
 
 @media only screen and (min-width: 769px) and (max-width: 1024px) {
     nav {
-        margin: 0 5px;
+        margin: 0 auto;
         width: 97vw;
         display: grid;
         box-sizing: border-box;
         grid-template-areas: 'logo links login';
-        grid-template-columns: 20% 70% 10%;
+        grid-template-columns: 20% 60% 20%;
     
     }
 
@@ -96,23 +118,71 @@ nav {
         align-content: center;
         justify-content: center;
     }
+
 }
 
 @media only screen and (min-width: 551px) and (max-width: 768px) {
     nav {
         background-color: #d0e1fa;
-        width: 94vw;
+        width: 96vw;
         display: grid;
         margin: 0 7px;
         box-sizing: border-box;
-        grid-template-areas: 'logo links login';
-        grid-template-columns: 20% 70% 10%;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas: 'links logo ';
     
     }
 
-    .logo_con img {
+    #fullMenu {
+        display: none;
+    }
+
+    #mobileLinks {
+        z-index:1000;
+        width: 450px;
+        float: left;
+        animation: 1s ease-in;
+        margin-top: 10px;
+    }
+
+    #mobileLinks > ul > li > a {
+        text-decoration: none;
+    }
+
+    #mobileLinks > ul > li {
+        list-style: none;
+        font-weight: 700;
+        margin-top: 3px;
+        text-align: left;
+        background-color: lightblue;
+        width: 91vw;
+        
+    }
+
+    #mobileMenu {
+        display: block;
+        width: 40px;
+        
+    }
+
+    #mobileMenu > button {
         width: 100%;
-        height: auto;
+        height: 41px;
+        border: none;
+        border-bottom: none;
+        border-radius: 0px;
+        box-shadow: none;
+        background-color: #d0e1fa;
+        margin: 0;
+        cursor: grabbing;
+        
+    }
+
+    .logo_con img {
+        width: 80px;
+        height: 40px;
+        float: right;
+
         
     }
 
@@ -122,9 +192,14 @@ nav {
         padding-right: 5px;
     }
 
-    #login {
-        text-align: center;
-        float: right;
+    #login > a {
+        margin-left: 0;
+    }
+
+   #login {
+        display: none;
+        float: left;
+        
     }
 }
 
@@ -156,14 +231,15 @@ nav {
         margin-top: 10px;
     }
 
-    #mobileNavLinks > li > a {
+    #mobileLinks > ul > li > a {
         text-decoration: none;
     }
 
-    #mobileNavLinks > li {
+    #mobileLinks > ul > li {
         list-style: none;
         font-weight: 700;
         margin-top: 3px;
+        text-align: left;
         background-color: lightblue;
         width: 91vw;
         
@@ -172,7 +248,6 @@ nav {
     #mobileMenu {
         display: block;
         width: 40px;
-        float: right;
         
     }
 
@@ -204,6 +279,7 @@ nav {
     #logo {
         float: none;
         display: inline-block;
+        
     }
 
     #logo img{
@@ -212,7 +288,11 @@ nav {
 
     #login {
         display: none;
-        float: none;
+        float: left;
         
+    }
+
+    a {
+        text-align: left;
     }
 }

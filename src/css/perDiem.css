@@ -3,6 +3,10 @@ button {
     margin: 0 1rem;
 }
 
+.mileageDate {
+    margin-top: .8rem;
+}
+
 #location {
     width: 80%;
 }
@@ -20,10 +24,6 @@ button {
     margin: 0 0 0 9rem;
 }
 
-#backPayAddButton, #backPayRemoveButton {
-    border-radius: .33em;
-}
-
 #mileageEntries {
     margin-top: 1rem;
     border: 1px solid black;
@@ -34,13 +34,14 @@ button {
 
 #mileageEntries select {
     width: 80%;
+    margin: .8rem 0 0 0;
 }
 
 #rtowControl {
     margin-left: 1.6rem;
 }
 
-#mileageEntries.input[type="radio"] {
+#mileageEntries input[type="radio"] {
 margin-left: 1px;
 }
 
@@ -53,7 +54,7 @@ margin-left: 1px;
 #mileage input[type="date"] {
     width: 80%;
 }
-#first_hotel, #last_hotel, #arrival, #departure {
+#first_hotel, #last_hotel, #arrival, #departure, #city, #state {
     width: 80%;
 }
 
@@ -72,3 +73,51 @@ margin-left: 1px;
     box-shadow: 2px 2px;
     width: 29.2rem;
 }*/
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+
+ #mileage > input[type="date"] {
+     margin-top: .8rem;
+ }   
+
+ #mileageEntries > button {
+     margin-left: 1.5rem;
+ }
+}
+
+@media screen and (min-width: 551px) and (max-width: 768px) {
+
+    #firstNight, #lastNight, #arrivalDate, #departureDate {
+        margin-left: 0;
+    }
+
+    #mileageEntries > button {
+        margin-left: 1.5rem;
+    }
+
+    #mileage > input[type="date"] {
+        margin-left: 0;
+    }  
+
+    #lastNight {
+        margin-top: 1.2rem;
+    }
+
+    #commentsDiv {
+        padding-left: 2rem;
+    }
+
+    
+}
+
+@media screen and (max-width: 550px) {
+
+    #commentsDiv { 
+        padding-left: 2rem;
+        width: 90%;
+    }
+
+    #mileageEntries > button {
+        margin-left: 1.5rem;
+    }
+}

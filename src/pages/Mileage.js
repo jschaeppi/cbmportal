@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {useHistory} from 'react-router-dom';
 import '../css/mileage.css';
+import CbmContext from '../context/cbm/cbmContext';
+
 function Mileage() {
 
-
+    const cbmContext = useContext(CbmContext);
+    const { loginStatus, loading, isAuthenticated, getStores, stores } = cbmContext;
+    const { district, userFirst, userLast } = cbmContext.user;
     const history = useHistory();
-    const [storeList, setStoreList] = useState([]);
     const [mileage, addMileage] = useState([
         {
             mileageDate: '',
@@ -18,18 +21,13 @@ function Mileage() {
         }
     ]);
     
-    const dm = mileage[0].dm;
     useEffect(() => {
-        if (dm === '') {
-            fetch(`http://portal.cbmportal.com:5000/api/mileage/stores`)
-            .then(res => res.json())
-            .then(data => setStoreList(data) ) 
-        } else {
-        fetch(`http://portal.cbmportal.com:5000/api/mileage/stores/${dm}`)
-        .then(res => res.json())
-        .then(data => setStoreList(data) ) 
+        if (!isAuthenticated && !loading) {
+        loginStatus();
         }
-    }, [dm])
+        getStores(district);
+        // eslint-disable-next-line
+    }, [district])
 
     const handleInputChange = (e, index) => {
         const {id, value} = e.target;
@@ -72,7 +70,7 @@ function Mileage() {
         let rows = [];
         if (mileage.length === 1) {
             rows.push({
-                dm: mileage[0].dm, 
+                dm: `${userFirst} ${userLast}`, 
                 mileageDate: mileage[0].mileageDate,
                 starting: mileage[0].starting,
                 destination: mileage[0].destination,
@@ -86,7 +84,7 @@ function Mileage() {
                     mileageDate: item.mileageDate,
                     starting: item.starting,
                     destination: item.destination, 
-                    dm: mileage[0].dm, 
+                    dm: `${userFirst} ${userLast}`, 
                     employeeName: mileage[0].employeeName, 
                     employeeNum: mileage[0].employeeNum,
                     comments: mileage[0].comments
@@ -125,15 +123,6 @@ function Mileage() {
                         </div>
                         <br /><br />
                         <div className="wrapper1">
-                                <label htmlFor="dm">DM:</label><br />
-                                <select id="dm" name="dm" required title="Please enter the required information" onChange={e => handleInputChange(e)}>
-                                    <option value="">Select DM</option>
-                                    <option value="Daniel De la Paz">Daniel De la Paz</option>
-                                    <option value="Lino Huerta">Lino Huerta</option>
-                                </select>
-                        </div>
-                        <br /><br />
-                        <div className="wrapper1">
                             <div id="mileageNotes">
                                 <label>Comments:</label> <br />
                                 <textarea required title="Please enter the required information" id="comments" onChange={e => handleInputChange(e)}></textarea>
@@ -152,12 +141,12 @@ function Mileage() {
                                                 <label htmlFor={startingPoint}>{startingPoint}</label>
                                                 <label htmlFor={destinationPoint}>{destinationPoint}</label>
                                                 <input key={mileageDate} type="date" id={mileageDate}  required title="Please enter the required information" onChange={e => handleInputChange(e, index)} ></input>
-                                                <select key={startingPoint} id={startingPoint} required title="Please select an option" onChange={e => handleInputChange(e, index)}>{storeList.map((store, i) => {
+                                                <select key={startingPoint} id={startingPoint} required title="Please select an option" onChange={e => handleInputChange(e, index)}>{stores.map((store, i) => {
                                                                                                                                                 return (
                                                                                                                                                     <option key={i}>{store.store}</option>
                                                                                                                                                 )}
                                                                                                                                                         )}</select>
-                                                <select key={destinationPoint} id={destinationPoint} required title="Please select an option" onChange={e => handleInputChange(e, index)}>{storeList.map((store, i) => {
+                                                <select key={destinationPoint} id={destinationPoint} required title="Please select an option" onChange={e => handleInputChange(e, index)}>{stores.map((store, i) => {
                                                                                                                                                 return (
                                                                                                                                                     <option key={i}>{store.store}</option>
                                                                                                                                                 )}

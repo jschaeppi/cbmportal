@@ -8,6 +8,8 @@ let { transporter, mailOptions, receiver, message } = require('../src/config/mai
 let { options } = require('../src/config/html')
 let timeAdjust = require('../src/Model/timeadjustModel');
 let Store = require('../src/Model/Stores');
+let DepartmentModel = require('../src/Model/departmentModel');
+
 timeadjustRouter.use(bodyParser.json());
 timeadjustRouter.use(bodyParser.urlencoded({extended: false}));
 
@@ -34,52 +36,56 @@ timeadjustRouter.get('/stores/:id', (req, res) => {
     )
 });
 
-timeadjustRouter.post('/', (req, res) => {
+timeadjustRouter.post('/', async (req, res) => {
     const { dm, employeeNum, employeeName, noteAdjustment } = req.body[0];
+    const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
     let rows = [];
     let timeadjustInfo = [];
     let totaladjustment = 0;
     let shift = 0;
-
     let base64String = '';
     let base64Image = ''
    
-    fs.mkdir(`../../uploads/signatures/timeadjustment/${dm}`, (err) => {
-        if (err) {
-            console.log(err);
-        }
+    try {
+        fs.mkdir(`../../uploads/signatures/timeadjustment/${dm}`, (err) => {
+            if (err) {
+                console.log(err);
+            }
+                console.log('Folder created successfully!');
+        })
+
+        fs.mkdir(`../../uploads/signatures/timeadjustment/${employeeNum}`, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else if(result) {
             console.log('Folder created successfully!');
-    })
-
-    fs.mkdir(`../../uploads/signatures/timeadjustment/${employeeNum}`, (err, result) => {
-        if (err) {
+        }
+        })
+        base64String = req.body[0].employeesig;
+        // Remove header
+        var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+        base64Image = new Buffer.from(base64Data, 'base64');
+        fs.writeFile(`../../uploads/signatures/timeadjustment/${employeeNum}/employeeAdjustSig${month}-${day}-${year}.png`, base64Image, (err) => {
+            if (err) {
             console.log(err);
-        } else if(result) {
-        console.log('Folder created successfully!');
-    }
-    })
-    base64String = req.body[0].employeesig;
-    // Remove header
-    var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
-    base64Image = new Buffer.from(base64Data, 'base64');
-    fs.writeFile(`../../uploads/signatures/timeadjustment/${employeeNum}/employeeAdjustSig${month}-${day}-${year}.png`, base64Image, (err) => {
-        if (err) {
-          console.log(err);
-        }
-        console.log('File succeeded.');
-      });
+            }
+            console.log('File succeeded.');
+        });
 
-    base64String = req.body[0].managerSig;
-    // Remove header
-    var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
-    base64Image = new Buffer.from(base64Data, 'base64');
-    
-    fs.writeFile(`../../uploads/signatures/timeadjustment/${dm}/managerAdjustSig${month}-${day}-${year}-${employeeNum}.png`, base64Image, (err) => {
-        if (err) {
-          console.log(err);
-        }
-        console.log('File succeeded.');
-      });
+        base64String = req.body[0].managerSig;
+        // Remove header
+        var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+        base64Image = new Buffer.from(base64Data, 'base64');
+        
+        fs.writeFile(`../../uploads/signatures/timeadjustment/${dm}/managerAdjustSig${month}-${day}-${year}-${employeeNum}.png`, base64Image, (err) => {
+            if (err) {
+            console.log(err);
+            }
+            console.log('File succeeded.');
+        });
+    } catch (err) {
+        console.log(err);
+    }
         //Generating Bonuse Rows
         req.body.forEach( (item,i) => {
                 rows = [];
@@ -259,7 +265,6 @@ ${timeadjustInfo.join().replace(/,/g," ")}
 </body>
 </html>`;
 
-  receiver = 'joseph.schaeppi@carlsonbuilding.com';
   message = 'Please process this Time Adjustment request.';
   //Create PDF
     pdf.create(content, options).toFile(`../../uploads/pdf/timeadjustment/${pdfFile}`, function(err, res) {
@@ -270,17 +275,18 @@ ${timeadjustInfo.join().replace(/,/g," ")}
 
 
    //Sending Mail
+   try {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: `Time Adjustment request for ${req.body[0].employeeNum}`, // Subject line
-    text: message, // plain text body
+    text: `${receiver.department} ${message}`, // plain text body
     attachments: {
         filename: `${pdfFile}`,
         path: `../../uploads/pdf/timeadjustment/${pdfFile}`
     },
 };
-    try { 
+     
         transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
             console.log(err)

@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import NewPS from '../Components/newPS';
 import PSList from '../Components/PSList';
-import DM from '../Components/DM';
-import Stores from '../Components/Stores';
 import '../css/hotelRequest.css';
+import CbmContext from '../context/cbm/cbmContext';
 
 function HotelRequest() {
-
+    const cbmContext = useContext(CbmContext);
+    const { loginStatus, isAuthenticated,loading, getStores, stores } = cbmContext;
+    const { district, userFirst, userLast } = cbmContext.user;
     const history = useHistory();
-    const [storeList, setStoreList] = useState([]);
     const [psList, setPsList] = useState([]);
     let   [psToggle, setToggle] = useState(false);
     const [formData, setFormData] = useState([
@@ -24,7 +24,6 @@ function HotelRequest() {
             notes: '',
             hotelReason: '',
             beds: '',
-            dm: '',
             WT: '',
             newPS: ''
 
@@ -32,21 +31,18 @@ function HotelRequest() {
     ])  
 
     //Fetch stores and PS'
-    const dm = formData[0].dm;
+
     useEffect(() => {
-        if (dm === '') {
-            fetch(`http://portal.cbmportal.com:5000/api/hotel/stores`)
-            .then(res => res.json())
-            .then(data => setStoreList(data) ) 
-        } else {
-            fetch(`http://portal.cbmportal.com:5000/api/hotel/stores/${dm}`)
-            .then(res => res.json())
-            .then(data => setStoreList(data) ) 
-            fetch(`http://portal.cbmportal.com:5000/api/hotel/ps/${dm}`)
+        if (!isAuthenticated && !loading) {
+        loginStatus();
+        }
+        console.log(district);
+            getStores(district);
+            fetch(`http://portal.cbmportal.com:5000/api/hotel/ps/${district}`)
             .then(res => res.json())
             .then(data => setPsList(data) )
-            }
-    }, [dm])
+            // eslint-disable-next-line
+    }, [district])
 
         //Handle the interactivity Changes
     const handleChange = (e) => {
@@ -107,7 +103,7 @@ function HotelRequest() {
                 notes: formData[0].notes,
                 hotelReason: formData[0].hotelReason,
                 beds: formData[0].beds,
-                dm: formData[0].dm,
+                dm: `${userFirst} ${userLast}`,
                 WT: formData[0].WT,
                 newPS: formData[0].newPS
             })
@@ -125,14 +121,12 @@ function HotelRequest() {
                 <h1 className="mainHeading"><span>Hotel Request</span></h1><br />
                     <form onSubmit={e => onSubmit(e)} className="mainForm">
                         <div className="wrapper1">
-                            <div id="hotelManagers">
-                                <label>DM:</label><br />
-                                <DM handleChange={e => handleChange(e)} />
-                            </div>
                             <div id="hotelStores">
                                 <label>Store:</label><br />
                                 <select name="store" required title="Please select an option" onChange={e => handleChange(e)}>
-                                    <Stores stores={storeList}/>
+                                {stores.map((store, i) => {
+                                    return <option key={i} name="store" id="store">{store.store}</option>
+                                })}
                                 </select>
                             </div>
                         </div>

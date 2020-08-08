@@ -5,14 +5,15 @@ const bodyParser = require('body-parser');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 let Hotel = require('../src/Model/hotelModel');
-let Store = require('../src/Model/Stores');
 let PS = require('../src/Model/psModel');
+let DepartmentModel = require('../src/Model/departmentModel');
 
 hotelRouter.use(bodyParser.json());
 hotelRouter.use(bodyParser.urlencoded({extended: false}))
-let date_ob = new Date();
 
 // current date
+let date_ob = new Date();
+
 // adjust 0 before single digit date
 let date = ("0" + date_ob.getDate()).slice(-2);
 
@@ -22,47 +23,40 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 // current year
 let year = date_ob.getFullYear();
 
-hotelRouter.get('/stores', (req, res) => {
-    Store.find()
-    .sort({ banner: -1})
-    .then(stores => res.json(stores));
-});
-
-hotelRouter.get('/stores/:id', (req, res) => {
-    Store.find( { dm: req.params.id }, (err, result) => {
+hotelRouter.get('/ps/:district', (req, res) => {
+    const districts = req.params.district;
+    if (districts.length > 1) {
+        PS.find({district: {$in: districts.split(',')}}, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(result);
+                res.json(result);
+            }
+        }).sort( { district: -1})
+    } else {
+    PS.find({ district: districts }, (err, result) => {
         if (err) {
             console.log(err)
         } else {
             res.json(result)
         }
     }
-    )
+    ).sort({ district: -1})
+}
 });
 
-hotelRouter.get('/ps/:id', (req, res) => {
-    PS.find( { dm: req.params.id }, (err, result) => {
-        if (err) {
-            console.log(err)
-        } else {
-            res.json(result)
-        }
-    }
-    )
-});
-
-hotelRouter.post('/', (req, res) => {
+hotelRouter.post('/', async (req, res) => {
     const { listPs1, listPs2, dm, store, checkIn, checkOut, roomNum, peopleNum, newPS, hotelReason, WT, notes, beds } = req.body;
     if (newPS !== "") {
         const listPs1 = "";
         const listPs2 = "";
     }
+    const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
     let pdfFile = `Hotel-Request-${dm}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
+
     let content = `<head>
     <style>
     html {
@@ -234,15 +228,14 @@ hotelRouter.post('/', (req, res) => {
       return console.log(err);
       }
    });
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
    message = content;
 
    //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: pdfFile, // Subject line
-    html: message, // html body
+    html: `${receiver.department} ${message}`, // html body
     attachments: [
         {
         filename: `${pdfFile}`,

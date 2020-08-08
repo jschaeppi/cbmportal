@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Stores from '../Components/Stores';
 import '../css/perDiem.css';
+import CbmContext from '../context/cbm/cbmContext';
 
 function PerDiem() {
+    const cbmContext = useContext(CbmContext);
+    const { loginStatus, isAuthenticated, loading, stores, usstates, getCities, cities } = cbmContext;
+    const {userFirst, userLast } = cbmContext.user
 
+
+    
     const history = useHistory();
 
-    const [storeList, setStoreList] = useState([])
     const [perDiem, addPerDiem] = useState([
         {
             mileageDate: '',
@@ -16,6 +21,7 @@ function PerDiem() {
             rtow: '',
             employeeNum: '',
             employeeName: '',
+            dm: `${userFirst} ${userLast}`,
             city: '', 
             state: '', 
             location: '', 
@@ -29,11 +35,20 @@ function PerDiem() {
     ]);
 
     useEffect(() => {
-        fetch(`http://portal.cbmportal.com:5000/api/perDiem/stores`)
-        .then(res => res.json())
-        .then(data => setStoreList(data) ) 
+        if (!isAuthenticated && !loading) {
+        loginStatus();
+        }
+        // eslint-disable-next-line
     }, [])
 
+    const cityList = (e) => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        getCities(value);
+        const list = [...perDiem];
+        list[0][name] = value;
+        addPerDiem(list);
+    }
     const handleInputChange = (e, index) => {
         const { id, value } = e.target;
         const list = [...perDiem];
@@ -76,7 +91,7 @@ function PerDiem() {
         list.splice(index,1)
         addPerDiem(list)
     }
-
+    
     const onSubmit = e => {
         e.preventDefault();
         let rows = [];
@@ -88,6 +103,7 @@ function PerDiem() {
                 rtow: perDiem[0].rtow,
                 employeeNum: perDiem[0].employeeNum,
                 employeeName: perDiem[0].employeeName,
+                dm: perDiem[0].dm,
                 city: perDiem[0].city, 
                 state: perDiem[0].state, 
                 location: perDiem[0].location, 
@@ -152,18 +168,28 @@ function PerDiem() {
                             <label htmlFor="store">Store:</label><br />
                             <select name="stores" id="location" required title="Please enter the required information" onChange={e => handleInputChange(e)}>
                                 <option>Home</option>
-                                <Stores stores={storeList} />
+                                <Stores stores={stores} />
                             </select>
                         </div>
                         <br /><br />
                         <div className="wrapper1">
                             <div>
-                                <label htmlFor="city">City:</label><br />
-                                <input type="text" id="city" name="city" required title="Please enter the required information" onChange={e => handleInputChange(e)}/>
+                                <label htmlFor="city">City: <span style={{fontSize: '14px', fontWeight: 'normal'}}>(Please select state for list of cities)</span></label><br />
+                                <select id="city" name="city" onChange={e => handleInputChange(e)}>
+                                    <option>Select City</option>
+                                   {(cities !== '') ? (cities.map((city,i) => {
+                                       return <option key={i}>{city.city_name}</option>
+                                   })):<option>No cities Found</option>}
+                                </select>
                             </div>
                             <div>
                                 <label htmlFor="state"> State:</label><br />
-                                <input type="text" id="state" name="state" required title="Please enter the required information" onChange={e => handleInputChange(e)}/>
+                                <select id="state" name="state" onChange={e => cityList(e)}>
+                                    <option>Select State</option>
+                                    {usstates.map((state, i) => {
+                                        return <option key={i}>{state.state_name}</option>
+                                    })}
+                                </select>
                             </div>
                         </div>
                         <br /><br />
@@ -204,10 +230,10 @@ function PerDiem() {
                                             <label htmlFor={mileageName}>{mileageName}</label>
                                             <label htmlFor={startName}>{startName}</label>
                                             <label htmlFor={destinationName}>{destinationName}</label>
-                                            <input key={mileageName} type="date" id={mileageName} name={mileageName} required title="Please enter the required information" onChange={e => handleInputChange(e, index)} ></input>
+                                            <input key={mileageName} type="date" className="mileageDate" id={mileageName} name="mileageDate" required title="Please enter the required information" onChange={e => handleInputChange(e, index)} ></input>
                                             <select required title="Please enter the required information" onChange={e => handleInputChange(e, index)} name="arrivalStore" id={arrivalID}>
                                                 <option>Home</option>
-                                                {storeList.map((store, i)=> {
+                                                {stores.map((store, i)=> {
                                                     return (
                                                         <option key={i}>{store.store}</option>
                                                         )
@@ -215,7 +241,7 @@ function PerDiem() {
                                             </select>
                                             <select required title="Please enter the required information" onChange={e => handleInputChange(e, index)} name="destinationStore" id={destinationID}>
                                                 <option>Home</option>
-                                                {storeList.map((store, i)=> {
+                                                {stores.map((store, i)=> {
                                                     return (
                                                         <option key={i}>{store.store}</option>
                                                         )

@@ -6,10 +6,11 @@ const moment = require('moment');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 let WorkTicket = require('../src/Model/wtModel');
-let Store = require('../src/Model/Stores');
+let DepartmentModel = require('../src/Model/departmentModel');
 
 wtRouter.use(bodyParser.json());
 wtRouter.use(bodyParser.urlencoded({ extended: false }));
+
 // current date
 let date_ob = new Date();
 
@@ -22,17 +23,13 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 // current year
 let year = date_ob.getFullYear();
 
-wtRouter.get('/stores', (req, res) => {
-    Store.find()
-    .sort( { banner: -1 })
-    .then(stores => res.json(stores));
-});
-
-wtRouter.post('/', (req, res) => {
+wtRouter.post('/', async (req, res) => {
     const { employeeNum, employeeName, dm, location, city, state, workType, Billable, notes, equipment, currentLocation, orderSubmitted, orderNumber } = req.body;
     const orderDate = moment(req.body.orderDate).format('L');
     const startDate = moment(req.body.startDate).format('L');
     const endDate = moment(req.body.endDate).format('L');
+    const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
+
     let pdfFile = `WT-request-${dm}-${month}-${date}-${year}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
@@ -177,7 +174,7 @@ wtRouter.post('/', (req, res) => {
       return console.log(err);
       }
    });
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
+
    message = '<p>Attention Accounting Dept,</p>' +
    '<p>Please find attched a Project Work Ticket Request for the store <strong>' + location + '</strong>.</p>' +
    '<p>If you have any questions please contact me.</p>' +
@@ -185,18 +182,19 @@ wtRouter.post('/', (req, res) => {
    '<p>{global:fullname}</p>';
 
    //Sending Mail
+   try {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: pdfFile, // Subject line
-    html: message, // html body
+    html: `${message}`, // html body
     attachments:
         {
         filename: `${pdfFile}`,
         path: `../../uploads/pdf/wt/${pdfFile}`
     },
 };
-    try { 
+     
         transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
             console.log(err)
@@ -209,31 +207,35 @@ wtRouter.post('/', (req, res) => {
     }
 
     //DB insertions
-    let form = new WorkTicket();
-    form.employeeName = employeeName;
-    form.employeeNum = employeeNum;
-    form.dm = dm;
-    form.location = location;
-    form.city = city;
-    form.state = state;
-    form.workType = workType; 
-    form.Billable = Billable;
-    form.notes = notes;
-    form.equipment = equipment;
-    form.currentLocation = currentLocation;
-    form.orderSubmitted = orderSubmitted;
-    form.orderDate = orderDate;
-    form.orderNumber = orderNumber;
-    form.startDate = startDate;
-    form.endDate = endDate;
-    form.save(function(err) {
-        if (err) {
-            console.log(err);
-            return;
-        } else {
-            return res.json({message: true});
-        }
-    });
+    try {
+        let form = new WorkTicket();
+        form.employeeName = employeeName;
+        form.employeeNum = employeeNum;
+        form.dm = dm;
+        form.location = location;
+        form.city = city;
+        form.state = state;
+        form.workType = workType; 
+        form.Billable = Billable;
+        form.notes = notes;
+        form.equipment = equipment;
+        form.currentLocation = currentLocation;
+        form.orderSubmitted = orderSubmitted;
+        form.orderDate = orderDate;
+        form.orderNumber = orderNumber;
+        form.startDate = startDate;
+        form.endDate = endDate;
+        form.save(function(err) {
+            if (err) {
+                console.log(err);
+                return;
+            } else {
+                return res.json({message: true});
+            }
+        });
+    } catch(err) {
+        console.log(err);
+    }
 });
 
 module.exports = wtRouter;

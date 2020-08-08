@@ -7,7 +7,7 @@ button {
 }
 
 #bonusForm > input[type="submit"] {
-    width: 15%;
+    width: 20%;
     margin: 0 0 0 2rem;
 }
 #bonusHeading {
@@ -27,11 +27,13 @@ button {
 
 
 #bonusAddButton, #bonusRemoveButton {
-    border-radius: .33em;
+    border-radius: .75em;
+    width: 18%;
 }
 
 #addBP {
     border: 1px solid black;
+    display: inline-block;
     box-shadow: 2px 2px;
     width: 80%;
     padding-bottom: 1rem;
@@ -40,9 +42,12 @@ button {
 
 }
 
-#addBP button {
-    margin-left: 41%;
-    margin-right: .2rem
+#bonusAddButton {
+    margin-left: 5%;
+}
+#bonusRemoveButton {
+    margin-left: 23%;
+    margin-right: .1rem
 }
 
 #bonusComments {
@@ -59,12 +64,19 @@ button {
 }
 
 #BP > div > label:first-child {
-    margin-left: 0;
+    margin-left: 1rem;
 }
+
 #BP > div > label:nth-child(2) {
     margin-left: 1rem;
 }
-    #BP input[type="date"] {
+
+#BP input[type="date"] {
+    margin-top: .75rem;
+    width: 90%;
+}
+
+#BP  > input[type="number"]:nth-child(3), select {
     width: 80%;
     height: 1.2rem;
     margin: .8rem 0 0 1.2rem;
@@ -96,12 +108,29 @@ button {
     width: 80%;
 }
 
+#dm {
+    margin-left: 0;
+}
+
 @media screen and (min-width: 769px) and (max-width: 1024px) {
 
     #BP {
         grid-template-columns: 1fr;
         margin-left: 0;
+        padding-left: 4rem;
         width: 85%
+    }
+
+    #BP > div {
+        margin: .33rem 0;
+    }
+
+    #BP input[type="number"], input[type="date"], select {
+        width: 80%;
+        height: 1.2rem;
+        margin-top: 0;
+        margin-left: 0;
+        
     }
 
     #addBP {
@@ -116,9 +145,18 @@ button {
     
     }
 
-    #addBP button {
-        margin-left: 35%;
+    #bonusAddButton {
+        margin-left: 0;
+    }
+
+    #bonusRemoveButton {
+        margin-left: 12%;
         margin-right: .2rem
+    }
+
+    #bonusAddButton, #bonusRemoveButton {
+        border-radius: .75em;
+        width: 30%;
     }
 
     #bonusSig {
@@ -127,6 +165,9 @@ button {
         grid-column-end: 3;
     }
 
+    #stores, #dm {
+        margin: 0;
+    }
 }
 
 @media screen and (min-width: 551px) and (max-width: 768px) {
@@ -173,6 +214,19 @@ button {
     
     }
 
+    #bonusAddButton {
+        margin-left: 5%;
+    }
+
+    #bonusAddButton, #bonusRemoveButton {
+        border-radius: .75em;
+        width: 32%;
+    }
+
+    #bonusRemoveButton {
+        margin-left: 13%;
+    }
+
     #bonusSig {
         margin-left: 0;
         grid-column-start: 1;
@@ -186,7 +240,7 @@ button {
     #BP {
         grid-template-columns: 1fr;
         width: 85%;
-        margin-left: 0;
+        margin-left: 1rem;
     }
 
     #BP > label {
@@ -201,6 +255,10 @@ button {
         margin-left: 0;
     }
 
+    #bonusRemoveButton {
+        margin-left: 30%;
+    }
+
     #addBP {
         border: 1px solid black;
         box-shadow: 2px 2px;
@@ -212,8 +270,30 @@ button {
     
     }
 
+    #bonusAddButton {
+        margin-left: 5%;
+    }
+
+    #bonusAddButton, #bonusRemoveButton {
+        border-radius: .75em;
+        width: 30%;
+    }
+
+    #bonusRemoveButton {
+        margin-left: 15%;
+        margin-right: .1rem
+    }
+
     #bonusSig {
         margin-left: 0;
+    }
+
+    #dm {
+        margin: 0;
+    }
+
+    #bonusComments {
+        margin: 0 0 0 10%;
     }
 
 }

@@ -1,39 +1,59 @@
-    import React, { Component } from 'react'
-    import '../css/workTicket.css';
-    import DM from '../Components/DM';
-    import Stores from '../Components/Stores';
-    export class workTicket extends Component {
-        constructor() {
-            super();
-            this.state = {
-                employeeName: '',
-                employeeNum: '',
-                dm: '',
-                location: '',
-                city: '', 
-                state: '',
-                workType: '', 
-                Billable: '',
-                notes: '',
-                equipment: '',
-                currentLocation: '',
-                orderSubmitted: '',
-                orderDate: '',
-                orderNumber: '',
-                startDate: '',
-                endDate: '',
-                stores: [],
-            }
-        }
+import React, { useState, useEffect, useContext } from 'react';
+import '../css/workTicket.css';
+import { useHistory } from 'react-router-dom';
+import Stores from '../Components/Stores';
+import CbmContext from '../context/cbm/cbmContext';
+const WorkTicket = () => {
 
-        handleChange = (e) => {
+    const cbmContext = useContext(CbmContext);
+    const history = useHistory();
+    const { loginStatus, isAuthenticated, loading, getStores, stores, getCities, cities, usstates } = cbmContext;
+    const { userFirst, userLast, district } = cbmContext.user;
+
+    useEffect(() => {
+        if (!isAuthenticated && !loading) {
+        loginStatus();
+        }
+        getStores(district);
+        // eslint-disable-next-line
+    }, [district])
+
+        const [data, setData] = useState([{
+            employeeName: '',
+            employeeNum: '',
+            dm: `${userFirst} ${userLast}`,
+            location: '',
+            city: '', 
+            state: '',
+            workType: '', 
+            Billable: '',
+            notes: '',
+            equipment: '',
+            currentLocation: '',
+            orderSubmitted: '',
+            orderDate: '',
+            orderNumber: '',
+            startDate: '',
+            endDate: '',
+        }])
+
+        const cityList = (e) => {
+            e.preventDefault();
             const { name, value } = e.target;
-            this.setState({
-                [name]: value
-            })
+            getCities(value);
+            const list = [...data];
+            list[0][name] = value;
+            setData(list);
         }
 
-        onSubmit = (e) => {
+        const handleChange = (e) => {
+            const { name, value } = e.target;
+            const list = [...data];
+            list[0][name] = value;
+            setData(list);
+        }
+
+        const onSubmit = (e) => {
             e.preventDefault();
             
             fetch('http://portal.cbmportal.com:5000/api/WT',
@@ -43,81 +63,80 @@
                     'content-type': 'application/json'
                 },
                 body: JSON.stringify({
-                    employeeName: this.state.employeeName,
-                    employeeNum: this.state.employeeNum,
-                    dm: this.state.dm,
-                    location: this.state.location,
-                    city: this.state.city, 
-                    state: this.state.state,
-                    workType: this.state.workType, 
-                    Billable: this.state.Billable,
-                    notes: this.state.notes,
-                    equipment: this.state.equipment,
-                    currentLocation: this.state.currentLocation,
-                    orderSubmitted: this.state.orderSubmitted,
-                    orderDate: this.state.orderDate,
-                    orderNumber: this.state.orderNumber,
-                    startDate: this.state.startDate,
-                    endDate: this.state.endDate,
+                    employeeName: data[0].employeeName,
+                    employeeNum: data[0].employeeNum,
+                    dm: data[0].dm,
+                    location: data[0].location,
+                    city: data[0].city, 
+                    state: data[0].state,
+                    workType: data[0].workType, 
+                    Billable: data[0].Billable,
+                    notes: data[0].notes,
+                    equipment: data[0].equipment,
+                    currentLocation: data[0].currentLocation,
+                    orderSubmitted: data[0].orderSubmitted,
+                    orderDate: data[0].orderDate,
+                    orderNumber: data[0].orderNumber,
+                    startDate: data[0].startDate,
+                    endDate: data[0].endDate,
                 })
             })
             .then (res => res.json())
             .then( data => {
-                if (data.message) this.props.history.push('/success');
+                if (data.message) history.push('/success');
             })
             .catch(err => console.log(err))
         }
 
-        componentDidMount () {
-            fetch(`http://portal.cbmportal.com:5000/api/WT/stores`)
-            .then(res => res.json())
-            .then(data => this.setState({ stores: data }))
-    }
-        render() {
-
             return (
                 <div className="container">
                     <h1 className="mainHeading"><span>Work Ticket Request</span></h1><br />
-                        <form onSubmit={this.onSubmit} className="mainForm">
+                        <form onSubmit={e => onSubmit(e)} className="mainForm">
                             <div className="wrapper1">
                                 <div>
                                     <label htmlFor="employeename"> Employee Name:</label>
-                                    <input type="text" id="employeename" name="employeeName" required title="Please enter the required information" onChange={this.handleChange}/>
+                                    <input type="text" id="employeename" name="employeeName" required title="Please enter the required information" onChange={e => handleChange(e)}/>
                                 </div>
                                 <div>
                                     <label htmlFor="employeenum">Employee #:</label>
-                                    <input type="text" id="employeenum" name="employeeNum" maxlength="6" required title="Please enter the required information" onChange={this.handleChange}/>
+                                    <input type="text" id="employeenum" name="employeeNum" maxLength="6" required title="Please enter the required information" onChange={e => handleChange(e)}/>
                                 </div>
                             </div>
                         <br />
                             <div className="wrapper1">
                                 <div>
-                                    <label htmlFor="dm">DM:</label><br />
-                                    <DM handleChange={this.handleChange} />
-                                </div>
-                                <div>
                                     <label >Store Number:</label>
-                                    <select name="location" id="storeList" required title="Please select an option" onChange={this.handleChange}>
-                                        <Stores stores={this.state.stores} />
+                                    <select name="location" id="storeList" required title="Please select an option" onChange={e => handleChange(e)}>
+                                        <Stores stores={stores} />
                                     </select>
                                  </div>
                             </div>
                         <br /><br />
                             <div className="wrapper1">
                                  <div>
-                                    <label htmlFor="city">City:</label><br />
-                                    <input type="text" id="city" name="city" required title="Please enter the required information" onChange={this.handleChange}/>
+                                    <label htmlFor="city">City: <span style={{fontSize: '14px', fontWeight: 'normal'}}>(Please select state for list of cities)</span></label><br />
+                                    <select id="city" name="city" onChange={e => handleChange(e)}>
+                                    <option>Select City</option>
+                                   {(cities !== '') ? (cities.map((city,i) => {
+                                       return <option key={i}>{city.city_name}</option>
+                                   })):<option>No cities Found</option>}
+                                </select>
                                 </div>
                                 <div>
                                     <label htmlFor="state"> State:</label><br />
-                                    <input type="text" id="state" name="state" required title="Please enter the required information" onChange={this.handleChange}/>
+                                    <select id="state" name="state" onChange={e => cityList(e)}>
+                                    <option>Select State</option>
+                                    {usstates.map((state, i) => {
+                                        return <option key={i}>{state.state_name}</option>
+                                    })}
+                                </select>
                                 </div>
                             </div>
                         <br /><br />
                         <div className="wrapper1">
                             <div>
                                 <label htmlFor="workType">Type of Work:</label><br />
-                                <select onChange={this.handleChange} required title="Please select an option" name="workType">
+                                <select onChange={e => handleChange(e)} required title="Please select an option" id="workType" name="workType">
                                     <option value="">Select Type of Work</option>
                                     <option value="Annual Strip">Annual Strip</option>
                                     <option value="Partial Strip">Partial Strip</option>
@@ -131,7 +150,7 @@
                             </div>
                             <div>
                                 <label>Billable/Non</label><br />
-                                <select required title="Please select an option" onChange={this.handleChange} name="Billable">
+                                <select required title="Please select an option" onChange={e => handleChange(e)} id="workType" name="Billable">
                                     <option value="">Select - Selecionar</option>
                                     <option value="Billable">Billable</option>
                                     <option value="NON-Billable">NON-Billable</option>
@@ -142,53 +161,53 @@
                             <div className="wrapper1">
                             <div id="specialNotes">
                                 <label>Special Notes:</label> <br />
-                                <textarea id="notes" name="notes" onChange={this.handleChange}></textarea>
+                                <textarea id="notes" name="notes" onChange={e => handleChange(e)}></textarea>
                             </div>
                         </div>
                         <br /><br />
                         <div className="wrapper1">
                             <div id="equipmentMoved">
                                 <label htmlFor="equipment">What equipment needs to be moved:</label><br />
-                                <textarea id="notes" name="equipment" required title="Please enter the required information" onChange={this.handleChange}></textarea>
+                                <textarea id="notes" name="equipment" required title="Please enter the required information" onChange={e => handleChange(e)}></textarea>
                             </div>
                         </div>
                         <br /><br />
                     
                         <div className="wrapper1">
                             <label htmlFor="currentLocation">Curent location:</label><br />
-                            <select name="currentLocation" id="storeList" required title="Please select an option" onChange={this.handleChange}>
-                                <Stores stores={this.state.stores} />
+                            <select name="currentLocation" id="storeList" required title="Please select an option" onChange={e => handleChange(e)}>
+                                <Stores stores={stores} />
                             </select>
                         </div>
                         <div className="wrapper1" id="orderSubmit">
                             <div id="supplyOrderSubmit">
                                 <label >Supply Order Submitted:</label><br />
                                 <label htmlFor="orderSubmitted">Yes</label>
-                                <input type="radio" name="orderSubmitted" value="yes" required title="Please enter the required information" onChange={this.handleChange}></input>
+                                <input type="radio" name="orderSubmitted" value="yes" required title="Please enter the required information" onChange={e => handleChange(e)}></input>
                                 <label htmlFor="orderSubmitted">No</label>
-                                <input type="radio" name="orderSubmitted" value="no" required title="Please enter the required information" onChange={this.handleChange}></input>
+                                <input type="radio" name="orderSubmitted" value="no" required title="Please enter the required information" onChange={e => handleChange(e)}></input>
                             </div>
                          </div>
                          <br /><br />
                         <div className="wrapper1">
                             <div id="supplyOrder">
                                 <label>Supply Order Date:</label><br />
-                                <input type="date" id="orderDate" name="orderDate" required title="Please enter the required information" onChange={this.handleChange}></input>  
+                                <input type="date" id="orderDate" name="orderDate" required title="Please enter the required information" onChange={e => handleChange(e)}></input>  
                             </div>
                             <div id="supplyOrder">
                                 <label htmlFor="orderNumber">Supply Order Number:</label><br />
-                                <input type="text" id="orderNumber" name="orderNumber" required title="Please enter the required information" onChange={this.handleChange}/>
+                                <input type="text" id="orderNumber" name="orderNumber" required title="Please enter the required information" onChange={e => handleChange(e)}/>
                             </div>
                         </div>
                         <br /><br />
                         <div className="wrapper1">
                             <div>
                                 <label>Project Start Date:</label>
-                                <input type="date" id="startDate" name="startDate" required title="Please enter the required information" onChange={this.handleChange}></input>
+                                <input type="date" id="startDate" name="startDate" required title="Please enter the required information" onChange={e => handleChange(e)}></input>
                              </div>
                             <div>
                                 <label>Project End Date:</label>
-                                <input type="date" id="endDate" name="endDate" required title="Please enter the required information" onChange={this.handleChange}></input>
+                                <input type="date" id="endDate" name="endDate" required title="Please enter the required information" onChange={e => handleChange(e)}></input>
                             </div>
                         </div>
                         <br />
@@ -196,8 +215,7 @@
                     </form>
                 </div>
             )
-        }
     }
     
-    export default workTicket
+    export default WorkTicket
     

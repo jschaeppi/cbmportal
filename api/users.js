@@ -1,59 +1,70 @@
-express = require('express');
-router = express.Router();
-const cors = require('cors');
-const mongoose = require('mongoose');
-bodyParser = require('body-parser');
-const passport = require('passport');
-const Session = require('../src/Model/sessionValidate');
-const db = require('../src/config/db');
-require('./passport')(passport);
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../src/Model/usersModel');
+const config = require('config');
+//require('./passport')(passport);
 
-router.get('/loginSub', (req, res) => {
-    console.log(req.session)
-    if (req.isAuthenticated()) {
-        console.log('Authenticated!')
+router.get('/loginSub', async (req, res) => {
+    const token = req.header('x-auth-token');
+    if (!token) {
+        res.status(401).json({issue: 'Not Authorized'})
     }
-    console.log("Hi")
-    /*Session.find({'session.passport.user': req.session.id}, (err, result) => {
-        if (err) { 
-            console.log(err);
+    try {
+    const decoded = jwt.verify(token, config.get('jwtSecret'));
+    const { exp } = decoded;
+    if (Date.now() >= exp * 1000) {
+        res.status(401).json({msg: 'Unathorized Access'});
+      } else {
+    let user = await User.findOne({ _id: decoded.user.id })
+    .select('-password');
+    res.json({decoded, user});
+        } 
+    }
+    catch(err) {
+        console.log(err.name);
+        if (err.name === 'TokenExpiredError') {
+            res.status(401).json({ msg: 'Not Authorized, please login' })
+        } else {
+        res.json({issue: 'Server Error'});
         }
-        console.log(result);
-    });
-    if (req.session.id) {
-        //res.json({session: session});
-    } else {
-        console.log('Couldn\'t find session');
-    }*/
-    
+    }
+
 })
 
-router.post('/loginSub', (req, res, next) => { 
-    console.log('hey')
-    passport.authenticate('local', (err, user, info) => {{
-        if (err) {
-            res.json({ err: 'Ooops, something went wrong'})
-        }
-
+router.post('/loginSub', async (req, res, next) => { 
+    const { username, password } = req.body.data;
+    try {
+    let user = await User.findOne({ username });
         if (!user) {
-            res.json ({msg: 'Not logged in'})
+            res.status(400).json ({msg: 'Invalid Credentials'})
         }
+        const isMatch = await bcrypt.compare(password, user.password);
 
-        req.logIn(user, (err) => {
-            if (err) {
-                return console.log(err);
+        if (!isMatch) {
+            res.status(400).json({msg: 'Invalid Credentials'});
+        } 
+
+        const payload = {
+            user: {
+                id: user.id,
             }
-            console.log(req.session);
-            console.log(user);
-            res.redirect('http://portal.cbmportal.com')
-            //res.json({ user: user, session: req.session });
-            
+        }
+        jwt.sign(payload, config.get('jwtSecret'), { expiresIn: 19800}, (err, token) => {
+            if (err) throw err;
+            res.json({token, user, msg: true})
         })
-    
-}})(req, res, next);
 
-});
 
+    }
+    catch (err) {
+        if (err) {
+            console.log(err);
+            res.status(500).json({msg: 'Server Error'});
+        }
+    }
+})
 router.post('logout', (req, res, next) => {
     req.logout();
 })

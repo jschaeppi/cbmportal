@@ -5,8 +5,10 @@ const fs = require('fs');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 const Propane = require('../src/Model/propaneModel');
 const Store = require('../src/Model/Stores')
+let DepartmentModel = require('../src/Model/departmentModel');
 
 propaneRouter.use(formidable({ uploadDir: './uploads/'}))
+
 // current date
 let date_ob = new Date();
 // adjust 0 before single digit date
@@ -22,10 +24,12 @@ propaneRouter.get('/stores', (req, res) => {
     
 });
 
-propaneRouter.post('/', formidable(), (req, res) => {
+propaneRouter.post('/', formidable(), async (req, res) => {
     const { employeeName, location, notes, tanksLeft } = req.fields;
     const image = req.files.file;
     const imageName = image.name;
+    const receiver = await DepartmentModel.findOne({ department: 'Operations'});
+
     fs.mkdir(`../../uploads/locations/propane/${location}`, (err) => {
         if (err) {
             console.log(err);
@@ -39,7 +43,6 @@ propaneRouter.post('/', formidable(), (req, res) => {
     })
     
 
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
    message = `<p>You have a new Propane Request</p>
    <p> </p>
    <table style="border-color: #000000; background-color: #5ecef7; width: 100%; height: 20px; margin-left: auto; margin-right: auto;" border="1" cellspacing="0" cellpadding="1">
@@ -78,9 +81,9 @@ propaneRouter.post('/', formidable(), (req, res) => {
    //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: `Propane request for location ${location}`, // Subject line
-    html: message, // html body
+    html: `${receiver.department} ${message}`, // html body
     attachments: {
         filename: imageName,
         path: `../../uploads/locations/propane/${location}/${imageName}`

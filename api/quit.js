@@ -1,16 +1,19 @@
 const express = require('express');
 const quitRouter = express.Router();
 const bodyParser = require('body-parser');
+const formidable = require('express-formidable')
 const moment = require('moment');
 const pdf = require('html-pdf');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 const Term = require('../src/Model/termModel');
+const DepartmentModel = require('../src/Model/departmentModel');
 
 quitRouter.use(bodyParser.json());
 quitRouter.use(bodyParser.urlencoded({ extended: false }));
-let date_ob = new Date();
+
 // current date
+let date_ob = new Date();
 // adjust 0 before single digit date
 let day = ("0" + date_ob.getDate()).slice(-2);
 // current month
@@ -19,15 +22,16 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 let year = date_ob.getFullYear();
 
 
-quitRouter.post('/', (req, res) => {
+quitRouter.post('/', async (req, res) => {
+
     const { firstLast, firstName, secondLast, employeeNum, dm, twoWeeks, rehire, norehireReason, quitReason } = req.body;
     const lastWorked = moment(req.body.lastWorked).format('L');
+    const receiver = await DepartmentModel.findOne({ department: 'Human Resources'});
 
     let pdfFile = `Employee-${employeeNum}-${firstName} ${firstLast} ${secondLast}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
 
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
     content = `
     <head>
     <style>
@@ -250,7 +254,7 @@ quitRouter.post('/', (req, res) => {
     </tr>
     <tr style="height: 43px;">
     <td style="width: 70%; border-bottom: 1px solid black; vertical-align: bottom; height: 43px;">&nbsp; &nbsp; &nbsp;&nbsp;
-    <div class="DMOSsign">{Manager:value}</div>
+    <div class="DMOSsign">${dm}</div>
     </td>
     <td style="width: 30%; border-bottom: 1px solid black; vertical-align: bottom; height: 43px;">&nbsp;${month}/${day}/${year}</td>
     </tr>
@@ -295,9 +299,9 @@ quitRouter.post('/', (req, res) => {
    //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: `Termination request for employee ${employeeNum} ${firstName} ${firstLast} ${secondLast}`, // Subject line
-    html: message, // html body
+    html: `${receiver.department} ${message}`, // html body
     attachments: {
         filename: pdfFile,
         path: `../../uploads/${pdfFile}`

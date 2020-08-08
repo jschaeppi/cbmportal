@@ -7,12 +7,14 @@ let { transporter, mailOptions, receiver, message } = require('../src/config/mai
 let { options } = require('../src/config/html')
 let Mileage = require('../src/Model/mileageModel');
 let Store = require('../src/Model/Stores');
+let DepartmentModel = require('../src/Model/departmentModel');
 
 mileageRouter.use(bodyParser.json());
 mileageRouter.use(bodyParser.urlencoded({extended: false}))
-let date_ob = new Date();
 
 // current date
+let date_ob = new Date();
+
 // adjust 0 before single digit date
 let date = ("0" + date_ob.getDate()).slice(-2);
 
@@ -21,13 +23,6 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 
 // current year
 let year = date_ob.getFullYear();
-
-mileageRouter.get('/stores', (req, res) => {
-    Store.find()
-    .sort( { banner: -1 })
-    .then(stores => res.json(stores));
-    
-});
 
 mileageRouter.get('/stores/:id', (req, res) => {
     Store.find( { dm: req.params.id }, (err, result) => {
@@ -40,18 +35,17 @@ mileageRouter.get('/stores/:id', (req, res) => {
     )
 });
 
-
-mileageRouter.post('/', (req, res) => {
+mileageRouter.post('/', async (req, res) => {
     const { dm, employeeName, employeeNum, comments } = req.body[0];
     const rows = [];
     const mileageInfo = [];
+    const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
+
     let pdfFile = `Mileage-Request-${dm}-${month}-${date}-${year}`;
+
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
+
     req.body.forEach( (item,i) => {
         rows.push(item.mileageDate);
         rows.push(item.starting);
@@ -164,15 +158,15 @@ mileageRouter.post('/', (req, res) => {
     return console.log(err);
     }
   });
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
-   message = content;
+   
+  message = content;
 
    //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: pdfFile, // Subject line
-    html: message, // html body
+    html: `${receiver.department} ${message}`, // html body
     attachments: [
         {
         filename: `${pdfFile}`,

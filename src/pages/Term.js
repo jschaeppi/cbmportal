@@ -13,7 +13,6 @@ export class Term extends Component {
         }
     }
     termtype(e) {
-        console.log(e.target.value);
         this.setState({
             termtype: e.target.value
         })

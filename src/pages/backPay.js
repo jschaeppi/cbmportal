@@ -1,11 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 //import SignatureCanvas from 'react-signature-canvas'
 import SigPad from '../Components/sigPad';
-import DM from '../Components/DM';
 import '../css/backPay.css';
+import CbmContext from '../context/cbm/cbmContext';
 function BackPay() {
+    const cbmContext = useContext(CbmContext);
+        const { loginStatus, isAuthenticated, loading } = cbmContext;
 
+        useEffect(() => {
+            if (!isAuthenticated && !loading) {
+            loginStatus();
+            }
+            // eslint-disable-next-line
+        }, [])
     const history = useHistory();
 
     const managerPad = useRef({});
@@ -128,10 +136,6 @@ function BackPay() {
                             </div>
                         </div>
                         <br /><br />
-                        <div className="wrapper1">
-                            <label htmlFor="dm">DM:</label><br />
-                            <DM handleChange={e => handleInputChange(e)} />
-                        </div>
                         <div className="wrapper1">
                         { backPays.map((row, index) => { 
                             const incIndex = index + 1;

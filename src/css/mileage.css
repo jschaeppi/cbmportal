@@ -1,5 +1,5 @@
 #mileageNotes {
-    width: 50%;
+    width: 80%;
     height: 100%;
     margin: 0 auto;
     grid-column-start: 1;
@@ -33,7 +33,7 @@
 }
 
 #mileageRemoveButton {
-    margin: 0 1rem 0 0;
+    margin: 1rem 0 0 1rem !important;
     width: 4.5rem;
 }
 
@@ -60,7 +60,8 @@
 }
 
 #entry input[type="date"] {
-    width: 100%;
+    width: 90%;
+    margin-top: .8rem;
 }
 
 #entry > select {
@@ -89,7 +90,14 @@
         box-shadow: 2px 2px;
         padding-top: .5rem;
     }
-
+    #entry input[type="date"] {
+        width: 90%;
+        margin-top: .8rem;
+        margin-left: 0;
+    }
+    #entry > label {
+        margin-left: 0;
+    }
 }
 
 @media screen and (max-width: 550px) {
@@ -104,6 +112,10 @@
         box-shadow: 2px 2px;
         padding-top: .5rem;
         margin-left: 1.5rem;
+    }
+
+    #mileageRemoveButton {
+        margin-left: 1rem;
     }
 
 }

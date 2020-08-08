@@ -7,11 +7,13 @@ let { transporter, mailOptions, receiver, message } = require('../src/config/mai
 let { options } = require('../src/config/html')
 let Repair = require('../src/Model/repairModel');
 let Store = require('../src/Model/Stores');
+let DepartmentModel = require('../src/Model/departmentModel');
 
 repairRouter.use(formidable({ uploadDir: './uploads/'}))
-let date_ob = new Date();
 
 // current date
+let date_ob = new Date();
+
 // adjust 0 before single digit date
 let date = ("0" + date_ob.getDate()).slice(-2);
 
@@ -28,20 +30,26 @@ repairRouter.get('/stores', (req, res) => {
     
 });
 
-repairRouter.post('/', (req, res) => {
+repairRouter.post('/', async (req, res) => {
     const { location, machineTag, machineType, problem, reported, brandName } = req.fields;
     const image = req.files.file;
-    fs.mkdir(`../../uploads/images/locations/repair/${location}`, (err) => {
-        if (err) {
-            console.log(err);
-        }
-        console.log('Folder created successfully!');
-    })
-    fs.rename(image.path, `../../uploads/images/locations/repair/${location}/${image.name}`, (err) => {
-        if (err) {
-            console.log('File couldn\'t be moved!');
-        }
-    })
+    const receiver = await DepartmentModel.findOne({ department: 'Mechanic'});
+
+    try {
+        fs.mkdir(`../../uploads/images/locations/repair/${location}`, (err) => {
+            if (err) {
+                console.log(err);
+            }
+            console.log('Folder created successfully!');
+        })
+        fs.rename(image.path, `../../uploads/images/locations/repair/${location}/${image.name}`, (err) => {
+            if (err) {
+                console.log('File couldn\'t be moved!');
+            }
+        })
+    } catch(err) {
+        console.log(err);
+    }
     
     let pdfFile = `Repair-request-${reported}`;
     // Stripping special characters
@@ -95,15 +103,16 @@ repairRouter.post('/', (req, res) => {
       return console.log(err);
       }
    });
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
+   
    message = content;
 
    //Sending Mail
+   try { 
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
+    to: receiver.email, // list of receivers
     subject: pdfFile, // Subject line
-    html: message, // html body
+    html: `${message}`, // html body
     attachments: [
         {
         filename: `${pdfFile}`,
@@ -115,7 +124,7 @@ repairRouter.post('/', (req, res) => {
         },
     ]
 };
-    try { 
+
         transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
             console.log(err)
@@ -128,22 +137,26 @@ repairRouter.post('/', (req, res) => {
     }
 
     //DB insertions
-    let form = new Repair();
-    form.location = location;
-    form.brandName = brandName;
-    form.machineType = machineType;
-    form.machineTag = machineTag;
-    form.problem = problem;
-    form.repotedBy = reported;
-    form.picture = `../../uploads/images/locations/repair/${location}/${image.name}`;
-    form.save(function(err) {
-        if (err) {
-            console.log(err);
-            return;
-        } else {
-            return res.json({message: true});
-        }
-    });
+    try {
+        let form = new Repair();
+        form.location = location;
+        form.brandName = brandName;
+        form.machineType = machineType;
+        form.machineTag = machineTag;
+        form.problem = problem;
+        form.repotedBy = reported;
+        form.picture = `../../uploads/images/locations/repair/${location}/${image.name}`;
+        form.save(function(err) {
+            if (err) {
+                console.log(err);
+                return;
+            } else {
+                return res.json({message: true});
+            }
+        });
+    } catch (error) {
+        
+    }
 });
 
 module.exports = repairRouter;
