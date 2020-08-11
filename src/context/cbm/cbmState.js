@@ -75,7 +75,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
         }
     }
 
-    const getCities = async (us_state) => {
+    const getCities = async (usstate) => {
         const { GeoAPI } = GeoApi;
         try {
             const resp = await axios.get("https://www.universal-tutorial.com/api/getaccesstoken", {
@@ -85,12 +85,13 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
                     'user-email': 'joseph.schaeppi@carlsonbuilding.com'
                 },
             })
-            const res = await axios.get(`https://www.universal-tutorial.com/api/cities/${us_state}`, {
+            const res = await axios.get(`https://www.universal-tutorial.com/api/cities/${usstate}`, {
                 headers: {
                     'Authorization': `Bearer ${resp.data.auth_token}`,
                     'Accept': 'application/json'
                 },
             })
+            console.log(res);
             dispatch({
                 type: GET_CITIES,
                 payload: res.data

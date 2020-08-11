@@ -10,7 +10,7 @@ const Uniform = () => {
     
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
-    const { loginStatus, isAuthenticated, loading} = cbmContext;
+    const { loginStatus, isAuthenticated, loading, usstates, getCities, cities} = cbmContext;
     const employeePad = useRef({});
     useEffect(() => {
         if (!isAuthenticated && !loading) {
@@ -34,6 +34,15 @@ const Uniform = () => {
     }])
     const handleChange = (e) => {
         const { name, value } = e.target;
+        const list = [...data];
+        list[0][name] = value;
+        setData(list);
+    }
+
+    const cityList = (e) => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        getCities(value);
         const list = [...data];
         list[0][name] = value;
         setData(list);
@@ -131,13 +140,23 @@ const Uniform = () => {
                         </div>
                         <br /><br />
                         <div className="wrapper1" id="geo">
+                            <div id="stateDiv">
+                                <label htmlFor="state">State:</label><br />
+                                    <select id="state" name="state" onChange={e => cityList(e)}>
+                                        <option>Select State</option>
+                                        {usstates.map((state, i) => {
+                                            return <option key={i}>{state.state_name}</option>
+                                        })}
+                                    </select>
+                             </div>
                             <div id="cityDiv">
                             <label htmlFor="city">City:</label><br />
-                            <input type="text" id="city" name="city" required title="Please enter the required information" onChange={e => handleChange(e)}/>
-                             </div>
-                            <div id="stateDiv">
-                            <label htmlFor="state">State:</label><br />
-                            <input type="text" id="state" name="state" required title="Please enter the required information" onChange={e => handleChange(e)}/>
+                                <select id="city" name="city" onChange={e => handleChange(e)}>
+                                    <option>Select City</option>
+                                        {(cities !== '') ? (cities.map((city,i) => {
+                                        return <option key={i}>{city.city_name}</option>
+                                        })):<option>No cities Found</option>}
+                                </select>
                         
                             </div>
                             <div id="zipDiv">

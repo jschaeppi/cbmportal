@@ -114,22 +114,23 @@ const WorkTicket = () => {
                         <br /><br />
                             <div className="wrapper1">
                                  <div>
-                                    <label htmlFor="city">City: <span style={{fontSize: '14px', fontWeight: 'normal'}}>(Please select state for list of cities)</span></label><br />
-                                    <select id="city" name="city" onChange={e => handleChange(e)}>
-                                    <option>Select City</option>
-                                   {(cities !== '') ? (cities.map((city,i) => {
-                                       return <option key={i}>{city.city_name}</option>
-                                   })):<option>No cities Found</option>}
-                                </select>
+                                    <label htmlFor="state"> State:</label><br />
+                                        <select id="state" name="state" onChange={e => cityList(e)}>
+                                            <option>Select State</option>
+                                            {usstates.map((state, i) => {
+                                                return <option key={i}>{state.state_name}</option>
+                                            })}
+                                        </select>
+                                    
                                 </div>
                                 <div>
-                                    <label htmlFor="state"> State:</label><br />
-                                    <select id="state" name="state" onChange={e => cityList(e)}>
-                                    <option>Select State</option>
-                                    {usstates.map((state, i) => {
-                                        return <option key={i}>{state.state_name}</option>
-                                    })}
-                                </select>
+                                    <label htmlFor="city">City: <span style={{fontSize: '14px', fontWeight: 'normal'}}>(Please select state for list of cities)</span></label><br />
+                                        <select id="city" name="city" onChange={e => handleChange(e)}>
+                                            <option>Select City</option>
+                                                {(cities !== '') ? (cities.map((city,i) => {
+                                                return <option key={i}>{city.city_name}</option>
+                                                })):<option>No cities Found</option>}
+                                        </select>
                                 </div>
                             </div>
                         <br /><br />

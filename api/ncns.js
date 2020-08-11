@@ -230,7 +230,7 @@ ncnsRouter.post('/', async (req, res) => {
      <p> </p>
      <p> </p>
      <p> </p>
-     <p>Submited by {global:fullname}</p>`
+     <p>Submited by ${dm}</p>`
    //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address

@@ -4,7 +4,7 @@ import CbmContext from '../context/cbm/cbmContext';
 
 const Main = (props) => {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, loading, isAuthenticated, getStores, getStates } = cbmContext;
+    const { loginStatus, loading, isAuthenticated, getStores, getStates, getCities, cities } = cbmContext;
     const { userFirst, userLast, district } = cbmContext.user;
     
     useEffect(() =>{

@@ -6,13 +6,19 @@ const morgan = require('morgan')
 const cors = require('cors');
 const compression = require('compression');
 const PORT = process.env.PORT || 5000;
-    
+const exhbs = require('express-handlebars');
+const authCheck = require('./api/authCheck');
+let Store = require('./src/Model/Stores');
+
 app.use(cors())
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, "../..")));
 app.use(morgan('dev'));
+app.engine('.hbs', exhbs({extname: '.hbs'}))
+app.set('view engine', '.hbs');
+app.set('views', __dirname + '/views');
 
 //Declare Routing variables
 const db = require('./src/config/db');
@@ -60,10 +66,12 @@ app.use('/api/updateStores', storeRouter);
 app.use('/api/stores', storesRouter);
 
 
+app.get('/admin', cors(), (req, res) => {
+       res.render('home');
+    });
 
-
-app.get('/', cors(), (req, res) => {
-       res.sendFile('/index.html')
+app.get('/admin/storelist', [authCheck, cors()], (req, res) => {
+    res.render('home');
     });
 
 
