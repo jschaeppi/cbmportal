@@ -2,6 +2,15 @@ const express = require('express');
 const targetorderRouter = express.Router();
 const bodyParser = require('body-parser');
 const pdf = require('html-pdf');
+const fs = require('fs');
+const supplyOrder = require('../src/Model/targetsupply');
+let DepartmentModel = require('../src/Model/departmentModel');
+const cors = require('cors');
+targetorderRouter.use(cors({
+    origin: ['http://portal.cbmportal.com','http://portal.cbmportal.com:5000', 'http://127.0.0.1'],
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
+    credentials: true
+  }));
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 //const PTO = require('../src/Model/ptoModel');
@@ -17,38 +26,64 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 // current year
 let year = date_ob.getFullYear();
 
-perdiemRouter.get('/stores', (req, res) => {
-    Store.find()
-    .sort( { banner: -1 })
-    .then(stores => res.json(stores));
-});
-
-targetorderRouter.post('/', (req, res) => {
+targetorderRouter.post('/', async (req, res) => {
     const employeeName = req.body.employeeName;
     const location = req.body.location;
     const notes = req.body.notes;
     const order = req.body.order;
+    const dm = req.body.dm;
+    order.shift();
+    const receiver = await DepartmentModel.findOne({ department: 'Supplies'});
+    try {
+        await fs.mkdir(`../../uploads/pdf/targetsupply/${month}-${day}-${year}`, { recursive: true }, (err, result) => {
+            if (err) {
+                console.log(err);
+            } else if(result) {
+            console.log('Folder created successfully!');
+            }
+        })
+    } catch (error) {
+        console.log(error);
+    }
 
+        //Filter C code items and sorted numerically
+        const sortedOrder = order.filter(item => {
+            if (item['item'].charAt(0) === "C") {
+                return item['item'];
+            }
+        }).sort((a,b) => {
+            if (a['item'] > b['item']) {
+                return 1
+            } else if (a['item'] < b['item']) {
+                return -1
+            } else {
+                return 0;
+            }
+        });
+        //Added the non C code items to sorted Array
+        order.forEach(item => {
+            if (item['item'].charAt(0) !== "C") {
+                sortedOrder.push(item);
+                
+            }
+        })
 
-    let pdfFile = `Employee-${employeeNum}-${employeeName}`;
+        //Created HTML Item list for PDF
+        const orders = [];
+        sortedOrder.forEach(item => {
+        orders.push('<tr>'+
+        '<td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black;  width: 70%;">' + item["item"] + '</td>' +
+            '<td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black;  width: 30%;">' + item["amount"] + '</td>' +
+        '</tr>')
+    })
+    let pdfFile = `${location}-Monthly supply order`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
     // Setting response to 'attachment' (download).
-    // If you use 'inline' here it will automatically open the PDF
-    //res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"')
-    //res.setHeader('Content-type', 'application/pdf')
 
-
-   receiver = 'joseph.schaeppi@carlsonbuilding.com';
     content = `<html>
     <head>
     <style>
-    .EEsignature img{
-    width:200px; vertical-align: text-bottom;
-    }
-    .DMOSsign img{
-    width:200px;vertical-align: text-bottom;
-    }
     html {
         zoom: .55;
     }
@@ -65,7 +100,7 @@ targetorderRouter.post('/', (req, res) => {
     <table style="width: 100%;" border="0" cellpadding="1">
     <tbody>
     <tr>
-    <td><img src="images/logo.png" alt="" width="336" height="102" /></td>
+    <td><img src="http://portal.cbmportal.com/cbm_forms/images/CBM_Logo.png" alt="" width="336" height="102" /></td>
     <td style="text-align: right; font-weight: bold; font-size: 330%;">Carlson Building Maintenance</td>
     </tr>
     <tr>
@@ -73,7 +108,7 @@ targetorderRouter.post('/', (req, res) => {
     <td>&nbsp;</td>
     </tr>
     <tr>
-    <td style="font-weight: bold; font-size: 190%;">&nbsp;Paid Time Off (PTO) Request</td>
+    <td style="font-weight: bold; font-size: 190%;">&nbsp;Target Supply Order</td>
     <td>&nbsp;</td>
     </tr>
     <tr>
@@ -85,7 +120,7 @@ targetorderRouter.post('/', (req, res) => {
     <table style="width: 100%;" border="0" cellpadding="1">
     <tbody>
     <tr style="color: white; font-weight: bold; font-size: 140%; font-family: Arial; text-align: center; height: 29px; background-color: gray;">
-    <td style="height: 29px; font-weight: bold; font-size: 110%;">PTO Form</td>
+    <td style="height: 29px; font-weight: bold; font-size: 110%;">Target Supply Order</td>
     </tr>
     </tbody>
     </table>
@@ -99,169 +134,40 @@ targetorderRouter.post('/', (req, res) => {
     </tr>
     </tbody>
     </table>
-    <table style="width: 100%;" border="0" cellpadding="0">
+    <table style="margin: 0 auto; width:65%;" border="0" cellpadding="0">
     <tbody>
     <tr>
-    <td style="width: 22.9143%;"><span style="font-size: 12pt;">Employee Name:</span></td>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 57.0857%;"><span style="font-size: 12pt;">${employeeName}</span></td>
+    <td style="border-bottom-width: 1px; border-bottom-style: solid; width: 30%;"><span style="font-size: 12pt;">Store Number:</span></td>
+    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 70%;"><span style="font-size: 12pt;">${location}</span></td>
     </tr>
     <tr>
-    <td style="width: 22.9143%;">&nbsp;</td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 57.0857%;"><span style="font-size: 12pt;">&nbsp;</span></td>
+    <td style="width: 30%;">&nbsp;</td>
+    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 70%;"><span style="font-size: 12pt;">&nbsp;</span></td>
     </tr>
     <tr>
-    <td style="width: 22.9143%;"><span style="font-size: 12pt;">Employee Number:</span></td>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 57.0857%;"><span style="font-size: 12pt;">&nbsp;${employeeNum}</span></td>
+    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 30%;"><span style="font-size: 12pt;">Employee Name:</span></td>
+    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 70%;"><span style="font-size: 12pt;">&nbsp;${employeeName}</span></td>
     </tr>
+    </tbody>
+    </table>
+    <table style="margin: 0 auto; width:65%;" border="0" cellpadding="0">
+    <tbody>
     <tr>
-    <td style="width: 22.9143%;">&nbsp;</td>
+    <td style="width: 30%;">&nbsp;</td>
     <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 57.0857%;">&nbsp;</td>
     </tr>
+    ${orders.join().replace(/,/g," ")}
     <tr>
-    <td style="width: 22.9143%;"><span style="font-size: 12pt;">Department:</span></td>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 57.0857%;"><span style="font-size: 12pt;">${departments}</span></td>
-    </tr>
-    <tr>
-    <td style="width: 22.9143%;">&nbsp;</td>
+    <td style="width: 70%;">&nbsp;</td>
     <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 57.0857%;">&nbsp;</td>
     </tr>
-    <tr>
-    <td style="width: 22.9143%;"><span style="font-size: 12pt;">Manager:</span></td>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 57.0857%;"><span style="font-size: 12pt;">${dm}</span></td>
-    </tr>
-    <tr>
-    <td style="width: 22.9143%;">&nbsp;</td>
-    </tr>
     </tbody>
     </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
+    <table style="margin: 0 auto; width:65%;" border="0" cellpadding="0">
     <tbody>
     <tr>
-    <td>&nbsp;<span style="font-size: 14pt;">&nbsp;Dates of Absence</span></td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr style="height: 25px;">
-    <td style="width: 25%; height: 25px; text-align: right;"><span style="font-size: 14pt;">From:</span></td>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 27%; font-weight: bold; height: 25px;"><span style="font-size: 16px; line-height: 22.8571px;">${absencefrom}</span></td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; text-align: right; height: 25px;"><span style="font-size: 12pt;">&nbsp;To: &nbsp;</span></td>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 26%; font-weight: bold; height: 25px;"><span style="font-size: 12pt;">${absenceto}</span></td>
-    </tr>
-    <tr style="height: 25px;">
-    <td style="width: 25%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 27%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 26%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    </tr>
-    <tr style="height: 23px;">
-    <td style="width: 25%; height: 23px;">&nbsp;</td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 27%; height: 23px;">&nbsp;</td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; height: 23px;">&nbsp;</td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 26%; height: 23px;">&nbsp;</td>
-    </tr>
-    <tr style="height: 25px;">
-    <td style="width: 25%; height: 25px; text-align: right;"><span style="font-size: 12pt;">&nbsp; Number of hours:</span></td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 27%; font-weight: bold; height: 25px;">&nbsp;<span style="font-size: 12pt;">${hours}</span></td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; height: 25px; text-align: right;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 26%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    </tr>
-    <tr style="height: 25px;">
-    <td style="width: 25%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 27%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 26%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr style="height: 23px;">
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; height: 23px;">&nbsp;</td>
-    </tr>
-    <tr style="height: 23px;">
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; height: 23px;">&nbsp;</td>
-    </tr>
-    <tr style="color: white; font-weight: bold; font-size: 110%; font-family: verdana; text-align: center; height: 30px; background-color: gray;">
-    <td style="height: 30px;"><span style="font-size: 12pt;">Manager Approval</span></td>
-    </tr>
-    <tr style="height: 23px;">
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; height: 23px;">&nbsp;</td>
-    </tr>
-    <tr style="height: 23px;">
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; height: 23px;">&nbsp;</td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr style="height: 23px;">
-    <td style="height: 23px; width: 49.5083%;"><img title="box" src="images/unchecked_checkbox.png" alt="bok" width="25" height="25" /><span style="font-size: 14pt;">${approval}</span></td>
-    <td style="height: 23px; width: 47.4917%;">&nbsp;</td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr>
-    <td>&nbsp;</td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr style="height: 23px;">
-    <td style="height: 23px; width: 47.906%;"><img title="box" src="images/unchecked_checkbox.png" alt="bok" width="25" height="25" /><span style="font-size: 14pt;"> Rejected</span></td>
-    <td style="height: 23px; width: 46.094%;">&nbsp;</td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr style="height: 15px;">
-    <td style="height: 15px;">&nbsp;</td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black;">
-    <td style="width: 25.6156%; text-align: right; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black;">&nbsp;<span style="font-size: 14pt;">Comments:</span></td>
-    <td style="width: 72.3844%;">&nbsp;</td>
-    </tr>
-    <tr style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black;">
-    <td style="width: 25.6156%;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    <td style="width: 72.3844%;">&nbsp;<span style="font-size: 14pt;">${comments}</span></td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr>
-    <td style="width: 70%;">&nbsp;</td>
-    <td style="width: 30%;">&nbsp;</td>
-    </tr>
-    <tr>
-    <td style="width: 70%; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; vertical-align: bottom;">&nbsp; &nbsp; &nbsp;&nbsp;
-    <div class="DMOSsign">{DMOSsign:signature}</div>
-    </td>
-    <td style="width: 30%; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; vertical-align: bottom;">&nbsp;${month}/${day}/${year}</td>
-    </tr>
-    <tr>
-    <td style="width: 70%; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black;"><span style="font-size: 14pt;">&nbsp;Manager Signature&nbsp;</span></td>
-    <td style="width: 30%; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black;"><span style="font-size: 14pt;">&nbsp; Date: </span></td>
-    </tr>
-    <tr>
-    <td style="width: 70%;">&nbsp;</td>
-    <td style="width: 30%;">&nbsp;</td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr style="height: 33px;">
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; font-style: italic; font-variant: normal; font-weight: bold; font-stretch: normal; font-size: 12px; line-height: 30px; font-family: Georgia, serif; height: 33px;"><span style="font-size: 10pt; font-family: arial, helvetica, sans-serif;">Submit to HR after completed</span></td>
+    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 30%;"><span style="font-size: 12pt;">Notes:</span></td>
+    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 70%;"><span style="font-size: 12pt;">${notes}</span></td>
     </tr>
     </tbody>
     </table>
@@ -269,29 +175,25 @@ targetorderRouter.post('/', (req, res) => {
     </html>`;
 
     //Create PDF
-    pdf.create(content, options).toFile(`./uploads/${pdfFile}`, function(err, res) {
+    pdf.create(content, options).toFile(`../../uploads/pdf/targetsupply/${month}-${day}-${year}/${pdfFile}`, function(err, res) {
         if (err) {
         return console.log(err);
         }
      });
-     const message = `<p><span style="font-size: 12pt;">Attention Payroll Department, Attached is a PTO Form for the employee <strong>${employeeName} #</strong><strong>${employeeNum}.</strong></span></p>
-     <p><span style="font-size: 12pt;">Please Process this form ASAP.</span></p>
-     <p><span style="font-size: 12pt;">Thank you for your cooperation.</span></p>
+     const message = `<p><span style="font-size: 12pt;">Here is a new supply request from ${location}
      <p><span style="font-size: 12pt;"></span></p>
      <p> </p>
-     <p> </p>
-     <p> </p>
-     <hr />
-     <p>PTO Form submitted on <em>${month}/${day}/${year}</em></p>`
+     <p>Target Supply submitted by ${dm.userFirst} ${dm.userLast}</p>`
    //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver, // list of receivers
-    subject: `PTO request for employee ${employeeNum} ${employeeName}`, // Subject line
+    to: receiver.email, // list of receivers
+    //cc: dm.email,
+    subject: `${location} - Monthly supply order`, // Subject line
     html: message, // html body
     attachments: {
         filename: pdfFile,
-        path: `./uploads/${pdfFile}`
+        path: `../../uploads/pdf/targetsupply/${month}-${day}-${year}/${pdfFile}`
     },
 };
     try { 
@@ -305,18 +207,14 @@ targetorderRouter.post('/', (req, res) => {
     } catch(err) {
     console.log(err);
     }
-
     //DB insertions
-    let form = new PTO();
+    let form = new supplyOrder();
     form.employeeName = employeeName;
-    form.employeeNum = employeeNum;
-    form.dm = dm;
-    form.departments = departments
-    form.absencefrom = absencefrom;
-    form.absenceto = absenceto;
-    form.hours = hours;
-    form.approval = approval;
-    form.comments = comments;
+    form.dm = `${dm.userFirst} ${dm.userLast}`;
+    orders.forEach((item, i) => {
+        form.order.push(item);
+    })
+    form.notes = notes;
     form.save(function(err) {
         if (err) {
             console.log(err);

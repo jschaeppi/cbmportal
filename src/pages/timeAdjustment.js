@@ -6,8 +6,7 @@ import CbmContext from '../context/cbm/cbmContext';
 const TimeAdjustment = () => {
 
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, isAuthenticated, loading } = cbmContext;
-    const { userFirst, userLast } = cbmContext.user;
+    const { loginStatus, isAuthenticated, loading, user } = cbmContext;
 
     useEffect(() => {
         if (!isAuthenticated && !loading) {
@@ -82,17 +81,20 @@ const TimeAdjustment = () => {
     const onSubmit = e => {
         e.preventDefault();
         let rows = [];
+        if (managerPad.current.isEmpty() || employeePad.current.isEmpty()) {
+            alert('Please provide a signature');
+        } else {
         if (adjustment.length === 1) {
             rows.push({
                 in: adjustment[0].in,
                 break: adjustment[0].break,
                 out: adjustment[0].out,
-                dm: `${userFirst} ${userLast}`, 
+                dm: user, 
                 employeeName: adjustment[0].employeeName, 
                 employeeNum: adjustment[0].employeeNum,
                 noteAdjustment: adjustment[0].noteAdjustment,
-                managerSig: managerPad.current.getTrimmedCanvas().toDataURL("image/png"),
-                employeesig: employeePad.current.getTrimmedCanvas().toDataURL("image/png")
+                managerSig: managerPad.current.getTrimmedCanvas().toDataURL('image/png'),
+                employeesig: employeePad.current.getTrimmedCanvas().toDataURL('image/png')
             })
         } else {
             adjustment.map((item, i) => {
@@ -100,15 +102,16 @@ const TimeAdjustment = () => {
                 in: item.in,
                 break: item.break,
                 out: item.out,
-                dm: `${userFirst} ${userLast}`, 
+                dm: user, 
                 employeeName: adjustment[0].employeeName, 
                 employeeNum: adjustment[0].employeeNum,
                 noteAdjustment: adjustment[0].noteAdjustment,
-                managerSig: managerPad.current.getTrimmedCanvas().toDataURL("image/png"),
-                employeesig: employeePad.current.getTrimmedCanvas().toDataURL("image/png")
+                managerSig: managerPad.current.getTrimmedCanvas().toDataURL('image/png'),
+                employeesig: employeePad.current.getTrimmedCanvas().toDataURL('image/png')
                 });
             })
         }
+
     // On submit of the form, send a POST request with the data to the server.
     fetch('http://portal.cbmportal.com:5000/api/timeAdjustment', { 
         method: 'POST',
@@ -127,6 +130,7 @@ const TimeAdjustment = () => {
         console.log(err);
     }) 
         }
+    }
         return (
             <div className="container">
                 <h1 className="mainHeading"><span>Time Adjustment</span></h1><br />

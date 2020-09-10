@@ -1,6 +1,7 @@
 const express = require('express');
 const ptoRouter = express.Router();
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const moment = require('moment');
 const pdf = require('html-pdf');
 const fs = require('fs');
@@ -29,20 +30,19 @@ ptoRouter.post('/', async (req, res) => {
     const absenceto = moment(req.body.absenceto).format('L');
 
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
-    
+
     let base64String = req.body.sig;
     // Remove header
     var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
     let base64Image = new Buffer.from(base64Data, 'base64');
     
-        fs.mkdir(`../../uploads/signatures/ptoSig/${employeeNum}`, (err, result) => {
+        await fs.mkdir(`../../uploads/signatures/ptoSig/${employeeNum}`, { recursive: true }, (err) => {
             if (err) {
                 console.log(err);
-            } else if(result) {
+            }
             console.log('Folder created successfully!');
-        }
         })
-        fs.writeFile(`../../uploads/signatures/ptoSig/${employeeNum}/${month}-${day}-${year}.png`, base64Image, (err) => {
+        await fs.writeFile(`../../uploads/signatures/ptoSig/${employeeNum}/${month}-${day}-${year}.png`, base64Image, (err) => {
         if (err) {
             console.log(err);
         }
@@ -141,7 +141,7 @@ ptoRouter.post('/', async (req, res) => {
     </tr>
     <tr>
     <td style="width: 22.9143%;"><span style="font-size: 12pt;">Manager:</span></td>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 57.0857%;"><span style="font-size: 12pt;">${dm}</span></td>
+    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 57.0857%;"><span style="font-size: 12pt;">${dm.userFirst} ${dm.userLast}</span></td>
     </tr>
     <tr>
     <td style="width: 22.9143%;">&nbsp;</td>
@@ -303,6 +303,7 @@ ptoRouter.post('/', async (req, res) => {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: `PTO request for employee ${employeeNum} ${employeeName}`, // Subject line
     html: `${message}`, // html body
     attachments: {

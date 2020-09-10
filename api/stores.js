@@ -22,7 +22,7 @@ storesRouter.get('/:district', (req, res) => {
             } else {
                 res.json(result);
             }
-        }).sort( { district: -1})
+        }).sort( { banner: -1, store: 1})
     } else {
     Store.find({ district: districts }, (err, result) => {
         if (err) {
@@ -31,7 +31,7 @@ storesRouter.get('/:district', (req, res) => {
             res.json(result)
         }
     }
-    ).sort({ district: -1})
+    ).sort({ banner: -1 })
 }
 });
 

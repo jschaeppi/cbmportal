@@ -10,7 +10,7 @@ const Uniform = () => {
     
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
-    const { loginStatus, isAuthenticated, loading, usstates, getCities, cities} = cbmContext;
+    const { loginStatus, isAuthenticated, loading, usstates, getCities, cities, user} = cbmContext;
     const employeePad = useRef({});
     useEffect(() => {
         if (!isAuthenticated && !loading) {
@@ -69,6 +69,9 @@ const Uniform = () => {
         let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
         let year = date_ob.getFullYear();
         e.preventDefault();
+        if (employeePad.current.isEmpty()) {
+            alert('Please provide a signature');
+        } else {
         const list = [...data];
         list[0][date] = `${month}/${date}/${year}`
         setData(list);
@@ -91,6 +94,7 @@ const Uniform = () => {
                 size:data[0].size,
                 date: data[0].date,
                 sig: employeePad.current.getTrimmedCanvas().toDataURL('image/png'),
+                dm: user,
             }),
             })
             .then(res => res.json())
@@ -103,6 +107,7 @@ const Uniform = () => {
 
 
     }
+}
 
         let date_ob = new Date();
         let date = ("0" + date_ob.getDate()).slice(-2);
@@ -142,21 +147,21 @@ const Uniform = () => {
                         <div className="wrapper1" id="geo">
                             <div id="stateDiv">
                                 <label htmlFor="state">State:</label><br />
-                                    <select id="state" name="state" onChange={e => cityList(e)}>
-                                        <option>Select State</option>
-                                        {usstates.map((state, i) => {
-                                            return <option key={i}>{state.state_name}</option>
-                                        })}
-                                    </select>
+                                <input type="text" id="state" name="state" list="states" placeholder="Select State" onChange={e => cityList(e)} />
+                                        <datalist id="states">
+                                            {usstates.map((state, i) => {
+                                                return <option key={i}>{state.state_name} </option>
+                                            })}
+                                        </datalist>
                              </div>
                             <div id="cityDiv">
-                            <label htmlFor="city">City:</label><br />
-                                <select id="city" name="city" onChange={e => handleChange(e)}>
-                                    <option>Select City</option>
+                                <label htmlFor="city">City:</label><br />
+                                <input type="text" id="city" name="city" list="cities" placeholder="Select City" onChange={e => handleChange(e)} />
+                                    <datalist id="cities">
                                         {(cities !== '') ? (cities.map((city,i) => {
-                                        return <option key={i}>{city.city_name}</option>
-                                        })):<option>No cities Found</option>}
-                                </select>
+                                            return <option key={i}>{city.city_name}</option>
+                                        })): <option>No Cities Found</option>}
+                                    </datalist>
                         
                             </div>
                             <div id="zipDiv">
@@ -193,7 +198,7 @@ const Uniform = () => {
                         <div className="wrapper1">
                             <div id="uniformSig">
                                 <label >Signature:</label><br />
-                                <SignatureCanvas clearButton="true" penColor='black' canvasProps={{backgroundcolor: 'rgba(255, 255, 255, 1)', width: 400, height: 100, className: 'sigPad'}} ref = {employeePad } />
+                                <SignatureCanvas clearButton="true" penColor='black' canvasProps={{backgroundcolor: 'rgba(255, 255, 255, 1)', height: 100, className: 'sigPad'}} ref = {employeePad } />
                                 <button id="sigClear" onClick={e => clearPad(e)} type="button ">Clear</button>
                             </div>
                         </div>

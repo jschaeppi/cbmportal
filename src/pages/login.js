@@ -7,7 +7,7 @@ const Login = (props) => {
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
 
-    const { loginUser, isAuthenticated, loginStatus, clearErrors} = cbmContext;
+    const { loginUser, isAuthenticated, loginStatus, clearErrors, user} = cbmContext;
     let { errorMessage, loading } = cbmContext;
     const onSubmit = (e) => {
         e.preventDefault();
@@ -17,14 +17,17 @@ const Login = (props) => {
             console.log('I\'m Redirecting')
             if (!loading) {
             history.push('/')
+            } else {
+                history.push('/login');
             }
+            
 }
 
         useEffect(() => {
             
             if (isAuthenticated) {
                 history.push('/');
-            } else if (!isAuthenticated && localStorage.token && !loading) {
+            } else if (!isAuthenticated && user && !loading) {
                     loginStatus();
                 }
             // eslint-disable-next-line

@@ -30,23 +30,23 @@ export default (state, action) => {
                 stores: '',
                 usstates: '',
             }
-        case GET_AUTH:
-            return {
-                ...state,
-                user: action.payload,
-                isAuthenticated: true,
-                loading: false,
-                token: localStorage.token,
-            }
-        case GET_USER:
-            localStorage.setItem('token', action.payload);
-            return {
-                ...state,
-                token: localStorage.token,
-                user: action.user,
-                isAuthenticated: true,
-                loading: false
-            }
+            case GET_AUTH:
+                return {
+                    ...state,
+                    user: action.payload,
+                    isAuthenticated: true,
+                    loading: false,
+                    token: localStorage.token,
+                }
+            case GET_USER:
+                localStorage.setItem('token', action.payload);
+                return {
+                    ...state,
+                    token: localStorage.token,
+                    user: action.user,
+                    isAuthenticated: true,
+                    loading: false
+                }
         case GET_STATES:
         
             return {

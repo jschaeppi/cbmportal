@@ -6,7 +6,7 @@ import axios from 'axios';
 const Repair = () => {
 
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, getStores, stores, isAuthenticated, loading } = cbmContext;
+    const { loginStatus, getStores, stores, isAuthenticated, loading, user } = cbmContext;
     const { district} = cbmContext.user;
     const [toggleNotListed, setNotListed] = useState(false);
     const history = useHistory();
@@ -42,6 +42,7 @@ const Repair = () => {
             formData.append('machineTag', data[0].machineTag);
             formData.append('problem', data[0].problem);
             formData.append('reported', data[0].reported);
+            formData.append('dm', user);
         axios.post('http://portal.cbmportal.com:5000/api/repair', formData)
         .then( res => {
             console.log(res)

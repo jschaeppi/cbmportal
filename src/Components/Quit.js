@@ -6,14 +6,13 @@ const Quit = () => {
 
     const history = useHistory();
     const cbmContext = useContext(CbmContext);
-    const {loginStatus, isAuthenticated, loading} = cbmContext;
-    const { userFirst, userLast } = cbmContext.user;
+    const {loginStatus, isAuthenticated, loading, user} = cbmContext;
     const [toggleRehire, setToggleRehire] = useState(true);
     const [data, setData] = useState([{
         rehire: '',
         firstName: '',
         employeeNum: '',
-        dm: `${userFirst} ${userLast}`,
+        dm: '',
         firstLast: '',
         secondLast: '',
         twoWeeks: '',
@@ -58,7 +57,7 @@ const Quit = () => {
                 rehire: data[0].rehire,
                 firstName: data[0].firstName,
                 employeeNum: data[0].employeeNum,
-                dm: `${userFirst} ${userLast}`,
+                dm: user,
                 firstLast: data[0].firstLast,
                 secondLast: data[0].secondLast,
                 twoWeeks: data[0].twoWeeks,

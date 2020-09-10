@@ -6,8 +6,7 @@ import CbmContext from '../context/cbm/cbmContext';
 
 function PerDiem() {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, isAuthenticated, loading, stores, usstates, getCities, cities } = cbmContext;
-    const {userFirst, userLast } = cbmContext.user
+    const { loginStatus, isAuthenticated, loading, stores, usstates, getCities, cities, user } = cbmContext;
 
 
     
@@ -21,7 +20,7 @@ function PerDiem() {
             rtow: '',
             employeeNum: '',
             employeeName: '',
-            dm: `${userFirst} ${userLast}`,
+            dm: '',
             city: '', 
             state: '', 
             location: '', 
@@ -103,7 +102,7 @@ function PerDiem() {
                 rtow: perDiem[0].rtow,
                 employeeNum: perDiem[0].employeeNum,
                 employeeName: perDiem[0].employeeName,
-                dm: perDiem[0].dm,
+                dm: user,
                 city: perDiem[0].city, 
                 state: perDiem[0].state, 
                 location: perDiem[0].location, 
@@ -122,6 +121,7 @@ function PerDiem() {
                     rtow: item.rtow,
                     employeeNum: perDiem[0].employeeNum,
                     employeeName: perDiem[0].employeeName,
+                    dm: user,
                     city: perDiem[0].city, 
                     state: perDiem[0].state, 
                     location: perDiem[0].location, 
@@ -175,22 +175,21 @@ function PerDiem() {
                         <div className="wrapper1">
                             <div>
                                 <label htmlFor="state"> State:</label><br />
-                                <select id="state" name="state" onChange={e => cityList(e)}>
-                                    <option>Select State</option>
+                                <input type="text" id="state" name="state" list="states" placeholder="Select State" onChange={e => cityList(e)} />
+                                   <datalist id="states">
                                     {usstates.map((state, i) => {
-                                        return <option key={i}>{state.state_name}</option>
+                                        return <option key={i}>{state.state_name} </option>
                                     })}
-                                </select>
+                                    </datalist>
                             </div>
                             <div>
                                 <label htmlFor="city">City: <span style={{fontSize: '14px', fontWeight: 'normal'}}>(Please select state for list of cities)</span></label><br />
-                                <select id="city" name="city" onChange={e => handleInputChange(e)}>
-                                    <option>Select City</option>
+                                <input type="text" id="city" name="city" list="cities" placeholder="Select City" onChange={e => handleInputChange(e)} />
+                                <datalist id="cities">
                                    {(cities !== '') ? (cities.map((city,i) => {
                                        return <option key={i}>{city.city_name}</option>
-                                   })):<option>No cities Found</option>}
-                                </select>
-                                   
+                                   })): <option>No Cities Found</option>}
+                                   </datalist>
                             </div>
                             
                         </div>
@@ -198,22 +197,22 @@ function PerDiem() {
                         <div className="wrapper1">
                             <div>
                                 <label htmlFor="first_hotel">First hotel night needed:</label>
-                                <input type="date" name="first_hotel" id="firstNight" required title="Please enter the required information" onChange={e => handleInputChange(e)}></input>
+                                <input type="date" name="first_hotel" id="firstNight" onChange={e => handleInputChange(e)}></input>
                             </div>
                             <div>
                                 <label htmlFor="last_hotel">Last hotel night needed:</label>
-                                <input type="date" name="last_hotel" id="lastNight" required title="Please enter the required information" onChange={e => handleInputChange(e)}></input>
+                                <input type="date" name="last_hotel" id="lastNight" onChange={e => handleInputChange(e)}></input>
                             </div>
                         </div>
                         <br /><br />
                         <div className="wrapper1">
                             <div>
                                 <label htmlFor="arrival">Arrival Date:</label>
-                                <input type="date" name="arrival" id="arrivalDate" required title="Please enter the required information" onChange={e => handleInputChange(e)}></input>
+                                <input type="date" name="arrival" id="arrivalDate" onChange={e => handleInputChange(e)}></input>
                             </div>
                             <div>
                                 <label htmlFor="departure">Departure Date:</label>
-                                <input type="date" name="departure" id="departureDate" required title="Please enter the required information" onChange={e => handleInputChange(e)}></input>
+                                <input type="date" name="departure" id="departureDate" onChange={e => handleInputChange(e)}></input>
                             </div>
                         </div>
                         <br /><br />
@@ -234,6 +233,7 @@ function PerDiem() {
                                             <label htmlFor={destinationName}>{destinationName}</label>
                                             <input key={mileageName} type="date" className="mileageDate" id={mileageName} name="mileageDate" required title="Please enter the required information" onChange={e => handleInputChange(e, index)} ></input>
                                             <select required title="Please enter the required information" onChange={e => handleInputChange(e, index)} name="arrivalStore" id={arrivalID}>
+                                                <option>Select starting point</option>
                                                 <option>Home</option>
                                                 {stores.map((store, i)=> {
                                                     return (
@@ -242,6 +242,7 @@ function PerDiem() {
                                                     })}
                                             </select>
                                             <select required title="Please enter the required information" onChange={e => handleInputChange(e, index)} name="destinationStore" id={destinationID}>
+                                                <option>Select destination point</option>
                                                 <option>Home</option>
                                                 {stores.map((store, i)=> {
                                                     return (

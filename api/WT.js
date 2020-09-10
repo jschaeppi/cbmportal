@@ -78,7 +78,7 @@ wtRouter.post('/', async (req, res) => {
 </tr>
 <tr>
 <td style="width: 35%; border: 2px solid black; background: orange; font-weight: bold; padding: 3px; text-align: center;">DISTRICT MANAGER:</td>
-<td style="width: 59%; border: 2px solid black; background: white; font-weight: bold; padding: 3px; text-align: left;">${dm}</td>
+<td style="width: 59%; border: 2px solid black; background: white; font-weight: bold; padding: 3px; text-align: left;">${dm.userFirst} ${dm.userLast}td>
 </tr>
 <tr>
 <td style="width: 100%; border: 2px solid black; background: black; font-weight: bold; padding: 3px; text-align: center;" colspan="2">&nbsp;</td>
@@ -186,6 +186,7 @@ wtRouter.post('/', async (req, res) => {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: pdfFile, // Subject line
     html: `${message}`, // html body
     attachments:
@@ -211,7 +212,7 @@ wtRouter.post('/', async (req, res) => {
         let form = new WorkTicket();
         form.employeeName = employeeName;
         form.employeeNum = employeeNum;
-        form.dm = dm;
+        form.dm = `${dm.userFirst} ${dm.userLast}`;
         form.location = location;
         form.city = city;
         form.state = state;

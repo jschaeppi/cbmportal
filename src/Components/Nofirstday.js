@@ -6,15 +6,14 @@ const Nofirstday = () => {
 
     const history = useHistory();
     const cbmContext = useContext(CbmContext);
-    const {loginStatus, isAuthenticated, loading} = cbmContext;
-    const { userFirst, userLast } = cbmContext.user;
+    const {loginStatus, isAuthenticated, loading, user} = cbmContext;
     const [toggleRehire, setToggleRehire] = useState(true);
 
     const [data, setData] = useState([{
         rehire: '',
         firstName: '',
         employeeNum: '',
-        dm: `${userFirst} ${userLast}`,
+        dm: '',
         firstLast: '',
         secondLast: '',
         norehireReason: '',
@@ -53,7 +52,7 @@ const Nofirstday = () => {
                 rehire: data[0].rehire,
                 firstName: data[0].firstName,
                 employeeNum: data[0].employeeNum,
-                dm: data[0].dm,
+                dm: user,
                 firstLast: data[0].firstLast,
                 secondLast: data[0].secondLast,
                 norehireReason: data[0].norehireReason,

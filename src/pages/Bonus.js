@@ -5,10 +5,10 @@ import '../css/bonus.css';
 import SigPad from '../Components/sigPad';
 import CbmContext from '../context/cbm/cbmContext';
 
-function Bonus()  {
+function Bonus() {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, getStores, stores, isAuthenticated, loading } = cbmContext;
-    const { userFirst, userLast, district} = cbmContext.user;
+    const { loginStatus, getStores, stores, isAuthenticated, loading, user } = cbmContext;
+    const { district} = cbmContext.user;
     const history = useHistory();
     
     useEffect(() => {
@@ -73,28 +73,31 @@ function Bonus()  {
     const onSubmit = e => {
         e.preventDefault();
         let rows = [];
+        if (managerPad.current.isEmpty()) {
+            alert('Please provide a signature');
+        } else {
         if (formData.length === 1) {
             rows.push({
-                dm: `${userFirst} ${userLast}`, 
+                dm: user, 
                 bonus: formData[0].bonus,
                 date: formData[0].date,
                 location: formData[0].location, 
                 employeeName: formData[0].employeeName, 
                 employeeNum: formData[0].employeeNum,
                 comments: formData[0].comments,
-                sig: managerPad.current.getTrimmedCanvas().toDataURL("image/png")
+                sig: managerPad.current.getTrimmedCanvas().toDataURL('image/png')
             })
         } else {
             formData.map((item, i) => {
                 return rows.push({
-                    dm:`${userFirst} ${userLast}`, 
+                    dm: user, 
                     bonus: item.bonus,
                     date: item.date,
                     location: item.location, 
                     employeeName: formData[0].employeeName, 
                     employeeNum: formData[0].employeeNum,
                     comments: formData[0].comments,
-                    sig: managerPad.current.getTrimmedCanvas().toDataURL("image/png")
+                    sig: !managerPad.current.isEmpty() ? managerPad.current.getTrimmedCanvas().toDataURL('image/png') : alert('Please provide a signature')
                 });
             })
         }
@@ -116,6 +119,7 @@ function Bonus()  {
             console.log(err);
         }) 
     }
+}
 
         return (
                 

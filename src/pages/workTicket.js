@@ -7,8 +7,8 @@ const WorkTicket = () => {
 
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
-    const { loginStatus, isAuthenticated, loading, getStores, stores, getCities, cities, usstates } = cbmContext;
-    const { userFirst, userLast, district } = cbmContext.user;
+    const { loginStatus, isAuthenticated, loading, getStores, stores, getCities, cities, usstates, user } = cbmContext;
+    const { district } = cbmContext.user;
 
     useEffect(() => {
         if (!isAuthenticated && !loading) {
@@ -21,7 +21,7 @@ const WorkTicket = () => {
         const [data, setData] = useState([{
             employeeName: '',
             employeeNum: '',
-            dm: `${userFirst} ${userLast}`,
+            dm: '',
             location: '',
             city: '', 
             state: '',
@@ -65,7 +65,7 @@ const WorkTicket = () => {
                 body: JSON.stringify({
                     employeeName: data[0].employeeName,
                     employeeNum: data[0].employeeNum,
-                    dm: data[0].dm,
+                    dm: user,
                     location: data[0].location,
                     city: data[0].city, 
                     state: data[0].state,
@@ -115,22 +115,22 @@ const WorkTicket = () => {
                             <div className="wrapper1">
                                  <div>
                                     <label htmlFor="state"> State:</label><br />
-                                        <select id="state" name="state" onChange={e => cityList(e)}>
-                                            <option>Select State</option>
+                                    <input type="text" id="state" name="state" list="states" placeholder="Select State" onChange={e => cityList(e)} />
+                                        <datalist id="states">
                                             {usstates.map((state, i) => {
-                                                return <option key={i}>{state.state_name}</option>
+                                                return <option key={i}>{state.state_name} </option>
                                             })}
-                                        </select>
+                                        </datalist>
                                     
                                 </div>
                                 <div>
                                     <label htmlFor="city">City: <span style={{fontSize: '14px', fontWeight: 'normal'}}>(Please select state for list of cities)</span></label><br />
-                                        <select id="city" name="city" onChange={e => handleChange(e)}>
-                                            <option>Select City</option>
-                                                {(cities !== '') ? (cities.map((city,i) => {
+                                    <input type="text" id="city" name="city" list="cities" placeholder="Select City" onChange={e => handleChange(e)} />
+                                        <datalist id="cities">
+                                            {(cities !== '') ? (cities.map((city,i) => {
                                                 return <option key={i}>{city.city_name}</option>
-                                                })):<option>No cities Found</option>}
-                                        </select>
+                                            })): <option>No Cities Found</option>}
+                                        </datalist>
                                 </div>
                             </div>
                         <br /><br />

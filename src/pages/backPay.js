@@ -6,8 +6,7 @@ import '../css/backPay.css';
 import CbmContext from '../context/cbm/cbmContext';
 function BackPay() {
     const cbmContext = useContext(CbmContext);
-        const { loginStatus, isAuthenticated, loading } = cbmContext;
-
+        const { loginStatus, isAuthenticated, loading, user } = cbmContext;
         useEffect(() => {
             if (!isAuthenticated && !loading) {
             loginStatus();
@@ -78,13 +77,16 @@ function BackPay() {
     const onSubmit = e => {
         e.preventDefault();
         let rows = [];
+        if (managerPad.current.isEmpty()) {
+            alert('Please provide a signature');
+        } else {
         if (backPays.length === 1) {
             rows.push({
                 in: backPays[0].in,
                 left_lunch: backPays[0].left_lunch,
                 return_lunch: backPays[0].return_lunch,
                 out: backPays[0].out,
-                dm: backPays[0].dm, 
+                dm: user, 
                 employeeName: backPays[0].employeeName, 
                 employeeNum: backPays[0].employeeNum,
                 comments: backPays[0].payMissed,
@@ -97,7 +99,7 @@ function BackPay() {
                 left_lunch: item.left_lunch,
                 return_lunch: item.return_lunch,
                 out: item.out,
-                dm: backPays[0].dm, 
+                dm: user, 
                 employeeName: backPays[0].employeeName, 
                 employeeNum: backPays[0].employeeNum,
                 comments: backPays[0].payMissed,
@@ -121,6 +123,7 @@ function BackPay() {
             console.log(err);
         }) 
     }
+}
         return (
             <div className="container">
                 <h1 className="mainHeading">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Back Pay</span></h1><br />
@@ -148,9 +151,9 @@ function BackPay() {
                                     <label htmlFor={inName}>{inName}</label><br />
                                     <input key={inName} type="datetime-local" id={inName} name={inName}  required title="Please enter required information" onChange={e => handleInputChange(e, index)} ></input><br />
                                     <label htmlFor={left_lunchName}>{left_lunchName}</label><br />
-                                    <input key={left_lunchName} type="datetime-local" id={left_lunchName} name={left_lunchName}  required title="Please enter required information" onChange={e =>handleInputChange(e, index)}></input><br />
+                                    <input key={left_lunchName} type="datetime-local" id={left_lunchName} name={left_lunchName} onChange={e =>handleInputChange(e, index)}></input><br />
                                     <label htmlFor={return_lunchName}>{return_lunchName}</label><br />
-                                    <input key={return_lunchName} type="datetime-local" id={return_lunchName} name={return_lunchName}  required title="Please enter required information" onChange={e => handleInputChange(e, index)}></input><br />
+                                    <input key={return_lunchName} type="datetime-local" id={return_lunchName} name={return_lunchName} onChange={e => handleInputChange(e, index)}></input><br />
                                     <label htmlFor={outName}>{outName}</label><br />
                                     <input key={outName} type="datetime-local" id={outName} name={outName}  required title="Please enter required information" onChange={e => handleInputChange(e, index)}></input><br />
                                     {backPays.length !== 1 && <button onClick={e => handleRemoveRow(e,index)} id="backPayRemoveButton">Remove</button>}

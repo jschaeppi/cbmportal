@@ -4,13 +4,22 @@ const app = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan')
 const cors = require('cors');
+const session = require('express-session');
 const compression = require('compression');
 const PORT = process.env.PORT || 5000;
 const exhbs = require('express-handlebars');
-const authCheck = require('./api/authCheck');
+const config = require('config');
+const MongoStore = require('connect-mongo')(session);
 let Store = require('./src/Model/Stores');
+const db = require('./src/config/db');
 
-app.use(cors())
+//app.use(cors())
+app.use(cors({
+    origin: ['http://portal.cbmportal.com','http://portal.cbmportal.com:5000', 'http://127.0.0.1:3000', 'http://localhost:3000'],
+    methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
+    credentials: true
+  }));
+  
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -19,9 +28,25 @@ app.use(morgan('dev'));
 app.engine('.hbs', exhbs({extname: '.hbs'}))
 app.set('view engine', '.hbs');
 app.set('views', __dirname + '/views');
-
+app.set('trust proxy', 1) // trust first proxy
+/*app.use(session({
+    name: 'cbmCook',
+    secret: config.get('sessionSecret'),
+    cookie: {
+        httpOnly: true,
+        maxAge: 360000,
+        secure: false,
+        sameSite: 'none',
+    },
+    saveUninitialized: true,
+    resave: false,
+    store: new MongoStore({ 
+        mongooseConnection: db,
+        stringify: true,
+    }),
+}))*/
 //Declare Routing variables
-const db = require('./src/config/db');
+
 const bonusRouter = require('./api/bonus');
 const repairRouter = require('./api/repair');
 const uniformRouter = require('./api/uniform');
@@ -42,6 +67,9 @@ const newhireRouter = require('./api/newhire');
 const userRouter = require('./api/users');
 const storeRouter = require('./api/updateStores');
 const storesRouter = require('./api/stores');
+const targetorderRouter = require('./api/targetOrder');
+
+
 
 //Express Routers
 app.use('/api/bonus', bonusRouter);
@@ -64,17 +92,18 @@ app.use('/api/newhire', newhireRouter);
 app.use('/api/users', userRouter);
 app.use('/api/updateStores', storeRouter);
 app.use('/api/stores', storesRouter);
+app.use('/api/targetOrder', targetorderRouter);
 
 
 app.get('/admin', cors(), (req, res) => {
        res.render('home');
     });
 
-app.get('/admin/storelist', [authCheck, cors()], (req, res) => {
+app.get('/admin/storelist', cors(), (req, res) => {
     res.render('home');
     });
 
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0',() => {
     console.log(`Server is running on ${PORT}`);
 });

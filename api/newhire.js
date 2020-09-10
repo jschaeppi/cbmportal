@@ -33,9 +33,10 @@ newhireRouter.get('/stores/:id', (req, res) => {
 
 newhireRouter.post('/', formidable(), async (req, res) => {
 
-    const { firstName, middleName, dm, firstLast, firstDay, dob, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn } = req.fields;
+    const { firstName, middleName, dm_userFirst, dm_userLast, dm_email, firstLast, firstDay, dob, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, number } = req.fields;
     const { file1, file2, file3 } = req.files;
-    const receiver = await DepartmentModel.findOne({ department: 'Human Resources'});
+    console.log(req.fields);
+    const receiver = await DepartmentModel.findOne({ department: 'New Hires'});
 
     try {
         await fs.mkdir(`../../uploads/images/newhires/${firstName} ${firstLast}`, (err) => {
@@ -211,7 +212,7 @@ newhireRouter.post('/', formidable(), async (req, res) => {
 <tr>
 <td style="width: 48%; border: 1px solid black; padding: 3px;">Title Position</td>
 <td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${positions}</td>
+<td style="width: 48%; border: 1px solid black; padding: 3px;">${positions} ${number}</td>
 </tr>
 <tr>
 <td style="width: 48%; border: 1px solid black; padding: 3px;">Store Name and Number</td>
@@ -221,7 +222,7 @@ newhireRouter.post('/', formidable(), async (req, res) => {
 <tr>
 <td style="width: 48%; border: 1px solid black; padding: 3px;">District Manager</td>
 <td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${dm}</td>
+<td style="width: 48%; border: 1px solid black; padding: 3px;">${dm_userFirst} ${dm_userLast}</td>
 </tr>
 <tr>
 <td style="width: 48%; border: 1px solid black; padding: 3px;">Pay Rate/hour</td>
@@ -302,13 +303,14 @@ newhireRouter.post('/', formidable(), async (req, res) => {
 
      const message = `<p>Hello HR team, You have a New Hire Information for <strong>${firstName} ${middleName} ${firstLast} ${secondLast} </strong>assigned to the account <strong>${location}</strong><br /> Please process the information and send out the employee PIN number ASAP. Thanks </p>
      <p> </p>
-     <p><strong>${dm}</strong></p>
+     <p><strong>${dm_userFirst} ${dm_userLast}</strong></p>
      <p> </p>`
    
      //Sending Mail
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm_email,
     subject: `New Hire request for employee ${firstName} ${firstLast} ${secondLast}`, // Subject line
     html: `${receiver.department} ${message}`, // html body
     attachments: [
@@ -346,7 +348,7 @@ newhireRouter.post('/', formidable(), async (req, res) => {
     let form = new NewHire();
     form.firstName = firstName;
     form.middleName = middleName;
-    form.dm = dm;
+    form.dm = `${dm_userFirst} ${dm_userLast}`;
     form.firstLast = firstLast;
     form.firstDay = firstDay;
     form.dob = dob;

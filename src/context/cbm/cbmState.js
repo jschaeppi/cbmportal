@@ -5,6 +5,7 @@ import CbmContext from './cbmContext';
 import cbmReducer from './cbmReducer';
 import GeoApi from '../../config/geoLocations.json'
 import setAuthToken from '../../utils/setAuthToken';
+//import setAuthToken from '../../utils/setAuthToken';
 import {
     GET_USER,
     GET_AUTH,
@@ -103,7 +104,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     }
     const getStores = async (district) => {
         try {
-        const res = await axios.get(`http://portal.cbmportal.com:5000/api/stores/${district}`)
+        const res = await axios.get(`/api/stores/${district}`)
         dispatch({
             type: GET_STORES,
             payload: res.data,
@@ -132,7 +133,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     try {
         
 
-        const res = await axios.get('http://portal.cbmportal.com:5000/api/users/loginSub');
+        const res = await axios.get('/api/users/loginSub');
 
     dispatch({
         type: GET_AUTH,
@@ -153,7 +154,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
         const loginUser = async (user, pass) => {
             setLoading();
             try {
-        const res = await axios.post('http://portal.cbmportal.com:5000/api/users/loginSub', { 
+        const res = await axios.post('/api/users/loginSub', { 
             data: {
                 username: user,
                 password: pass,
@@ -175,6 +176,9 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
             type: LOGIN_ERROR,
             payload: err.response,
         }) 
+        if (!state.loading) {
+            history.push('/login');
+            }
         }
     }
 
@@ -200,6 +204,7 @@ return <CbmContext.Provider
         clearErrors,
         getStates,
         getCities,
+        setAuthToken,
     }}>
         {props.children}
 </CbmContext.Provider>

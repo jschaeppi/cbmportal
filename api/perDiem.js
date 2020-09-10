@@ -113,7 +113,7 @@ perdiemRouter.post('/', async (req, res) => {
 </tr>
 <tr>
 <td style="border: 2px solid black; padding:3px;text-align: left; font-weight: bold;" colspan="2">DISTRICT MANAGER</td>
-<td style="border: 2px solid black; padding:3px;text-align: center; background: yellow;font-size:90%;" colspan="4">${dm}</td>
+<td style="border: 2px solid black; padding:3px;text-align: center; background: yellow;font-size:90%;" colspan="4">${dm.userFirst} ${dm.userLast}</td>
 </tr>
 <tr>
 <td style="background: lightgray; font-height: 120%; font-weight: bold; text-align: center; border: 2px solid black;" colspan="6">JOB SITE</td>
@@ -217,6 +217,7 @@ ${perDiemInfo.join().replace(/,/g," ")}
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: pdfFile, // Subject line
     html: `${receiver.department} ${message}`, // html body
     attachments: [
@@ -242,6 +243,7 @@ ${perDiemInfo.join().replace(/,/g," ")}
     let form = new PerDiem();
     form.employeeName = employeeName;
     form.employeeNum = employeeNum;
+    form.dm = `${dm.userFirst} ${dm.userLast}`;
     form.location = location;
     form.city = city;
     form.state = state;

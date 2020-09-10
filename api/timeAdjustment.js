@@ -47,14 +47,14 @@ timeadjustRouter.post('/', async (req, res) => {
     let base64Image = ''
    
     try {
-        fs.mkdir(`../../uploads/signatures/timeadjustment/${dm}`, (err) => {
+        await fs.mkdir(`../../uploads/signatures/timeadjustment/${dm.userFirst} ${dm.userLast}`, (err) => {
             if (err) {
                 console.log(err);
             }
                 console.log('Folder created successfully!');
         })
 
-        fs.mkdir(`../../uploads/signatures/timeadjustment/${employeeNum}`, (err, result) => {
+        await fs.mkdir(`../../uploads/signatures/timeadjustment/${employeeNum}`, (err, result) => {
             if (err) {
                 console.log(err);
             } else if(result) {
@@ -65,7 +65,7 @@ timeadjustRouter.post('/', async (req, res) => {
         // Remove header
         var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
         base64Image = new Buffer.from(base64Data, 'base64');
-        fs.writeFile(`../../uploads/signatures/timeadjustment/${employeeNum}/employeeAdjustSig${month}-${day}-${year}.png`, base64Image, (err) => {
+        await fs.writeFile(`../../uploads/signatures/timeadjustment/${employeeNum}/employeeAdjustSig${month}-${day}-${year}.png`, base64Image, (err) => {
             if (err) {
             console.log(err);
             }
@@ -77,7 +77,7 @@ timeadjustRouter.post('/', async (req, res) => {
         var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
         base64Image = new Buffer.from(base64Data, 'base64');
         
-        fs.writeFile(`../../uploads/signatures/timeadjustment/${dm}/managerAdjustSig${month}-${day}-${year}-${employeeNum}.png`, base64Image, (err) => {
+        await fs.writeFile(`../../uploads/signatures/timeadjustment/${dm.userFirst} ${dm.userLast}/managerAdjustSig${month}-${day}-${year}-${employeeNum}.png`, base64Image, (err) => {
             if (err) {
             console.log(err);
             }
@@ -247,7 +247,7 @@ ${timeadjustInfo.join().replace(/,/g," ")}
 <td style=" width: 150px; padding: 1px;">Manager:</td>
 <td style=" width: 150px; border-bottom: border: 1px solid black; padding: 1px; text-align:center;">${dm}</td>
 <td style=" width: 150px; height: 20px; border-bottom: border: 1px solid black; padding: 1px; vertical-align:bottom">
-<div class="DMOSsign"><img src="http://portal.cbmportal.com/uploads/signatures/timeadjustment/${dm}/managerAdjustSig${month}-${day}-${year}-${employeeNum}.png"><img></div>
+<div class="DMOSsign"><img src="http://portal.cbmportal.com/uploads/signatures/timeadjustment/${dm.userFirst} ${dm.userLast}/managerAdjustSig${month}-${day}-${year}-${employeeNum}.png"><img></div>
 </td>
 <td style=" width: 150px; border-bottom: border: 1px solid black; padding: 1px; text-align:center;">${month}/${day}/${year}</td>
 </tr>
@@ -279,6 +279,7 @@ ${timeadjustInfo.join().replace(/,/g," ")}
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: `Time Adjustment request for ${req.body[0].employeeNum}`, // Subject line
     text: `${receiver.department} ${message}`, // plain text body
     attachments: {
@@ -302,7 +303,7 @@ ${timeadjustInfo.join().replace(/,/g," ")}
     let form = new timeAdjust();
         form.employeeName = employeeName;
         form.employeeNum = employeeNum;
-        form.dm = dm;
+        form.dm = `${dm.userFirst} ${dm.userLast}`;
         timeadjustInfo.forEach((item, i) => {
             form.adjustments.push(item);
         })

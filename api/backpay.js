@@ -31,6 +31,8 @@ backpayRouter.get('/', (req, res) => {
 });
 
 backpayRouter.post('/', async (req, res) => {
+    console.log(req.body[0].dm)
+    const { dm } = req.body[0];
     let backpayInfo = []; 
     let rows = [];
     let total = 0;
@@ -41,18 +43,14 @@ backpayRouter.post('/', async (req, res) => {
     var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
     let base64Image = new Buffer.from(base64Data, 'base64');
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
-    fs.mkdir(`../../uploads/signatures/backPaySig/${req.body[0].employeeNum}`, (err, result) => {
+    await fs.mkdir(`../../uploads/signatures/backPaySig/${req.body[0].employeeNum}`, (err, result) => {
         if (err) {
             console.log(err);
-        } else if(result) {
-        console.log('Folder created successfully!');
-    }
+        }
     })
-    fs.writeFile(`../../uploads/signatures/backPaySig/${req.body[0].employeeNum}/${month}-${date}-${year}$.png`, base64Image, (err, result) => {
+    await fs.writeFile(`../../uploads/signatures/backPaySig/${req.body[0].employeeNum}/${month}-${date}-${year}.png`, base64Image, (err, result) => {
       if (err) {
         console.log(err);
-      } else if (result) {
-      console.log('File succeeded.');
       }
     });
         //Generating Bonuse Rows
@@ -88,7 +86,7 @@ backpayRouter.post('/', async (req, res) => {
     width:150px;vertical-align:bottom;
     }
     html {
-        zoom: .55;
+        zoom: .65;
     }
     </style>
     </head>
@@ -225,6 +223,7 @@ backpayRouter.post('/', async (req, res) => {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: `Backpay request for ${req.body[0].employeeNum}`, // Subject line
     text: `${receiver.department} ${message}`, // plain text body
     attachments: {

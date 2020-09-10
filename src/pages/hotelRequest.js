@@ -7,8 +7,8 @@ import CbmContext from '../context/cbm/cbmContext';
 
 function HotelRequest() {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, isAuthenticated,loading, getStores, stores } = cbmContext;
-    const { district, userFirst, userLast } = cbmContext.user;
+    const { loginStatus, isAuthenticated,loading, getStores, stores, user } = cbmContext;
+    const { district } = cbmContext.user;
     const history = useHistory();
     const [psList, setPsList] = useState([]);
     let   [psToggle, setToggle] = useState(false);
@@ -103,7 +103,7 @@ function HotelRequest() {
                 notes: formData[0].notes,
                 hotelReason: formData[0].hotelReason,
                 beds: formData[0].beds,
-                dm: `${userFirst} ${userLast}`,
+                dm: user,
                 WT: formData[0].WT,
                 newPS: formData[0].newPS
             })

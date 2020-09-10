@@ -6,8 +6,8 @@ import CbmContext from '../context/cbm/cbmContext';
 function Mileage() {
 
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, loading, isAuthenticated, getStores, stores } = cbmContext;
-    const { district, userFirst, userLast } = cbmContext.user;
+    const { loginStatus, loading, isAuthenticated, getStores, stores, user } = cbmContext;
+    const { district } = cbmContext.user;
     const history = useHistory();
     const [mileage, addMileage] = useState([
         {
@@ -70,7 +70,7 @@ function Mileage() {
         let rows = [];
         if (mileage.length === 1) {
             rows.push({
-                dm: `${userFirst} ${userLast}`, 
+                dm: user, 
                 mileageDate: mileage[0].mileageDate,
                 starting: mileage[0].starting,
                 destination: mileage[0].destination,
@@ -84,7 +84,7 @@ function Mileage() {
                     mileageDate: item.mileageDate,
                     starting: item.starting,
                     destination: item.destination, 
-                    dm: `${userFirst} ${userLast}`, 
+                    dm: user, 
                     employeeName: mileage[0].employeeName, 
                     employeeNum: mileage[0].employeeNum,
                     comments: mileage[0].comments
@@ -141,12 +141,12 @@ function Mileage() {
                                                 <label htmlFor={startingPoint}>{startingPoint}</label>
                                                 <label htmlFor={destinationPoint}>{destinationPoint}</label>
                                                 <input key={mileageDate} type="date" id={mileageDate}  required title="Please enter the required information" onChange={e => handleInputChange(e, index)} ></input>
-                                                <select key={startingPoint} id={startingPoint} required title="Please select an option" onChange={e => handleInputChange(e, index)}>{stores.map((store, i) => {
+                                                <select key={startingPoint} id={startingPoint} required title="Please select an option" onChange={e => handleInputChange(e, index)}><option>Select Starting Point</option><option>Home</option>{stores.map((store, i) => {
                                                                                                                                                 return (
                                                                                                                                                     <option key={i}>{store.store}</option>
                                                                                                                                                 )}
                                                                                                                                                         )}</select>
-                                                <select key={destinationPoint} id={destinationPoint} required title="Please select an option" onChange={e => handleInputChange(e, index)}>{stores.map((store, i) => {
+                                                <select key={destinationPoint} id={destinationPoint} required title="Please select an option" onChange={e => handleInputChange(e, index)}><option>Select Starting Point</option><option>Home</option>{stores.map((store, i) => {
                                                                                                                                                 return (
                                                                                                                                                     <option key={i}>{store.store}</option>
                                                                                                                                                 )}

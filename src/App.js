@@ -16,6 +16,7 @@ import PTO from './pages/PTO';
 import Repair from './pages/Repair';
 import Term from './pages/Term';
 import timeAdjustment from './pages/timeAdjustment';
+import TargetOrder from './pages/targetOrder';
 import Uniform from './pages/Uniform';
 import workTicket from './pages/workTicket';
 import Success from './pages/success';
@@ -51,6 +52,7 @@ const App = () => {
                     <ProtectedRoute exact path="/repair"  component={Repair} />
                     <ProtectedRoute exact path="/term"    component={Term} />
                     <ProtectedRoute exact path="/timeadjustment" component={timeAdjustment} />
+                    <ProtectedRoute exact path="/targetorder" component={TargetOrder} />
                     <ProtectedRoute exact path="/uniform" component={Uniform} />
                     <ProtectedRoute exact path="/workticket" component={workTicket} />
                     <ProtectedRoute exact path="/success" component={Success} />

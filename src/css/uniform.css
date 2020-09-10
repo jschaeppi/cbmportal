@@ -44,6 +44,8 @@
 
 .sigPad {
     background-color: #c9c8c5;
+    margin: 0 auto;
+    width: 100%;
 }
 
 #uniformSig > label {

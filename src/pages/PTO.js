@@ -6,8 +6,8 @@ import CbmContext from '../context/cbm/cbmContext';
 const PTO = () => {
     
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, isAuthenticated, loading } = cbmContext;
-    const { userFirst, userLast } = cbmContext.user;
+    const { loginStatus, isAuthenticated, loading, user } = cbmContext;
+ 
     const history = useHistory();
     const managerPad = useRef({});
     useEffect(() => {
@@ -19,7 +19,7 @@ const PTO = () => {
     const [data, setData] = useState([{
         employeeNum: '',
         employeeName: '',
-        dm: `${userFirst} ${userLast}`,
+        dm: '',
         departments: '',
         absencefrom: '',
         absenceto: '',
@@ -41,6 +41,9 @@ const PTO = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        if (managerPad.current.isEmpty()) {
+            alert('Please provide a signature');
+        } else {
             fetch('http://portal.cbmportal.com:5000/api/pto/', {
                 method: 'POST',
                 headers: {
@@ -49,7 +52,7 @@ const PTO = () => {
                 body: JSON.stringify({
                     employeeNum: data[0].employeeNum,
                     employeeName: data[0].employeeName,
-                    dm: data[0].dm,
+                    dm: user,
                     departments: data[0].departments,
                     absencefrom: data[0].absencefrom,
                     absenceto: data[0].absenceto,
@@ -65,6 +68,7 @@ const PTO = () => {
             })
             .catch(err => console.log(err))
         }
+    }
 
         return (
             <div className="container">

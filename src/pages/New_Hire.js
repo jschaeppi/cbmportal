@@ -7,8 +7,8 @@ const NewHire = () =>  {
 
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
-    const { loginStatus, isAuthenticated, loading, getStores, stores} = cbmContext;
-    const { userFirst, userLast, district} = cbmContext.user;
+    const { loginStatus, isAuthenticated, loading, getStores, stores, user} = cbmContext;
+    const { district} = cbmContext.user;
     
     useEffect(() => {
         if (!isAuthenticated && !loading) {
@@ -21,7 +21,6 @@ const NewHire = () =>  {
     const [hidden, setHidden] = useState(true);
     const [data, setData] = useState([{
         firstName: '',
-        dm: `${userFirst} ${userLast}`,
         location: '',
         hireType: '', 
         middleName: '',
@@ -39,6 +38,10 @@ const NewHire = () =>  {
         wage: '',
         positions: '',
         language: '',
+        number: '',
+        dm_userFirst: user.userFirst,
+        dm_userLast: user.userLast,
+        dm_email: user.email,
     }])
 
     const formatPhone = (e) => {
@@ -70,8 +73,12 @@ const NewHire = () =>  {
     }
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        let {name, value} = e.target;
         const list = [...data];
+        if (value === 'floortech') {
+            let number = prompt('Enter the number of the floor tech', '');
+            value = value + ' ' + number;
+        }
         list[0][name] = value
         setData(list);
         
@@ -145,7 +152,7 @@ const NewHire = () =>  {
                             </div>
                             <div className="content">
                             <label htmlFor="email">Email:</label><br />
-                            <input type="email" id="email" name="email" title="Please enter an email in the format <user@domain.com>" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required onChange={e => handleChange(e)}/>
+                            <input type="email" id="email" name="email" title="Please enter an email in the format <user@domain.com>" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" onChange={e => handleChange(e)}/>
                             </div>
                         </div>
                         <br /><br />
@@ -177,6 +184,7 @@ const NewHire = () =>  {
                             <div className="content">
                                 <label htmlFor="sex">Gender</label><br />
                                 <select id="sex" name="sex"   title="Please enter the required information" required onChange={e => handleChange(e)}>
+                                    <option value="">Select Gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                     <option value="Unknown">Identifies as another gender</option>

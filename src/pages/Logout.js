@@ -6,11 +6,11 @@ const Logout = () => {
 
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
-    const { logout, loading } = cbmContext;
+    const { logout, loading, isAuthenticated } = cbmContext;
     useEffect(() => {
         logout();
     })
-    if (!loading) {
+    if (!loading && !isAuthenticated) {
         history.push('/login');
     }
     return (

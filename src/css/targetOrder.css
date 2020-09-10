@@ -5,14 +5,19 @@
     padding: 0;
 }
 
+table {
+    width: 80%;
+    border-collapse: collapse;
+}
+
 #orderQuantity {
-    width: 5rem;
+    width: 100%;
+    margin: 0 auto;
     
 }
 
-#dataCells {
+.dataCells {
     margin-top: .5em;
-    width: 32.8rem !important;
     height: 4rem;
     padding-top: .25rem;
     border: 1px solid black;
@@ -46,9 +51,11 @@
 }
 
 #select {
-    width: 10%;
-    padding-left: .5rem;
+    width: 20%;
+    padding: 1.5rem .5rem;
     padding-top: 1.5rem;
+    border: 1px solid black;
+    box-shadow: 1px 1px;
 }
 
 #radio2 {
@@ -67,12 +74,10 @@
 
 #radioDiv2 {
     vertical-align: middle;
-    padding-top: 1.5rem;
-    float: right;  
+    padding-top: 1.5rem; 
 }
 
 #radioDiv12 {
     vertical-align: middle;
     padding-top: 1.5rem;
-    float: right;  
 }

@@ -28,20 +28,20 @@ uniformRouter.get('/', (req, res) => {
 });
 
 uniformRouter.post('/', async (req, res) => {
-  const { employeeNum, firstName, lastName, address, apt, city, state, zip, cost, quantity, size, date } = req.body;
-  const receiver = await DepartmentModel.findOne({ department: 'Human Resources'});
+  const { employeeNum, firstName, lastName, address, apt, city, state, zip, cost, quantity, size, date, dm } = req.body;
+  const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
     let base64String = req.body.sig;
     // Remove header
     let base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
     let base64Image = new Buffer.from(base64Data, 'base64');
 
-    fs.mkdir(`../../uploads/signatures/${employeeNum}`, (err) => {
+    await fs.mkdir(`../../uploads/signatures/${employeeNum}`, (err) => {
       if (err) {
           console.log(err);
       }
       console.log('Folder created successfully!');
   })
-    fs.writeFile(`../../uploads/signatures/${employeeNum}/uniformSig${month}-${day}-${year}.png`, base64Image, (err) => {
+    await fs.writeFile(`../../uploads/signatures/${employeeNum}/uniformSig${month}-${day}-${year}.png`, base64Image, (err) => {
       if (err) {
         console.log(err);
       }
@@ -301,6 +301,7 @@ uniformRouter.post('/', async (req, res) => {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: pdfFile, // Subject line
     html: `${receiver.department} ${message} <br /> ${content}`, // html body
     attachments: {

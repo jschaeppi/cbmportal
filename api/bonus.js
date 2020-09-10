@@ -51,6 +51,7 @@ bonusRouter.get('/stores/:district', (req, res) => {
 }
 });
 bonusRouter.post('/', async (req, res) => {
+    const { dm } = req.body[0];
     const rows = [];
     let bonusInfo = [];
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
@@ -63,7 +64,7 @@ bonusRouter.post('/', async (req, res) => {
     let base64Image = new Buffer.from(base64Data, 'base64');
     try {
     //Make new folder for request
-    fs.mkdir(`../../uploads/signatures/bonusPaySig/${req.body[0].employeeNum}`, (err, result) => {
+    await fs.mkdir(`../../uploads/signatures/bonusPaySig/${req.body[0].employeeNum}`, (err, result) => {
         if (err) {
             console.log(err);
         } else if(result) {
@@ -71,7 +72,7 @@ bonusRouter.post('/', async (req, res) => {
     }
     })
     //Write signature to file
-    fs.writeFile(`../../uploads/signatures/bonusPaySig/${req.body[0].employeeNum}/${month}-${date}-${year}.png`, base64Image, (err) => {
+    await fs.writeFile(`../../uploads/signatures/bonusPaySig/${req.body[0].employeeNum}/${month}-${date}-${year}.png`, base64Image, (err) => {
         if (err) {
           console.log(err);
         }
@@ -253,6 +254,7 @@ td {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: `Bonus request for ${req.body[0].employeeNum}`, // Subject line
     text: `${receiver.department} ${message}`, // plain text body
     attachments: {

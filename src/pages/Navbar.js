@@ -6,7 +6,8 @@ import CbmContext from '../context/cbm/cbmContext';
 
 const NavBar = () => {
     const cbmContext = useContext(CbmContext);
-    const { isAuthenticated } = cbmContext;
+    const { isAuthenticated, user, loading } = cbmContext;
+    //const { district } = cbmContext.user;
     const [visible, setVisible] = useState(false);
 
     const toggleMenu = (e) => {
@@ -14,15 +15,6 @@ const NavBar = () => {
     }
         const authLinks = (
                 <Fragment>
-                    <li>
-                        <Link to="/repair">Repair Request</Link>
-                    </li>
-                    <li>
-                        <Link to="/propane">Propane Request</Link>
-                    </li>
-                    <li>
-                        <Link to="/dustmop">Dust Mop Request </Link>
-                    </li>
                     <li>
                         <Link to="/uniform">Uniform Order Form </Link>
                     </li>
@@ -38,9 +30,12 @@ const NavBar = () => {
                     <li>
                         <Link to="/hotelrequest">Hotel Request </Link>
                     </li>
+                    {(user && !loading && isAuthenticated) ?
+                    ((user.district.includes('MN Grocery-Retail')) || (user.district.includes('MN RETAIL DIST')) || (user.district.includes('MN Northern Dist'))) ?
                     <li>
-                        <Link to="/mileage">Mileage </Link>
+                       <Link to="/mileage">Mileage </Link> 
                     </li>
+                    : '':''}
                     <li>
                         <Link to="/perdiem">Per Diem </Link>
                     </li>
@@ -53,6 +48,12 @@ const NavBar = () => {
                     <li>
                         <Link to="/timeadjustment">Time Adjustment </Link>
                     </li>
+                    {(user && !loading && isAuthenticated) ?
+                    ((!user.district.includes('MN Grocery-Retail'))) ?
+                    <li>
+                        <Link to="/targetOrder">Target Order </Link>
+                    </li>
+                    : '':''}
                     <li>
                         <Link to="/workticket">Work Ticket </Link>
                     </li>
@@ -61,15 +62,6 @@ const NavBar = () => {
 
         const guestLinks = (
                 <Fragment>
-                    <li>
-                    <Link to="/repair">Repair Request</Link>
-                    </li>
-                    <li>
-                        <Link to="/propane">Propane Request</Link>
-                    </li>
-                    <li>
-                        <Link to="/dustmop">Dust Mop Request </Link>
-                    </li>
                     <li>
                         <Link to="/uniform">Uniform Order Form </Link>
                     </li>
@@ -84,6 +76,7 @@ const NavBar = () => {
                             <ul className="linkGrid" style={{display: visible ? 'block' : 'none' }}>
                                 <div id="mobileLogin" >
                                 {isAuthenticated ? <Link to="/logout">  <i className="fas fa-sign-out-alt">Logout</i></Link>: <Link to="/login"><i className="fas fa-sign-in-alt">Login</i></Link>}
+                                {(isAuthenticated && document.cookie && cbmContext.user.permission > 1) ? <Link to="/admin">  <i className="fas fa-user-shield">Admin</i></Link>: ""}
                                 </div>
                                 {isAuthenticated ? authLinks : guestLinks}
                             </ul>
@@ -102,6 +95,7 @@ const NavBar = () => {
                     
                 <div id="login">
                         {isAuthenticated ? <Link to="/logout">  <i className="fas fa-sign-out-alt">Logout</i></Link>: <Link to="/login"><i className="fas fa-sign-in-alt">Login</i></Link>}
+                        {(isAuthenticated && document.cookie && cbmContext.user.permission > 1) ? <Link to="/admin">  <i className="fas fa-user-shield">Admin</i></Link>: ""}
                 </div>
             </nav>
         );

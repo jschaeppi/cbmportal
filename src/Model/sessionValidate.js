@@ -7,7 +7,7 @@ const sessionSchema = new Schema({
         cookie: {
             type: Object,
         },
-        passport: {
+        user: {
             type: Object,
         },
 

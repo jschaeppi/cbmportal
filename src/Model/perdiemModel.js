@@ -10,6 +10,9 @@ const perdiemForm = new Schema({
         employeeNum: {
             type: String,
         },
+        dm: {
+            type: String,
+        },
         location: {
             type: String, 
         },

@@ -4,15 +4,14 @@ import CbmContext from '../context/cbm/cbmContext';
 
 const Main = (props) => {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, loading, isAuthenticated, getStores, getStates, getCities, cities } = cbmContext;
-    const { userFirst, userLast, district } = cbmContext.user;
+    const { loginStatus, loading, isAuthenticated, getStores, getStates, user } = cbmContext;
     
     useEffect(() =>{
-        if (!isAuthenticated && !loading) {
+        if (!isAuthenticated && user && !loading) {
             loginStatus();
         }   
-        if (!loading) {
-        getStores(district);
+        if (!loading && user) {
+        getStores(user.district);
         getStates();
         }
 
@@ -24,9 +23,10 @@ const Main = (props) => {
 
         return (
             <Fragment>
+                {(isAuthenticated && user) ? (
                 <div style={{width: '200px', margin: '0 auto'}}>
-                {`Welcome, ${userFirst} ${userLast}`}
-                </div>
+                {`Welcome, ${user.userFirst} ${user.userLast}`}
+                </div>) : ('')}
             </Fragment>
         )
 }

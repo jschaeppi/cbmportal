@@ -25,18 +25,18 @@ propaneRouter.get('/stores', (req, res) => {
 });
 
 propaneRouter.post('/', formidable(), async (req, res) => {
-    const { employeeName, location, notes, tanksLeft } = req.fields;
+    const { employeeName, location, notes, tanksLeft, dm } = req.fields;
     const image = req.files.file;
     const imageName = image.name;
     const receiver = await DepartmentModel.findOne({ department: 'Operations'});
 
-    fs.mkdir(`../../uploads/locations/propane/${location}`, (err) => {
+    await fs.mkdir(`../../uploads/locations/propane/${location}`, (err) => {
         if (err) {
             console.log(err);
         }
         console.log('Folder created successfully!');
     })
-    fs.rename(image.path, `../../uploads/locations/propane/${location}/${imageName}`, (err) => {
+    await fs.rename(image.path, `../../uploads/locations/propane/${location}/${imageName}`, (err) => {
         if (err) {
             console.log('File couldn\'t be moved!');
         }
@@ -82,6 +82,7 @@ propaneRouter.post('/', formidable(), async (req, res) => {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: `Propane request for location ${location}`, // Subject line
     html: `${receiver.department} ${message}`, // html body
     attachments: {

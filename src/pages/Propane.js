@@ -6,7 +6,7 @@ import '../css/propane.css';
 const Propane = () => {
     
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, getStores, stores, isAuthenticated, loading } = cbmContext;
+    const { loginStatus, getStores, stores, isAuthenticated, loading, user } = cbmContext;
     const { district} = cbmContext.user;
     const history = useHistory();
     const [data, setData] = useState([{
@@ -35,6 +35,7 @@ const Propane = () => {
             formData.append('employeeName', data[0].employeeName);
             formData.append('notes', data[0].notes);
             formData.append('tanksLeft', data[0].tanksLeft);
+            formData.append('dm', user);
             axios.post('http://portal.cbmportal.com:5000/api/propane/', formData)
             .then( res => {
                 if (res.data.message) history.push('/success');

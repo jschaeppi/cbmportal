@@ -25,17 +25,17 @@ dustmopRouter.get('/stores', (req, res) => {
     
 });
 
-dustmopRouter.post('/', formidable(), (req, res) => {
-    const { employeeName, location, mopsLeft } = req.fields;
+dustmopRouter.post('/', formidable(), async (req, res) => {
+    const { employeeName, location, mopsLeft, dm } = req.fields;
     const image = req.files.file;
     const imageName = image.name;
-    fs.mkdir(`../../uploads/images/locations/dustmop/${location}`, (err) => {
+    await fs.mkdir(`../../uploads/images/locations/dustmop/${location}`, (err) => {
         if (err) {
             console.log(err);
         }
         console.log('Folder created successfully!');
     })
-    fs.rename(image.path, `../../uploads/images/locations/dustmop/${location}/${imageName}`, (err) => {
+    await fs.rename(image.path, `../../uploads/images/locations/dustmop/${location}/${imageName}`, (err) => {
         if (err) {
             console.log('File couldn\'t be moved!');
         }
@@ -82,6 +82,7 @@ dustmopRouter.post('/', formidable(), (req, res) => {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver, // list of receivers
+    cc: dm.email,
     subject: `Dustmop request for location ${location}`, // Subject line
     html: message, // html body
     attachments: {

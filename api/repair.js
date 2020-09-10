@@ -31,18 +31,18 @@ repairRouter.get('/stores', (req, res) => {
 });
 
 repairRouter.post('/', async (req, res) => {
-    const { location, machineTag, machineType, problem, reported, brandName } = req.fields;
+    const { location, machineTag, machineType, problem, reported, brandName, dm } = req.fields;
     const image = req.files.file;
     const receiver = await DepartmentModel.findOne({ department: 'Mechanic'});
 
     try {
-        fs.mkdir(`../../uploads/images/locations/repair/${location}`, (err) => {
+        await fs.mkdir(`../../uploads/images/locations/repair/${location}`, (err) => {
             if (err) {
                 console.log(err);
             }
             console.log('Folder created successfully!');
         })
-        fs.rename(image.path, `../../uploads/images/locations/repair/${location}/${image.name}`, (err) => {
+        await fs.rename(image.path, `../../uploads/images/locations/repair/${location}/${image.name}`, (err) => {
             if (err) {
                 console.log('File couldn\'t be moved!');
             }
@@ -111,6 +111,7 @@ repairRouter.post('/', async (req, res) => {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: pdfFile, // Subject line
     html: `${message}`, // html body
     attachments: [

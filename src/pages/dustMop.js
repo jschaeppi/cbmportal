@@ -7,7 +7,7 @@ const DustMop = () => {
 
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
-    const { loginStatus, getStores, stores, isAuthenticated, loading } = cbmContext;
+    const { loginStatus, getStores, stores, isAuthenticated, loading, user } = cbmContext;
     const { district } = cbmContext.user;
 
     useEffect(() => {
@@ -40,6 +40,7 @@ const DustMop = () => {
         formData.append('location', data[0].location);
         formData.append('employeeName', data[0].employeeName);
         formData.append('mopsLeft', data[0].mopsLeft);
+        formData.append('dm', user)
         axios.post('http://portal.cbmportal.com:5000/api/dustmop/', formData)
         .then( res => {
             if (res.data.message) history.push('/success');

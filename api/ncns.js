@@ -23,11 +23,10 @@ let year = date_ob.getFullYear();
 
 
 ncnsRouter.post('/', async (req, res) => {
-    console.log(req.body);
     const { firstLast, firstName, employeeNum, secondLast, dm, rehire, norehireReason, quitReason } = req.body;
     const lastWorked = moment(req.body.lastWorked).format('L');
     console.log(rehire)
-    const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
+    const receiver = await DepartmentModel.findOne({ department: 'Carlson Terminations'});
 
     let pdfFile = `Employee-${employeeNum}-${firstName} ${firstLast} ${secondLast}`;
     // Stripping special characters
@@ -197,7 +196,7 @@ ncnsRouter.post('/', async (req, res) => {
 <tbody>
 <tr style="height: 43px;">
 <td style="width: 70%; border-bottom: 1px solid black; vertical-align: bottom; height: 43px;">&nbsp; &nbsp; &nbsp;&nbsp;
-<div class="DMOSsign">${dm}</div>
+<div class="DMOSsign">${dm.userFirst} ${dm.userLast}</div>
 </td>
 <td style="width: 30%; border-bottom: 1px solid black; vertical-align: bottom; height: 43px;">&nbsp;${month}/${day}/${year}</td>
 </tr>
@@ -235,6 +234,7 @@ ncnsRouter.post('/', async (req, res) => {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: `Termination request for employee ${employeeNum} ${firstName} ${firstLast} ${secondLast}`, // Subject line
     html: `${receiver.department} ${message}`, // html body
     attachments: {

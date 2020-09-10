@@ -41,7 +41,7 @@ mileageRouter.post('/', async (req, res) => {
     const mileageInfo = [];
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
 
-    let pdfFile = `Mileage-Request-${dm}-${month}-${date}-${year}`;
+    let pdfFile = `Mileage-Request-${employeeName}-${month}-${date}-${year}`;
 
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
@@ -51,30 +51,30 @@ mileageRouter.post('/', async (req, res) => {
         rows.push(item.starting);
         rows.push(item.destination);
         mileageInfo.push('<tr>' +
-        '<td width="10%" style="border: 1px solid black;">' + moment(item.mileageDate).format('L') + '</td>' +
-        '<td width="100%" style="border: 1px solid black;">' + item.starting + '</td>' +
-        '<td width="100%" style="border: 1px solid black;">' + item.destination + '</td>' +
+        '<td height="25px" width="33%" style="border: 1px solid black;">' + moment(item.mileageDate).format('L') + '</td>' +
+        '<td height="25px" style="border: 1px solid black;" colspan="2">' + item.starting + '</td>' +
+        '<td height="25px" style="border: 1px solid black;" colspan="2">' + item.destination + '</td>' +
         '</tr>');
 })
     let content = `
     <head>
     <style>
     html {
-        zoom: .55;
+        zoom: .45;
     }
     table {
         border-spacing: 0;
     }
     </style>
     </head>
-    <table style="width: 100%;" border="0" cellpadding="1" cellspacing="0">
+    <table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
     <tbody>
     <tr>
     <td style="border-bottom: 0px solid black;">&nbsp;</td>
     </tr>
     </tbody>
     </table>
-    <table style="width: 100%;" border="0" cellpadding="1" cellspacing="0">
+    <table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
     <tbody>
     <tr>
     <td><img src="http://portal.cbmportal.com/cbm_forms/images/CBM_Logo.png" alt="" width="336" height="102" /></td>
@@ -102,10 +102,10 @@ mileageRouter.post('/', async (req, res) => {
     </tr>
     </tbody>
     </table>
-    <table style="width: 100%;" border="0" cellpadding="1" cellspacing="0">
+    <table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
     <tbody>
     <tr style="color: white; font-weight: bold; font-size: 140%; font-family: Arial; text-align: center; height: 29px; background-color: #25354c;">
-    <td style="height: 29px; font-weight: bold; font-size: 110%;">7 County Mileage Details</td>
+    <td style="height: 29px; font-weight: bold; font-size: 100%;">7 County Mileage Details</td>
     </tr>
     </tbody>
     </table>
@@ -122,11 +122,11 @@ mileageRouter.post('/', async (req, res) => {
     </tr>
     <tr>
     <td style="width: 48%; border: 1px solid black; padding: 3px;">Employee Number</td>
-    <td style="width: 48%; border: 1px solid black; padding: 3px;" colspan="3">${employeeName}</td>
+    <td style="width: 48%; border: 1px solid black; padding: 3px;" colspan="3">${employeeNum}</td>
     </tr>
     <tr>
     <td style="width: 48%; border: 1px solid black; padding: 3px;">Manager</td>
-    <td style="width: 48%; border: 1px solid black; padding: 3px;" colspan="3">${dm}</td>
+    <td style="width: 48%; border: 1px solid black; padding: 3px;" colspan="3">${dm.userFirst} ${dm.userLast}</td>
     </tr>
     <tr>
     <td style="width: 48%; border: 1px solid black; padding: 3px;">Comments</td>
@@ -141,7 +141,7 @@ mileageRouter.post('/', async (req, res) => {
     ${mileageInfo.join().replace(/,/g," ")}
     </tbody>
     </table>
-    <table style="width: 100%;" border="0" cellpadding="1" cellspacing="0">
+    <table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
     <tbody>
     <tr>
     <td style="border-bottom: 0px solid black;">&nbsp;</td>
@@ -165,6 +165,7 @@ mileageRouter.post('/', async (req, res) => {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: pdfFile, // Subject line
     html: `${receiver.department} ${message}`, // html body
     attachments: [
@@ -188,7 +189,7 @@ mileageRouter.post('/', async (req, res) => {
 
     //DB insertions
     let form = new Mileage();
-    form.dm = dm;
+    form.dm = `${dm.userFirst} ${dm.userLast}`;
     form.employeeName = employeeName;
     form.employeeNum = employeeNum;
     form.notes = comments;

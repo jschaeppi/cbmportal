@@ -30,7 +30,6 @@ hotelRouter.get('/ps/:district', (req, res) => {
             if (err) {
                 console.log(err);
             } else {
-                console.log(result);
                 res.json(result);
             }
         }).sort( { district: -1})
@@ -53,7 +52,7 @@ hotelRouter.post('/', async (req, res) => {
         const listPs2 = "";
     }
     const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
-    let pdfFile = `Hotel-Request-${dm}`;
+    let pdfFile = `Hotel-Request-${dm.userFirst} ${dm.userLast}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
 
@@ -105,7 +104,7 @@ hotelRouter.post('/', async (req, res) => {
     </tr>
     <tr>
     <td style="border: 2px solid black; padding: 3px; text-align: left; font-weight: bold; font-size: 100%;" colspan="0">DM:</td>
-    <td style="border: 2px solid black; padding: 3px; text-align: center; font-weight: bold; font-size: 100%;" colspan="5">${dm}</td>
+    <td style="border: 2px solid black; padding: 3px; text-align: center; font-weight: bold; font-size: 100%;" colspan="5">${dm.userFirst} ${dm.userLast}</td>
     <!--
     <td style="border: 2px solid black; padding: 3px; text-align: left; font-weight: bold;" colspan="0">{D150:value}</td>
     <td style="border: 2px solid black; padding: 3px; text-align: left; font-weight: bold;" colspan="0">{D160:value}</td>
@@ -234,6 +233,7 @@ hotelRouter.post('/', async (req, res) => {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
+    cc: dm.email,
     subject: pdfFile, // Subject line
     html: `${receiver.department} ${message}`, // html body
     attachments: [
