@@ -4,6 +4,7 @@ const timeadjustRouter = express.Router();
 const bodyParser = require('body-parser');
 const pdf = require('html-pdf');
 const fs = require('fs');
+const fsPromises = fs.promises;
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 let timeAdjust = require('../src/Model/timeadjustModel');
@@ -44,44 +45,37 @@ timeadjustRouter.post('/', async (req, res) => {
     let totaladjustment = 0;
     let shift = 0;
     let base64String = '';
-    let base64Image = ''
+    let base64Image = '';
+    let base64Data = '';
    
     try {
-        await fs.mkdir(`../../uploads/signatures/timeadjustment/${dm.userFirst} ${dm.userLast}`, (err) => {
-            if (err) {
-                console.log(err);
-            }
-                console.log('Folder created successfully!');
-        })
-
-        await fs.mkdir(`../../uploads/signatures/timeadjustment/${employeeNum}`, (err, result) => {
-            if (err) {
-                console.log(err);
-            } else if(result) {
-            console.log('Folder created successfully!');
-        }
-        })
+        await fsPromises.mkdir(`../../uploads/signatures/timeadjustment/${dm.userFirst} ${dm.userLast}`, { recursive: true });
+        console.log(`Folder ${dm.userFirst} ${dm.userLast} Created`);
+        await fsPromises.mkdir(`../../uploads/signatures/timeadjustment/${employeeNum}`, { recursive: true });
+        console.log(`Folder ${employeeNum} Created`);
         base64String = req.body[0].employeesig;
         // Remove header
-        var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+        base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
         base64Image = new Buffer.from(base64Data, 'base64');
         await fs.writeFile(`../../uploads/signatures/timeadjustment/${employeeNum}/employeeAdjustSig${month}-${day}-${year}.png`, base64Image, (err) => {
             if (err) {
             console.log(err);
-            }
+            } else {
             console.log('File succeeded.');
+            }
         });
 
         base64String = req.body[0].managerSig;
         // Remove header
-        var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+        base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
         base64Image = new Buffer.from(base64Data, 'base64');
         
         await fs.writeFile(`../../uploads/signatures/timeadjustment/${dm.userFirst} ${dm.userLast}/managerAdjustSig${month}-${day}-${year}-${employeeNum}.png`, base64Image, (err) => {
             if (err) {
             console.log(err);
-            }
+            } else {
             console.log('File succeeded.');
+            }
         });
     } catch (err) {
         console.log(err);

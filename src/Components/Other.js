@@ -42,7 +42,7 @@ const Other = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
-            fetch('http://portal.cbmportal.com:5000/api/other/', {
+            fetch('https://portal.cbmportal.com:5000/api/other/', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

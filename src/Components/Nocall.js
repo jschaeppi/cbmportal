@@ -45,7 +45,7 @@ const Nocall = () => {
         console.log(data[0].rehire)
         e.preventDefault();
             
-            fetch('http://portal.cbmportal.com:5000/api/quit/', {
+            fetch('httpa://portal.cbmportal.com:5000/api/quit/', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

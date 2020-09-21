@@ -1,4 +1,6 @@
 const express = require('express');
+const https = require('https');
+const fs = require('fs');
 const path = require('path');
 const app = express();
 const bodyParser = require('body-parser');
@@ -15,7 +17,7 @@ const db = require('./src/config/db');
 
 //app.use(cors())
 app.use(cors({
-    origin: ['http://portal.cbmportal.com','http://portal.cbmportal.com:5000', 'http://127.0.0.1:3000', 'http://localhost:3000'],
+    origin: ['https://portal.cbmportal.com','https://portal.cbmportal.com:5000', 'https://127.0.0.1:3000', 'http://localhost:3000'],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
     credentials: true
   }));
@@ -23,11 +25,12 @@ app.use(cors({
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(express.static(path.join(__dirname, "../..")));
+//app.use(express.static(path.join(__dirname, "")));
 app.use(morgan('dev'));
-app.engine('.hbs', exhbs({extname: '.hbs'}))
+app.set('views', path.join(__dirname, '/admin/views'));
+app.engine('.hbs', exhbs({extname: '.hbs', defaultLayout: 'index'}))
 app.set('view engine', '.hbs');
-app.set('views', __dirname + '/views');
+
 app.set('trust proxy', 1) // trust first proxy
 /*app.use(session({
     name: 'cbmCook',
@@ -68,6 +71,7 @@ const userRouter = require('./api/users');
 const storeRouter = require('./api/updateStores');
 const storesRouter = require('./api/stores');
 const targetorderRouter = require('./api/targetOrder');
+const adminRouter = require('./admin/admin');
 
 
 
@@ -93,17 +97,27 @@ app.use('/api/users', userRouter);
 app.use('/api/updateStores', storeRouter);
 app.use('/api/stores', storesRouter);
 app.use('/api/targetOrder', targetorderRouter);
+app.use('/admin', adminRouter);
 
 
-app.get('/admin', cors(), (req, res) => {
-       res.render('home');
-    });
 
 app.get('/admin/storelist', cors(), (req, res) => {
     res.render('home');
     });
 
+app.get('*', (req, res) => {
+    res.send('This page doesn\'t exist!');
+    console.log(req.ip);
+})
 
-app.listen(PORT, '0.0.0.0',() => {
+https.createServer({
+    key: fs.readFileSync('/home/cbmportal/ssl/keys/d2ce1_b69ad_18b51e73ceacc6ccec9d03816fb819c6.key'),
+    cert: fs.readFileSync('/home/cbmportal/ssl/certs/cbmportal_com_d2ce1_b69ad_1608144134_f2955ea7065284ccf35f8e8cd5624c2d.crt'),
+    passphrase: '1857BuerkleRdCBM'
+},
+ app).listen(PORT, '0.0.0.0',() => {
     console.log(`Server is running on ${PORT}`);
-});
+})
+/*app.listen(PORT, '0.0.0.0',() => {
+    console.log(`Server is running on ${PORT}`);
+});*/

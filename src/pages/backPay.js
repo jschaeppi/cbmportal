@@ -108,7 +108,7 @@ function BackPay() {
             })
         }
     // On submit of the form, send a POST request with the data to the server.
-    fetch('http://portal.cbmportal.com:5000/api/backpay', { 
+    fetch('https://portal.cbmportal.com:5000/api/backpay', { 
         method: 'POST',
         headers: {
             'content-type': 'application/json'
@@ -149,13 +149,13 @@ function BackPay() {
                             return (
                                 <div key={index} id="backPays">
                                     <label htmlFor={inName}>{inName}</label><br />
-                                    <input key={inName} type="datetime-local" id={inName} name={inName}  required title="Please enter required information" onChange={e => handleInputChange(e, index)} ></input><br />
+                                    <input key={inName} type="datetime-local" id={inName} name={inName}  title="Please enter required information" onChange={e => handleInputChange(e, index)} ></input><br />
                                     <label htmlFor={left_lunchName}>{left_lunchName}</label><br />
                                     <input key={left_lunchName} type="datetime-local" id={left_lunchName} name={left_lunchName} onChange={e =>handleInputChange(e, index)}></input><br />
                                     <label htmlFor={return_lunchName}>{return_lunchName}</label><br />
                                     <input key={return_lunchName} type="datetime-local" id={return_lunchName} name={return_lunchName} onChange={e => handleInputChange(e, index)}></input><br />
                                     <label htmlFor={outName}>{outName}</label><br />
-                                    <input key={outName} type="datetime-local" id={outName} name={outName}  required title="Please enter required information" onChange={e => handleInputChange(e, index)}></input><br />
+                                    <input key={outName} type="datetime-local" id={outName} name={outName}  title="Please enter required information" onChange={e => handleInputChange(e, index)}></input><br />
                                     {backPays.length !== 1 && <button onClick={e => handleRemoveRow(e,index)} id="backPayRemoveButton">Remove</button>}
                                     {backPays.length - 1 === index && <button onClick={handleAddBackPay} id="backPayAddButton">Add Back Pay</button>}
                                 </div>

@@ -56,7 +56,7 @@ const WorkTicket = () => {
         const onSubmit = (e) => {
             e.preventDefault();
             
-            fetch('http://portal.cbmportal.com:5000/api/WT',
+            fetch('https://portal.cbmportal.com:5000/api/WT',
             {
                 method: 'POST',
                 headers: {

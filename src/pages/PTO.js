@@ -44,7 +44,7 @@ const PTO = () => {
         if (managerPad.current.isEmpty()) {
             alert('Please provide a signature');
         } else {
-            fetch('http://portal.cbmportal.com:5000/api/pto/', {
+            fetch('https://portal.cbmportal.com:5000/api/pto/', {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json'

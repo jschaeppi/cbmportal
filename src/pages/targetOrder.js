@@ -176,7 +176,7 @@ function TargetOrder() {
 
     const onSubmit = (e) => {
         e.preventDefault();
-            fetch('/api/targetOrder', {
+            fetch('https://portal.cbmportal.com:5000/api/targetOrder', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

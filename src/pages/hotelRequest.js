@@ -38,7 +38,7 @@ function HotelRequest() {
         }
         console.log(district);
             getStores(district);
-            fetch(`http://portal.cbmportal.com:5000/api/hotel/ps/${district}`)
+            fetch(`https://portal.cbmportal.com:5000/api/hotel/ps/${district}`)
             .then(res => res.json())
             .then(data => setPsList(data) )
             // eslint-disable-next-line
@@ -86,7 +86,7 @@ function HotelRequest() {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        fetch(`http://portal.cbmportal.com:5000/api/hotel/`,
+        fetch(`https://portal.cbmportal.com:5000/api/hotel/`,
         {
             method: 'POST',
             headers: {

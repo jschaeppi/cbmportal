@@ -5,7 +5,6 @@ import CbmContext from '../context/cbm/cbmContext';
 const Main = (props) => {
     const cbmContext = useContext(CbmContext);
     const { loginStatus, loading, isAuthenticated, getStores, getStates, user } = cbmContext;
-    
     useEffect(() =>{
         if (!isAuthenticated && user && !loading) {
             loginStatus();

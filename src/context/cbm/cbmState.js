@@ -104,7 +104,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     }
     const getStores = async (district) => {
         try {
-        const res = await axios.get(`/api/stores/${district}`)
+        const res = await axios.get(`https://portal.cbmportal.com:5000/api/stores/${district}`)
         dispatch({
             type: GET_STORES,
             payload: res.data,
@@ -133,7 +133,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     try {
         
 
-        const res = await axios.get('/api/users/loginSub');
+        const res = await axios.get('https://portal.cbmportal.com:5000/api/users/loginSub');
 
     dispatch({
         type: GET_AUTH,
@@ -142,10 +142,10 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     });
     } 
     catch (err) {
-        console.log(err)
+        //console.log(err)
         dispatch({
             type: AUTH_ERROR,
-            payload: 'Not Authorized',
+            payload: err.response.data.msg,
         }) 
     }
   }
@@ -154,7 +154,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
         const loginUser = async (user, pass) => {
             setLoading();
             try {
-        const res = await axios.post('/api/users/loginSub', { 
+        const res = await axios.post('https://portal.cbmportal.com:5000/api/users/loginSub', { 
             data: {
                 username: user,
                 password: pass,
@@ -171,14 +171,11 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     } 
         
     catch (err) {
-        console.log(err)
+        //console.log(err.response.data.msg)
         dispatch({
             type: LOGIN_ERROR,
-            payload: err.response,
+            payload: err.response.data.msg,
         }) 
-        if (!state.loading) {
-            history.push('/login');
-            }
         }
     }
 

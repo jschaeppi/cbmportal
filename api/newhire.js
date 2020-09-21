@@ -2,7 +2,9 @@ const express = require('express');
 const newhireRouter = express.Router();
 const formidable = require('express-formidable');
 const fs = require('fs');
+const fsPromises = fs.promises;
 const pdf = require('html-pdf');
+const moment = require('moment')
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 const NewHire = require('../src/Model/newhireModel');
@@ -20,7 +22,7 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 // current year
 let year = date_ob.getFullYear();
 
-newhireRouter.get('/stores/:id', (req, res) => {
+/*newhireRouter.get('/stores/:id', (req, res) => {
     Store.find( { dm: req.params.id }, (err, result) => {
         if (err) {
             console.log(err)
@@ -29,22 +31,18 @@ newhireRouter.get('/stores/:id', (req, res) => {
         }
     }
     )
-});
+});*/
 
 newhireRouter.post('/', formidable(), async (req, res) => {
 
     const { firstName, middleName, dm_userFirst, dm_userLast, dm_email, firstLast, firstDay, dob, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, number } = req.fields;
     const { file1, file2, file3 } = req.files;
-    console.log(req.fields);
+    firstDay = moment(firstDay).format('L');
+    dob = moment(dob).format('L');
     const receiver = await DepartmentModel.findOne({ department: 'New Hires'});
 
     try {
-        await fs.mkdir(`../../uploads/images/newhires/${firstName} ${firstLast}`, (err) => {
-            if (err) {
-                console.log(err);
-            }
-            console.log('Folder created successfully!');
-        })
+        await fsPromises.mkdir(`../../uploads/images/newhires/${firstName} ${firstLast}`,{ recursive: true })
         await fs.rename(file1.path, `../../uploads/images/newhires/${firstName} ${firstLast}/${file1.name}`, (err) => {
             if (err) {
                 console.log('File couldn\'t be moved!');

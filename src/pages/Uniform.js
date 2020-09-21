@@ -75,7 +75,7 @@ const Uniform = () => {
         const list = [...data];
         list[0][date] = `${month}/${date}/${year}`
         setData(list);
-        fetch('http://portal.cbmportal.com:5000/api/uniform', { 
+        fetch('https://portal.cbmportal.com:5000/api/uniform', { 
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

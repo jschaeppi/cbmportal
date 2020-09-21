@@ -4,6 +4,7 @@ const backpayRouter = express.Router();
 const bodyParser = require('body-parser');
 const pdf = require('html-pdf');
 const fs = require('fs');
+const fsPromises = fs.promises;
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 let Backpay = require('../src/Model/backpayModel');
@@ -39,19 +40,21 @@ backpayRouter.post('/', async (req, res) => {
     let shift = 0;
     let breakTime = 0;
     let base64String = req.body[0].sig;
+
     // Remove header
-    var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+    let base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+
     let base64Image = new Buffer.from(base64Data, 'base64');
+
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
-    await fs.mkdir(`../../uploads/signatures/backPaySig/${req.body[0].employeeNum}`, (err, result) => {
-        if (err) {
-            console.log(err);
-        }
-    })
-    await fs.writeFile(`../../uploads/signatures/backPaySig/${req.body[0].employeeNum}/${month}-${date}-${year}.png`, base64Image, (err, result) => {
+    await fsPromises.mkdir(`../../uploads/signatures/backPaySig/${req.body[0].employeeNum}`, { recursive: true });
+    console.log(`Folder ${req.body[0].employeeNum} Created`);
+    await fs.writeFile(`../../uploads/signatures/backPaySig/${req.body[0].employeeNum}/${month}-${date}-${year}.png`, base64Image, (err) => {
       if (err) {
         console.log(err);
-      }
+      } else {
+        console.log('File Created')
+    }
     });
         //Generating Bonuse Rows
         const d = new Date();

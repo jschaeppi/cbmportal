@@ -4,6 +4,7 @@ const uniformRouter = express.Router();
 const bodyParser = require('body-parser');
 const pdf = require('html-pdf');
 const fs = require('fs');
+const fsPromises = fs.promises;
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 let Uniform = require('../src/Model/uniformModel');
@@ -35,12 +36,7 @@ uniformRouter.post('/', async (req, res) => {
     let base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
     let base64Image = new Buffer.from(base64Data, 'base64');
 
-    await fs.mkdir(`../../uploads/signatures/${employeeNum}`, (err) => {
-      if (err) {
-          console.log(err);
-      }
-      console.log('Folder created successfully!');
-  })
+    await fsPromises.mkdir(`../../uploads/signatures/${employeeNum}`, { recursive: true });
     await fs.writeFile(`../../uploads/signatures/${employeeNum}/uniformSig${month}-${day}-${year}.png`, base64Image, (err) => {
       if (err) {
         console.log(err);

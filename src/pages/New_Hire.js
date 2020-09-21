@@ -98,7 +98,7 @@ const NewHire = () =>  {
             console.log(key, data[0][key]);
         }
         console.log(formData.entries());
-        fetch('http://portal.cbmportal.com:5000/api/newhire',
+        fetch('https://portal.cbmportal.com:5000/api/newhire',
             {
                 method: 'POST',
                 body: formData

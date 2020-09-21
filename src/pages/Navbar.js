@@ -76,7 +76,8 @@ const NavBar = () => {
                             <ul className="linkGrid" style={{display: visible ? 'block' : 'none' }}>
                                 <div id="mobileLogin" >
                                 {isAuthenticated ? <Link to="/logout">  <i className="fas fa-sign-out-alt">Logout</i></Link>: <Link to="/login"><i className="fas fa-sign-in-alt">Login</i></Link>}
-                                {(isAuthenticated && document.cookie && cbmContext.user.permission > 1) ? <Link to="/admin">  <i className="fas fa-user-shield">Admin</i></Link>: ""}
+                                <br />
+                                {(isAuthenticated && cbmContext.user.permission > 1) ? <a href="https://admin.cbmportal.com:5000/admin/dashboard">  <i className="fas fa-user-shield">Admin</i></a>: ""}
                                 </div>
                                 {isAuthenticated ? authLinks : guestLinks}
                             </ul>
@@ -95,7 +96,8 @@ const NavBar = () => {
                     
                 <div id="login">
                         {isAuthenticated ? <Link to="/logout">  <i className="fas fa-sign-out-alt">Logout</i></Link>: <Link to="/login"><i className="fas fa-sign-in-alt">Login</i></Link>}
-                        {(isAuthenticated && document.cookie && cbmContext.user.permission > 1) ? <Link to="/admin">  <i className="fas fa-user-shield">Admin</i></Link>: ""}
+                        <br />
+                        {(isAuthenticated && cbmContext.user.permission > 1) ? <a href="https://admin.cbmportal.com:5000/admin/dashboard">  <i className="fas fa-user-shield">Admin</i></a>: ""}
                 </div>
             </nav>
         );

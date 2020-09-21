@@ -36,7 +36,7 @@ const Propane = () => {
             formData.append('notes', data[0].notes);
             formData.append('tanksLeft', data[0].tanksLeft);
             formData.append('dm', user);
-            axios.post('http://portal.cbmportal.com:5000/api/propane/', formData)
+            axios.post('https://portal.cbmportal.com:5000/api/propane/', formData)
             .then( res => {
                 if (res.data.message) history.push('/success');
             })

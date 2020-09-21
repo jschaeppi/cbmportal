@@ -1,0 +1,39 @@
+<script>
+  function validateForm(event) {
+    
+    const user = document.getElementById('user').value;
+    const pass = document.getElementById('pass').value;
+    console.log(user);
+    console.log(pass);
+    if ((!user) || (!pass)) {
+      alert('Please fill in all fields');
+      event.preventDefault();
+    }
+  }
+
+</script>
+
+<h1>CBM Form Admin Page</h1>
+  {{#if msg}}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  {{msg}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{{/if}}
+<form action="https://admin.cbmportal.com:5000/api/users/loginSubAdmin"  method="POST">
+    <div class="form-group">
+        <label>Enter Username:</label>
+        <input class="form-control" type="text" name="username" id="user"></input>
+    </div>
+        <div class="form-group">
+        <label>Enter Password: </label>
+        <input class="form-control" type="password" name="password" id="pass" />
+    </div>
+    <div >
+        <button onclick="validateForm(event)" value="submit">Submit </button>
+        
+    </div>
+    
+</form>

@@ -102,7 +102,7 @@ function Bonus() {
             })
         }
     // On submit of the form, send a POST request with the data to the server.
-        fetch('http://portal.cbmportal.com:5000/api/bonus', { 
+        fetch('https://portal.cbmportal.com:5000/api/bonus', { 
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

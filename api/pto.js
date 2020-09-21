@@ -5,6 +5,7 @@ const cors = require('cors');
 const moment = require('moment');
 const pdf = require('html-pdf');
 const fs = require('fs');
+const fsPromises = fs.promises;
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 const PTO = require('../src/Model/ptoModel');
@@ -32,21 +33,20 @@ ptoRouter.post('/', async (req, res) => {
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
 
     let base64String = req.body.sig;
+
     // Remove header
-    var base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+    let base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+ 
     let base64Image = new Buffer.from(base64Data, 'base64');
     
-        await fs.mkdir(`../../uploads/signatures/ptoSig/${employeeNum}`, { recursive: true }, (err) => {
-            if (err) {
-                console.log(err);
-            }
-            console.log('Folder created successfully!');
-        })
+        await fsPromises.mkdir(`../../uploads/signatures/ptoSig/${employeeNum}`, { recursive: true });
+        console.log(`Folder ${employeeNum} Created`);
         await fs.writeFile(`../../uploads/signatures/ptoSig/${employeeNum}/${month}-${day}-${year}.png`, base64Image, (err) => {
         if (err) {
             console.log(err);
-        }
+        } else {
         console.log('File succeeded.');
+        }
         });
 
     let pdfFile = `Employee-${employeeNum}-${employeeName}`;
