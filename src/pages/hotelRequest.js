@@ -124,9 +124,10 @@ function HotelRequest() {
                             <div id="hotelStores">
                                 <label>Store:</label><br />
                                 <select name="store" required title="Please select an option" onChange={e => handleChange(e)}>
-                                {stores.map((store, i) => {
-                                    return <option key={i} name="store" id="store">{store.store}</option>
-                                })}
+                                    <option name="storeSelect">Select a location</option>
+                                    {stores.map((store, i) => {
+                                        return <option key={i} name="store" id="store">{store.store}</option>
+                                    })}
                                 </select>
                             </div>
                         </div>

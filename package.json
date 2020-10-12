@@ -18,6 +18,7 @@
     "cookie-session": "^1.4.0",
     "cookieparser": "^0.1.0",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express-formidable": "^1.2.0",
     "express-handlebars": "^5.1.0",
     "express-session": "^1.17.1",
@@ -35,7 +36,8 @@
     "react-moment": "^0.9.7",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "react-signature-canvas": "^1.0.3"
+    "react-signature-canvas": "^1.0.3",
+    "translate": "^1.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -58,7 +60,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy":"http://localhost:5000",
+  "proxy": "http://localhost:5000",
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "server.js",
   "devDependencies": {},

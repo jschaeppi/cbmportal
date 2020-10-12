@@ -1,6 +1,7 @@
 const express = require('express');
 const ncnsRouter = express.Router();
 const bodyParser = require('body-parser');
+const translator = require('translate');
 const moment = require('moment');
 const pdf = require('html-pdf');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
@@ -23,11 +24,13 @@ let year = date_ob.getFullYear();
 
 
 ncnsRouter.post('/', async (req, res) => {
-    const { firstLast, firstName, employeeNum, secondLast, dm, rehire, norehireReason, quitReason } = req.body;
+    const { firstLast, firstName, employeeNum, secondLast, dm, rehire } = req.body;
+    let { norehireReason, quitReason } = req.body;
     const lastWorked = moment(req.body.lastWorked).format('L');
     console.log(rehire)
     const receiver = await DepartmentModel.findOne({ department: 'Carlson Terminations'});
-
+    norehireReason = await translator(norehireReason, {to: 'en', from: 'es'});
+    quitReason = await translator(quitReason, {to: 'en', from: 'es'});
     let pdfFile = `Employee-${employeeNum}-${firstName} ${firstLast} ${secondLast}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'

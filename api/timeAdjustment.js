@@ -2,6 +2,7 @@ const express = require('express');
 const moment = require('moment');
 const timeadjustRouter = express.Router();
 const bodyParser = require('body-parser');
+const translator = require('translate');
 const pdf = require('html-pdf');
 const fs = require('fs');
 const fsPromises = fs.promises;
@@ -38,7 +39,8 @@ timeadjustRouter.get('/stores/:id', (req, res) => {
 });
 
 timeadjustRouter.post('/', async (req, res) => {
-    const { dm, employeeNum, employeeName, noteAdjustment } = req.body[0];
+    const { dm, employeeNum, employeeName } = req.body[0];
+    let { noteAdjustment } = req.body[0];
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
     let rows = [];
     let timeadjustInfo = [];
@@ -53,6 +55,8 @@ timeadjustRouter.post('/', async (req, res) => {
         console.log(`Folder ${dm.userFirst} ${dm.userLast} Created`);
         await fsPromises.mkdir(`../../uploads/signatures/timeadjustment/${employeeNum}`, { recursive: true });
         console.log(`Folder ${employeeNum} Created`);
+
+        noteAdjustment = await translator(noteAdjustment, {to:'en', from: 'es'});
         base64String = req.body[0].employeesig;
         // Remove header
         base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');

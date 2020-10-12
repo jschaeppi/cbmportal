@@ -211,7 +211,8 @@ function TargetOrder() {
                 <label >Store Number:</label>
                 <div className="wrapper1">
                 <select name="location" id="storeList" required title="Please select an option" onChange=  {e => handleChange(e)}>
-                    <Stores stores={stores} />
+                    <option name="storeSelect">Select a location</option>
+                   <Stores stores={stores} />
                 </select>
                 </div>
                 <br /><br />

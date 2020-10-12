@@ -167,6 +167,7 @@ function PerDiem() {
                         <div className="wrapper1">
                             <label htmlFor="store">Store:</label><br />
                             <select name="stores" id="location" required title="Please enter the required information" onChange={e => handleInputChange(e)}>
+                                <option name="storeSelect">Select a location</option>
                                 <option>Home</option>
                                 <Stores stores={stores} />
                             </select>

@@ -1,6 +1,6 @@
 const Mongoose = require('mongoose');
 
-const mongoDb = 'mongodb+srv://itsupport:IT5upp0rt@cbm-forms.jqkpv.mongodb.net/CBM-Forms?retryWrites=true&w=majority';
+const mongoDb = process.env['dbConnection'];
 
 Mongoose.connect(mongoDb, {useNewUrlParser: true, useUnifiedTopology: true });
 

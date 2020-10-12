@@ -2,10 +2,11 @@ const express = require('express');
 const moment = require('moment');
 const backpayRouter = express.Router();
 const bodyParser = require('body-parser');
+const translator = require('translate');
 const pdf = require('html-pdf');
 const fs = require('fs');
 const fsPromises = fs.promises;
-let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
+let { transporter, mailOptions, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 let Backpay = require('../src/Model/backpayModel');
 let Store = require('../src/Model/Stores');
@@ -38,7 +39,7 @@ backpayRouter.post('/', async (req, res) => {
     let shift = 0;
     let breakTime = 0;
     let base64String = req.body[0].sig;
-
+    req.body[0].comments = await translator(req.body[0].comments, {to: 'en', from: 'es'});
     // Remove header
     let base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
 

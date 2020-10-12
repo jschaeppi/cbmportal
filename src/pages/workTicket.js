@@ -107,6 +107,7 @@ const WorkTicket = () => {
                                 <div>
                                     <label >Store Number:</label>
                                     <select name="location" id="storeList" required title="Please select an option" onChange={e => handleChange(e)}>
+                                        <option name="storeSelect">Select a location</option>
                                         <Stores stores={stores} />
                                     </select>
                                  </div>

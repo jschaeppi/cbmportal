@@ -155,6 +155,7 @@ function Bonus() {
                                                 <div>
                                                     <label htmlFor={locationName}>{locationName}</label><br />
                                                     <select name={locationName} id="stores" required title="Please select an option" onChange={e => handleChange(e, incIndex)}>
+                                                        <option name="storeSelect">Select a location</option>
                                                         {stores.map((store, i) => {
                                                         return <option key={i} name={locationName} id="store">{store.store}</option>
                                                         })}

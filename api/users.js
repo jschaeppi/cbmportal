@@ -22,7 +22,7 @@ router.get('/loginSub', async (req, res) => {
     //console.log(req.header['Authorization'])
     const token = req.header('x-auth-token');
     try {
-    const decoded = await jwt.verify(token, config.get('jwtSecret'));
+    const decoded = await jwt.verify(token, process.env['jwtSecret']);
     const { exp } = decoded;
 
     let user = await User.findOne({ _id: decoded.user.id })
@@ -46,7 +46,7 @@ router.get('/loginSubTest', async (req, res, next) => {
     const token = req.cookies['auth-token'];
     console.log(req.cookies)
     try {
-    const decoded = jwt.verify(token, config.get('jwtSecret'));
+    const decoded = jwt.verify(token, process.env['jwtSecret']);
     const { exp } = decoded;
 
     let user = await User.findOne({ _id: decoded.user.id })
@@ -81,7 +81,7 @@ router.post('/loginSubAdmin', async (req, res, next) => {
         if (!isMatch) {
             res.status(400).redirect('https://admin.cbmportal.com:5000/admin/?login=failure');
         } 
-        jwt.sign(payload, config.get('jwtSecret'), { expiresIn: 19800}, (err, token) => {
+        jwt.sign(payload, process.env['jwtSecret'], { expiresIn: 19800}, (err, token) => {
            if (err) throw err;
                 if (token) {
                     res.cookie('auth-token', token, {domain: 'cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: true }).redirect('https://admin.cbmportal.com:5000/admin/dashboard');
@@ -113,7 +113,7 @@ router.post('/loginSub', async (req, res) => {
         if (!isMatch) {
             res.status(400).json({ msg: 'Invalid Credentials'})
         }
-            jwt.sign(payload, config.get('jwtSecret'), { expiresIn: '3h'}, (err, token) => {
+            jwt.sign(payload, process.env['jwtSecret'], { expiresIn: '3h'}, (err, token) => {
                 if (err) throw err;
                 res.cookie('auth-token', token, {domain: 'cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });
                 //res.cookie('auth-token', token, { maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });

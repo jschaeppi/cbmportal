@@ -10,6 +10,7 @@ let { options } = require('../src/config/html')
 const Bonuses = require('../src/Model/bonusModel');
 const Store = require('../src/Model/Stores');
 const DepartmentModel = require('../src/Model/departmentModel');
+const translator = require('translate');
 
 message = 'Please process this bonus request.';
 bonusRouter.use(bodyParser.json());
@@ -57,6 +58,9 @@ bonusRouter.post('/', async (req, res) => {
     let bonusInfo = [];
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
     
+    //Translating from spanish to English
+    req.body[0].comments = await translator(req.body[0].comments, { to: 'en', from: 'es'});
+    console.log(req.body[0].comments);
     //acquiring signature
     let base64String = req.body[0].sig;
     // Remove header
@@ -78,7 +82,6 @@ bonusRouter.post('/', async (req, res) => {
     } catch(err) {
         console.log(err);
     }
-
 
     //Generating Bonuse Rows
         req.body.forEach( (item,i) => {

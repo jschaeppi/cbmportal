@@ -1,6 +1,7 @@
 const express = require('express');
 const otherRouter = express.Router();
 const bodyParser = require('body-parser');
+const translator = require('translate');
 const moment = require('moment');
 const pdf = require('html-pdf');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
@@ -22,10 +23,12 @@ let year = date_ob.getFullYear();
 
 
 otherRouter.post('/', async (req, res) => {
-    const { firstName, firstLast, employeeNum, secondLast, dm, rehire, norehireReason, warnings, quitReason } = req.body;
+    const { firstName, firstLast, employeeNum, secondLast, dm, rehire, warnings } = req.body;
+    let { norehireReason, quitReason } = req.body;
     const lastWorked = moment(req.body.lastWorked).format('L');
     const receiver = await DepartmentModel.findOne({ department: 'Carlson Terminations'});
-
+    norehireReason = await translator(norehireReason, {to: 'en', from: 'es'});
+    quitReason = await translator(quitReason, {to: 'en', from: 'es'});
     let pdfFile = `Employee-${employeeNum}-${firstName} ${firstLast} ${secondLast}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'

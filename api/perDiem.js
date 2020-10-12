@@ -2,6 +2,7 @@ const express = require('express');
 const perdiemRouter = express.Router();
 const pdf = require('html-pdf');
 const bodyParser = require('body-parser');
+const translator = require('translate');
 const moment = require('moment');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
@@ -31,7 +32,8 @@ perdiemRouter.get('/stores', (req, res) => {
 
 
 perdiemRouter.post('/', async (req, res) => {
-    const {city, employeeName, employeeNum, location, state, comments, dm }= req.body[0];
+    const {city, employeeName, employeeNum, location, state, dm }= req.body[0];
+    let { comments } = req.body[0];
     const firstNight = moment(req.body[0].firstNight).format('L');
     const lastNight = moment(req.body[0].lastNight).format('L');
     const arrivalDate = moment(req.body[0].arrivalDate).format('L');
@@ -39,7 +41,7 @@ perdiemRouter.post('/', async (req, res) => {
     const rows = [];
     const perDiemInfo = [];
     const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
-
+    comments = await translator(comments, {to: 'en', from: 'es'});
     let pdfFile = `PerDiem-Request-${employeeName}-${employeeNum}-${month}-${date}-${year}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'

@@ -2,6 +2,7 @@ const express = require('express');
 const hotelRouter = express.Router();
 const pdf = require('html-pdf');
 const bodyParser = require('body-parser');
+const translator = require('translate');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
 let Hotel = require('../src/Model/hotelModel');
@@ -46,11 +47,13 @@ hotelRouter.get('/ps/:district', (req, res) => {
 });
 
 hotelRouter.post('/', async (req, res) => {
-    const { listPs1, listPs2, dm, store, checkIn, checkOut, roomNum, peopleNum, newPS, hotelReason, WT, notes, beds } = req.body;
+    const { listPs1, listPs2, dm, store, checkIn, checkOut, roomNum, peopleNum, newPS, hotelReason, WT, beds } = req.body;
+    let { notes } = req.body
     if (newPS !== "") {
         const listPs1 = "";
         const listPs2 = "";
     }
+    notes = await translator(notes, {to: 'en', from: 'es'});
     const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
     let pdfFile = `Hotel-Request-${dm.userFirst} ${dm.userLast}`;
     // Stripping special characters

@@ -1,6 +1,7 @@
 const express = require('express');
 const ptoRouter = express.Router();
 const bodyParser = require('body-parser');
+const translator = require('translate');
 const cors = require('cors');
 const moment = require('moment');
 const pdf = require('html-pdf');
@@ -26,12 +27,13 @@ let year = date_ob.getFullYear();
 
 
 ptoRouter.post('/', async (req, res) => {
-    const { employeeName, employeeNum, dm, departments, hours, approval, comments } = req.body;
+    const { employeeName, employeeNum, dm, departments, hours, approval } = req.body;
+    let { comments } = req.body;
     const absencefrom = moment(req.body.absencefrom).format('L');
     const absenceto = moment(req.body.absenceto).format('L');
 
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
-
+    comments = await translator(comments, {to: 'en', from: 'es'});
     let base64String = req.body.sig;
 
     // Remove header
@@ -327,7 +329,7 @@ ptoRouter.post('/', async (req, res) => {
     let form = new PTO();
     form.employeeName = employeeName;
     form.employeeNum = employeeNum;
-    form.dm = dm;
+    form.dm = `${dm.userFirst} ${dm.userLast}`;
     form.departments = departments
     form.absencefrom = absencefrom;
     form.absenceto = absenceto;

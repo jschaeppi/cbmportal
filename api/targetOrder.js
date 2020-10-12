@@ -1,6 +1,7 @@
 const express = require('express');
 const targetorderRouter = express.Router();
 const bodyParser = require('body-parser');
+const translator = require('translate');
 const pdf = require('html-pdf');
 const fs = require('fs');
 const supplyOrder = require('../src/Model/targetsupply');
@@ -29,9 +30,10 @@ let year = date_ob.getFullYear();
 targetorderRouter.post('/', async (req, res) => {
     const employeeName = req.body.employeeName;
     const location = req.body.location;
-    const notes = req.body.notes;
+    let notes = req.body.notes;
     const order = req.body.order;
     const dm = req.body.dm;
+    notes = await translator(notes, {to: 'en', from: 'es'});
     order.shift();
     const receiver = await DepartmentModel.findOne({ department: 'Supplies'});
     try {

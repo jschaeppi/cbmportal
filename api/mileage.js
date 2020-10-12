@@ -2,6 +2,7 @@ const express = require('express');
 const mileageRouter = express.Router();
 const pdf = require('html-pdf');
 const bodyParser = require('body-parser');
+const translator = require('translate');
 const moment = require('moment');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
 let { options } = require('../src/config/html')
@@ -36,11 +37,12 @@ mileageRouter.get('/stores/:id', (req, res) => {
 });
 
 mileageRouter.post('/', async (req, res) => {
-    const { dm, employeeName, employeeNum, comments } = req.body[0];
+    const { dm, employeeName, employeeNum } = req.body[0];
+    let { comments } = req.body[0];
     const rows = [];
     const mileageInfo = [];
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
-
+    comments = await translator(comments, {to: 'en', from: 'es'});
     let pdfFile = `Mileage-Request-${employeeName}-${month}-${date}-${year}`;
 
     // Stripping special characters

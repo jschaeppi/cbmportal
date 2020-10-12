@@ -1,6 +1,7 @@
 const express = require('express');
 const wtRouter = express.Router();
 const bodyParser = require('body-parser');
+const translator = require('translate');
 const pdf = require('html-pdf');
 const moment = require('moment');
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
@@ -24,12 +25,14 @@ let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 let year = date_ob.getFullYear();
 
 wtRouter.post('/', async (req, res) => {
-    const { employeeNum, employeeName, dm, location, city, state, workType, Billable, notes, equipment, currentLocation, orderSubmitted, orderNumber } = req.body;
+    const { employeeNum, employeeName, dm, location, city, state, workType, Billable, currentLocation, orderSubmitted, orderNumber } = req.body;
+    let { notes, equipment } = req.body;
     const orderDate = moment(req.body.orderDate).format('L');
     const startDate = moment(req.body.startDate).format('L');
     const endDate = moment(req.body.endDate).format('L');
     const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
-
+    notes = await translator(notes, {to: 'en', from: 'es'});
+    equipment = await translator(equipment, {to: 'en', from: 'es'});
     let pdfFile = `WT-request-${dm}-${month}-${date}-${year}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
