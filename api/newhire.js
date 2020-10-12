@@ -3,6 +3,7 @@ const newhireRouter = express.Router();
 const formidable = require('express-formidable');
 const fs = require('fs');
 const fsPromises = fs.promises;
+const path = require('path');
 const pdf = require('html-pdf');
 const moment = require('moment')
 let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
@@ -35,20 +36,26 @@ let year = date_ob.getFullYear();
 
 newhireRouter.post('/', formidable(), async (req, res) => {
 
-    const { firstName, middleName, dm_userFirst, dm_userLast, dm_email, firstLast, firstDay, dob, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, number } = req.fields;
-    const { file1, file2, file3 } = req.files;
+    const { firstName, middleName, dm_userFirst, dm_userLast, dm_email, firstLast, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, number } = req.fields;
+    let { file1, file2, file3 } = req.files;
+    let {firstDay, dob } = req.fields;
     firstDay = moment(firstDay).format('L');
     dob = moment(dob).format('L');
     const receiver = await DepartmentModel.findOne({ department: 'New Hires'});
-
+    if (file1.name === file2.name) {
+        file2.name = path.basename(file2.name, path.extname(file2.name)) + "(1)" + path.extname(file2.name);
+        console.log(file2.name);
+    }
     try {
         await fsPromises.mkdir(`../../uploads/images/newhires/${firstName} ${firstLast}`,{ recursive: true })
-        await fs.rename(file1.path, `../../uploads/images/newhires/${firstName} ${firstLast}/${file1.name}`, (err) => {
+        await fs.rename(file1.path, `../../uploads/images/newhires/${firstName} ${firstLast}/I-9 Page #1${path.extname(file1.name)}`, (err) => {
             if (err) {
                 console.log('File couldn\'t be moved!');
+            } else {
+                console.log(`I-9 Page #1${path.extname(file1.name)}`);
             }
         })
-        await fs.rename(file2.path, `../../uploads/images/newhires/${firstName} ${firstLast}/${file2.name}`, (err) => {
+        await fs.rename(file2.path, `../../uploads/images/newhires/${firstName} ${firstLast}/I-9 Page #2${path.extname(file2.name)}`, (err) => {
             if (err) {
                 console.log('File couldn\'t be moved!');
             }
@@ -317,12 +324,12 @@ newhireRouter.post('/', formidable(), async (req, res) => {
         path: `../../uploads/pdf/newhires/${pdfFile}`
     },
     {
-        filename: file1.name,
-        path: `../../uploads/images/newhires/${firstName} ${firstLast}/${file1.name}`
+        filename: `I-9 Page #1${path.extname(file2.name)}`,
+        path: `../../uploads/images/newhires/${firstName} ${firstLast}/I-9 Page #1${path.extname(file1.name)}`
     },
     {
-        filename: file2.name,
-        path: `../../uploads/images/newhires/${firstName} ${firstLast}/${file2.name}`
+        filename: `I-9 Page #2${path.extname(file2.name)}`,
+        path: `../../uploads/images/newhires/${firstName} ${firstLast}/I-9 Page #2${path.extname(file2.name)}`
     },
     {
         filename: file3.name,

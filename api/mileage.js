@@ -51,9 +51,9 @@ mileageRouter.post('/', async (req, res) => {
         rows.push(item.starting);
         rows.push(item.destination);
         mileageInfo.push('<tr>' +
-        '<td height="25px" width="33%" style="border: 1px solid black;">' + moment(item.mileageDate).format('L') + '</td>' +
-        '<td height="25px" style="border: 1px solid black;" colspan="2">' + item.starting + '</td>' +
-        '<td height="25px" style="border: 1px solid black;" colspan="2">' + item.destination + '</td>' +
+        '<td height="25px" width="25%" style="border: 1px solid black; border-bottom: 0; border-right: 0; padding: 3px;">' + moment(item.mileageDate).format('L') + '</td>' +
+        '<td height="25px" style="border: 1px solid black; border-bottom: 0; border-right: 0; padding: 3px;">' + item.starting + '</td>' +
+        '<td height="25px" style="border: 1px solid black; border-bottom: 0; padding: 3px;">' + item.destination + '</td>' +
         '</tr>');
 })
     let content = `
@@ -109,7 +109,7 @@ mileageRouter.post('/', async (req, res) => {
     </tr>
     </tbody>
     </table>
-    <table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
+    <table style="width: 100%; height:auto;"  cellpadding="0" cellspacing="0">
     <tbody>
     <tr>
     <td style="border-bottom: 0px solid black;">&nbsp;</td>
@@ -117,19 +117,19 @@ mileageRouter.post('/', async (req, res) => {
     <td width="20%" style="border-bottom: 0px solid black;">&nbsp;</td>
     </tr>
     <tr>
-    <td style="width: 48%; border: 1px solid black; padding: 3px;">Employee Name</td>
-    <td style="width: 48%; border: 1px solid black; padding: 3px;" colspan="3">${employeeName}</td>
+    <td style="width: 48%; border: 1px solid black; border-bottom: 0; border-right: 0; padding: 3px;">Employee Name</td>
+    <td style="width: 48%; border: 1px solid black; border-bottom: 0; padding: 3px;" colspan="3">${employeeName}</td>
     </tr>
     <tr>
-    <td style="width: 48%; border: 1px solid black; padding: 3px;">Employee Number</td>
-    <td style="width: 48%; border: 1px solid black; padding: 3px;" colspan="3">${employeeNum}</td>
+    <td style="width: 48%; border: 1px solid black; border-bottom: 0; border-right: 0; padding: 3px;">Employee Number</td>
+    <td style="width: 48%; border: 1px solid black; border-bottom: 0; padding: 3px;" colspan="3">${employeeNum}</td>
     </tr>
     <tr>
-    <td style="width: 48%; border: 1px solid black; padding: 3px;">Manager</td>
-    <td style="width: 48%; border: 1px solid black; padding: 3px;" colspan="3">${dm.userFirst} ${dm.userLast}</td>
+    <td style="width: 48%; border: 1px solid black; border-bottom: 0; border-right: 0; padding: 3px;">Manager</td>
+    <td style="width: 48%; border: 1px solid black; border-bottom: 0; padding: 3px;" colspan="3">${dm.userFirst} ${dm.userLast}</td>
     </tr>
     <tr>
-    <td style="width: 48%; border: 1px solid black; padding: 3px;">Comments</td>
+    <td style="width: 48%; border: 1px solid black; border-right: 0; padding: 3px;">Comments</td>
     <td style="width: 48%; border: 1px solid black; padding: 3px;" colspan="3">${comments}</td>
     </tr>
     <tr>
@@ -138,6 +138,10 @@ mileageRouter.post('/', async (req, res) => {
     <tr>
     <td style="border-bottom: 0px solid black; background-color: #f9fafc; font-size:18px;font-weight:bold; text-align: center; column-span:3" colspan="3">MILEAGE</td>
     </tr>
+    <tbody>
+    </table>
+    <table style="width: 100%; height:auto; border-bottom: 1px solid black;" border="0" cellpadding="0" cellspacing="0">
+    <tbody>
     ${mileageInfo.join().replace(/,/g," ")}
     </tbody>
     </table>

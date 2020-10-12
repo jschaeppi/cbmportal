@@ -6,16 +6,15 @@ const app = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan')
 const cors = require('cors');
-const session = require('express-session');
+//const session = require('express-session');
 const compression = require('compression');
 const PORT = process.env.PORT || 5000;
 const exhbs = require('express-handlebars');
 const config = require('config');
-const MongoStore = require('connect-mongo')(session);
+//const MongoStore = require('connect-mongo')(session);
 let Store = require('./src/Model/Stores');
 const db = require('./src/config/db');
 
-//app.use(cors())
 app.use(cors({
     origin: ['https://portal.cbmportal.com','https://portal.cbmportal.com:5000', 'https://127.0.0.1:3000', 'http://localhost:3000'],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
@@ -27,8 +26,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 //app.use(express.static(path.join(__dirname, "")));
 app.use(morgan('dev'));
+
 app.set('views', path.join(__dirname, '/admin/views'));
-app.engine('.hbs', exhbs({extname: '.hbs', defaultLayout: 'index'}))
+app.engine('.hbs', exhbs({extname: '.hbs', helpers: require('./admin/helpers/hbs_helpers'), defaultLayout: 'index'}))
 app.set('view engine', '.hbs');
 
 app.set('trust proxy', 1) // trust first proxy
@@ -115,7 +115,7 @@ https.createServer({
     cert: fs.readFileSync('/home/cbmportal/ssl/certs/cbmportal_com_d2ce1_b69ad_1608144134_f2955ea7065284ccf35f8e8cd5624c2d.crt'),
     passphrase: '1857BuerkleRdCBM'
 },
- app).listen(PORT, '0.0.0.0',() => {
+ app).listen(PORT,() => {
     console.log(`Server is running on ${PORT}`);
 })
 /*app.listen(PORT, '0.0.0.0',() => {

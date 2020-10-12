@@ -230,7 +230,8 @@ function TargetOrder() {
                                     </td>
                                     <td id="select" className="dataCells">
                                         <select id="orderQuantity" name="itemsOrder" onChange={(e) => handleChange(e,item)}>
-                                            <option key="0">Quanitity</option>
+                                            <option key="Quantity">Quanitity</option>
+                                            <option key="0">0</option>
                                             {dropDown(item)}
                                         </select>
                                     </td>

@@ -36,7 +36,6 @@ router.get('/loginSub', async (req, res) => {
         } else if (err === 'TokenExpiredError: jwt expired') {
             res.status(401).json({ msg: 'Unauthorized'});
         } else {
-        console.log(err);
         res.status(500).json({ msg: 'Server Error'});
         }
     }
@@ -125,7 +124,6 @@ router.post('/loginSub', async (req, res) => {
 
     }
     catch (err) {
-            console.log(err);
             if (err === 'JsonWebTokenError') {
                 res.status(401).json({ msg: 'Unauthorized'});
             }

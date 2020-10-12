@@ -149,7 +149,7 @@ function BackPay() {
                             return (
                                 <div key={index} id="backPays">
                                     <label htmlFor={inName}>{inName}</label><br />
-                                    <input key={inName} type="datetime-local" id={inName} name={inName}  title="Please enter required information" onChange={e => handleInputChange(e, index)} ></input><br />
+                                    <input key={inName} type="datetime-local" id={inName} name={inName} title="Please enter required information" onChange={e => handleInputChange(e, index)} ></input><br />
                                     <label htmlFor={left_lunchName}>{left_lunchName}</label><br />
                                     <input key={left_lunchName} type="datetime-local" id={left_lunchName} name={left_lunchName} onChange={e =>handleInputChange(e, index)}></input><br />
                                     <label htmlFor={return_lunchName}>{return_lunchName}</label><br />

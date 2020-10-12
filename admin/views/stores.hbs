@@ -1,0 +1,31 @@
+<script type="text/javascript">
+    Handlebars.registerPartial('nav', 'partials/nav.hbs');
+</script>
+{{> nav}}
+<div id="storesList">
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Banner</th>
+      <th scope="col">Store</th>
+      <th scope="col">Delete Job</th>
+    </tr>
+  </thead>
+  <tbody>
+{{#each result}}
+    <tr>
+
+      <td scope="row">{{@key}}</td>
+      <td scope="row">{{banner}}</td>
+      <td scope="row">{{store}}</td>
+      <td scope="row">{{makeLink "removeStore" _id}}</td>
+    </tr>
+{{/each}}
+
+</tbody>  
+</table>
+</div>
+<script>
+
+</script>

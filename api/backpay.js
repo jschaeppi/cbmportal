@@ -32,10 +32,8 @@ backpayRouter.get('/', (req, res) => {
 });
 
 backpayRouter.post('/', async (req, res) => {
-    console.log(req.body[0].dm)
     const { dm } = req.body[0];
     let backpayInfo = []; 
-    let rows = [];
     let total = 0;
     let shift = 0;
     let breakTime = 0;
@@ -59,11 +57,20 @@ backpayRouter.post('/', async (req, res) => {
         //Generating Bonuse Rows
         const d = new Date();
         req.body.forEach( (item,i) => {
-                rows = [];
-                rows.push(item.in);
-                rows.push(item.left_lunch);
-                rows.push(item.return_lunch);
-                rows.push(item.out);
+            if ((!item.return_lunch) || (!item.left_lunch)) {
+                item.return_lunch = 0;
+                item.left_lunch = 0;
+                shift = moment(item.out).diff(item.in, 'minutes');
+                breakTime = 0;
+                total = (shift-breakTime)/60;
+                backpayInfo.push('<tr>' +
+                '<td style="width: 150px; height: 20px; border: 1px solid black; padding: 1px;">' + moment(item.in).format('lll') + '</td>' +
+                '<td style="width: 150px; height: 20px;  border: 1px solid black; padding: 1px;"> No Time </td>' +
+                '<td style="width: 150px; height: 20px;  border: 1px solid black; padding: 1px;"> No Time </td>' +
+                '<td style="width: 150px; height: 20px; border: 1px solid black; padding: 1px;">' + moment(item.out).format('lll') + '</td>' +
+                '<td style="width: 150px; height: 20px;  border: 1px solid black; padding: 1px;">' + total + 'hrs</td>' +
+                '</tr>');
+            } else {
                 shift = moment(item.out).diff(item.in, 'minutes');
                 breakTime = moment(item.return_lunch).diff(item.left_lunch, 'minutes');
                 total = (shift-breakTime)/60;
@@ -74,6 +81,8 @@ backpayRouter.post('/', async (req, res) => {
                 '<td style="width: 150px; height: 20px; border: 1px solid black; padding: 1px;">' + moment(item.out).format('lll') + '</td>' +
                 '<td style="width: 150px; height: 20px;  border: 1px solid black; padding: 1px;">' + total + 'hrs</td>' +
                 '</tr>');
+            }
+                
 })
     let pdfFile = `Employee_${req.body[0].employeeNum}`;
     // Stripping special characters
@@ -193,7 +202,7 @@ backpayRouter.post('/', async (req, res) => {
     </tr>
     <tr style="height: 50px; vertical-align: bottom;">
     <td style=" width: 150px; padding: 1px;">Manager:</td>
-    <td style=" width: 150px; border-bottom: border: 1px solid black; padding: 1px; text-align:center;">${req.body[0].employeeName}</td>
+    <td style=" width: 150px; border-bottom: border: 1px solid black; padding: 1px; text-align:center;">${req.body[0].dm.userFirst} ${req.body[0].dm.userLast}</td>
     <td style=" width: 150px; height: 20px; border-bottom: border: 1px solid black; padding: 1px; vertical-align:bottom">
     <div class="DMOSsign"><img src="http://portal.cbmportal.com/uploads/signatures/backPaySig/${req.body[0].employeeNum}/${month}-${date}-${year}.png"></img></div>
     </td>

@@ -48,7 +48,7 @@ targetorderRouter.post('/', async (req, res) => {
 
         //Filter C code items and sorted numerically
         const sortedOrder = order.filter(item => {
-            if (item['item'].charAt(0) === "C") {
+            if (item['item'].charAt(0) === "C" && item['amount'] != 0) {
                 return item['item'];
             }
         }).sort((a,b) => {
@@ -62,20 +62,21 @@ targetorderRouter.post('/', async (req, res) => {
         });
         //Added the non C code items to sorted Array
         order.forEach(item => {
-            if (item['item'].charAt(0) !== "C") {
+            if (item['item'].charAt(0) !== "C" && item['amount'] != 0) {
                 sortedOrder.push(item);
                 
             }
         })
 
         //Created HTML Item list for PDF
-        const orders = [];
+        let orders = [];
         sortedOrder.forEach(item => {
         orders.push('<tr>'+
         '<td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black;  width: 70%;">' + item["item"] + '</td>' +
             '<td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black;  width: 30%;">' + item["amount"] + '</td>' +
         '</tr>')
     })
+
     let pdfFile = `${location}-Monthly supply order`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
