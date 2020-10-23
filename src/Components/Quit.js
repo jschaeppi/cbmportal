@@ -48,7 +48,7 @@ const Quit = () => {
         }
         e.preventDefault();
             
-            fetch('https://portal.cbmportal.com:5000/api/quit/', {
+            fetch('https://portal.cbmportal.com:5000/api/term/', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'

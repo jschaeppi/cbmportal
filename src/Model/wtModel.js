@@ -52,6 +52,9 @@ const wtForm = new Schema({
     endDate: {
         type: String
     },
+    date: {
+        type: String
+    }
 });
 
 module.exports = WorkTicket = mongoose.model('WorkTicket', wtForm, 'WorkTicket' );

@@ -1,27 +1,46 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Navbar</a>
+<script type="text/javascript">
+  function selectForm() {
+    window.onload = function() {
+      console.log("I'm in the function");
+      location.href= = "../admin/dashboard/?formPage=" + document.getElementById('formSelect').value;
+    }
+  }
+</script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
+  <a class="navbar-brand" href="https://cbmportal.com"><img style="width: 125px;" src="https://cbmportal.com/cbm_forms/images/CBM_Logo.png"  alt="Portal Home"></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavDropdown">
     <ul class="navbar-nav">
       <li class="nav-item active">
-        <a class="nav-link" href="https://cbmportal.com">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="https://admin.cbmportal.com:5000/admin">Home <span class="sr-only">(current)</span></a>
       </li>
+      {{#if user}}
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Select tool
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="./dashboard/stores">Stores</a>
-          {{#if user}}
           {{#with user}}
-          <a class="dropdown-item" href="#">Portal Users</a>
+          {{{permissionCheck permission 'stores'}}}
           {{/with}}
-          {{/if}}
-          <a class="dropdown-item" href="#">PS List</a>
+          {{#with user}}
+          {{{permissionCheck permission 'navPortalUsers'}}}
+          {{/with}}
+          {{#with user}}
+          {{{permissionCheck permission 'psList'}}}
+          {{/with}}
         </div>
       </li>
-    </ul>
+      <li class="nav-item active">
+        <a class="nav-link" href="/admin/dashboard/logout">Logout <span class="sr-only">(current)</span></a>
+      </li>
+      {{#with user}}
+        {{{permissionCheck permission 'Forms'}}}
+        {{/with}}
+        {{/if}}
+      </ul>
   </div>
 </nav>

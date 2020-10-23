@@ -4,53 +4,40 @@ const bodyParser = require('body-parser');
 const translator = require('translate');
 const pdf = require('html-pdf');
 const fs = require('fs');
+const fsPromises = fs.promises;
+const apiFunc = require('../config/api_funcs');
+const HTML = require('../config/html');
 const supplyOrder = require('../src/Model/targetsupply');
 let DepartmentModel = require('../src/Model/departmentModel');
 const cors = require('cors');
+
 targetorderRouter.use(cors({
     origin: ['http://portal.cbmportal.com','http://portal.cbmportal.com:5000', 'http://127.0.0.1'],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
     credentials: true
   }));
-let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
-let { options } = require('../src/config/html')
-//const PTO = require('../src/Model/ptoModel');
-const Store = require('../src/Model/Stores');
+
 targetorderRouter.use(bodyParser.json());
 targetorderRouter.use(bodyParser.urlencoded({ extended: false }));
-let date_ob = new Date();
-// current date
-// adjust 0 before single digit date
-let day = ("0" + date_ob.getDate()).slice(-2);
-// current month
-let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-// current year
-let year = date_ob.getFullYear();
+
+const date = apiFunc.date();
+const uploadsDir = apiFunc.uploadsDir();
 
 targetorderRouter.post('/', async (req, res) => {
-    const employeeName = req.body.employeeName;
-    const location = req.body.location;
-    let notes = req.body.notes;
-    const order = req.body.order;
+    const { employeeName, location, notes, order } = req.body;
     const dm = req.body.dm;
-    notes = await translator(notes, {to: 'en', from: 'es'});
+    //notes = await translator(notes, {to: 'en', from: 'es'});
     order.shift();
     const receiver = await DepartmentModel.findOne({ department: 'Supplies'});
     try {
-        await fs.mkdir(`../../uploads/pdf/targetsupply/${month}-${day}-${year}`, { recursive: true }, (err, result) => {
-            if (err) {
-                console.log(err);
-            } else if(result) {
-            console.log('Folder created successfully!');
-            }
-        })
+        await fsPromises.mkdir(`${uploadsDir}pdf/targetsupply/${date}`, {recursive: true});
     } catch (error) {
         console.log(error);
     }
 
         //Filter C code items and sorted numerically
         const sortedOrder = order.filter(item => {
-            if (item['item'].charAt(0) === "C" && item['amount'] != 0) {
+            if (item['item'].charAt(0) === "C" && item['amount'] != 0 && item['amount'] != 'Quantity' ) {;
                 return item['item'];
             }
         }).sort((a,b) => {
@@ -64,7 +51,7 @@ targetorderRouter.post('/', async (req, res) => {
         });
         //Added the non C code items to sorted Array
         order.forEach(item => {
-            if (item['item'].charAt(0) !== "C" && item['amount'] != 0) {
+            if (item['item'].charAt(0) !== "C" && item['amount'] != 0 && item['amount'] != "Quantity") {
                 sortedOrder.push(item);
                 
             }
@@ -84,101 +71,10 @@ targetorderRouter.post('/', async (req, res) => {
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
     // Setting response to 'attachment' (download).
 
-    content = `<html>
-    <head>
-    <style>
-    html {
-        zoom: .55;
-    }
-    </style>
-    </head>
-    <body>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr>
-    <td style="border-bottom: 0px solid black;">&nbsp;</td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr>
-    <td><img src="http://portal.cbmportal.com/cbm_forms/images/CBM_Logo.png" alt="" width="336" height="102" /></td>
-    <td style="text-align: right; font-weight: bold; font-size: 330%;">Carlson Building Maintenance</td>
-    </tr>
-    <tr>
-    <td style="font-weight: bold; font-size: 140%;">&nbsp;</td>
-    <td>&nbsp;</td>
-    </tr>
-    <tr>
-    <td style="font-weight: bold; font-size: 190%;">&nbsp;Target Supply Order</td>
-    <td>&nbsp;</td>
-    </tr>
-    <tr>
-    <td style="font-weight: bold; font-size: 190%;">&nbsp;</td>
-    <td>&nbsp;</td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr style="color: white; font-weight: bold; font-size: 140%; font-family: Arial; text-align: center; height: 29px; background-color: gray;">
-    <td style="height: 29px; font-weight: bold; font-size: 110%;">Target Supply Order</td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="width: 100%;" border="0" cellpadding="1">
-    <tbody>
-    <tr>
-    <td style="border-bottom: 0px solid black;">&nbsp;</td>
-    </tr>
-    <tr>
-    <td>&nbsp;</td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="margin: 0 auto; width:65%;" border="0" cellpadding="0">
-    <tbody>
-    <tr>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; width: 30%;"><span style="font-size: 12pt;">Store Number:</span></td>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 70%;"><span style="font-size: 12pt;">${location}</span></td>
-    </tr>
-    <tr>
-    <td style="width: 30%;">&nbsp;</td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 70%;"><span style="font-size: 12pt;">&nbsp;</span></td>
-    </tr>
-    <tr>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 30%;"><span style="font-size: 12pt;">Employee Name:</span></td>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 70%;"><span style="font-size: 12pt;">&nbsp;${employeeName}</span></td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="margin: 0 auto; width:65%;" border="0" cellpadding="0">
-    <tbody>
-    <tr>
-    <td style="width: 30%;">&nbsp;</td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 57.0857%;">&nbsp;</td>
-    </tr>
-    ${orders.join().replace(/,/g," ")}
-    <tr>
-    <td style="width: 70%;">&nbsp;</td>
-    <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 57.0857%;">&nbsp;</td>
-    </tr>
-    </tbody>
-    </table>
-    <table style="margin: 0 auto; width:65%;" border="0" cellpadding="0">
-    <tbody>
-    <tr>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 30%;"><span style="font-size: 12pt;">Notes:</span></td>
-    <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 70%;"><span style="font-size: 12pt;">${notes}</span></td>
-    </tr>
-    </tbody>
-    </table>
-    </body>
-    </html>`;
+    const content = HTML.targetOrder(employeeName, location, notes, orders);
 
     //Create PDF
-    pdf.create(content, options).toFile(`../../uploads/pdf/targetsupply/${month}-${day}-${year}/${pdfFile}`, function(err, res) {
+    pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/targetsupply/${date}/${pdfFile}`, function(err, res) {
         if (err) {
         return console.log(err);
         }
@@ -191,16 +87,17 @@ targetorderRouter.post('/', async (req, res) => {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
-    //cc: dm.email,
+    //to: 'joseph.schaeppi@carlsonbuilding.com',
+    cc: dm.email,
     subject: `${location} - Monthly supply order`, // Subject line
     html: message, // html body
     attachments: {
         filename: pdfFile,
-        path: `../../uploads/pdf/targetsupply/${month}-${day}-${year}/${pdfFile}`
+        path: `${uploadsDir}pdf/targetsupply/${date}/${pdfFile}`
     },
 };
     try { 
-        transporter.sendMail(mailOptions,(err, info) => {
+        apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
             console.log(err)
         } else {
@@ -217,7 +114,9 @@ targetorderRouter.post('/', async (req, res) => {
     orders.forEach((item, i) => {
         form.order.push(item);
     })
+    form.location = location;
     form.notes = notes;
+    form.date = date;
     form.save(function(err) {
         if (err) {
             console.log(err);

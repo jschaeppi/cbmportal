@@ -1,0 +1,43 @@
+{{title}}
+{{#if result}}
+{{#with result}}
+<div id="formContent" id="content" class="container m-auto">
+<form>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="exampleFormControlInput1">Employee Num</label>
+      <input type="number" class="form-control" value={{employeeNum}} id="exampleFormControlInput1" placeholder="Employee Num">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="exampleFormControlInput1">DM</label>
+      <input type="text" class="form-control" value={{dm}} id="exampleFormControlInput1" placeholder="DM">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="exampleFormControlSelect2">Department</label>
+      <input type="text" class="form-control" value="{{departments}}" id="approval" placeholder="Department"/>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="exampleFormControlTextarea1">Hours</label>
+      <input type="text" class="form-control" id="exampleFormControlTextarea1" value="{{hours}}" placeholder="Hours">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="exampleFormControlSelect2">Approval</label>
+      <input type="text" class="form-control" value="{{approval}}" id="approval" placeholder="Approval"/>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="exampleFormControlTextarea1">Date</label>
+      <input type="text" class="form-control" id="exampleFormControlTextarea1" value="{{convertTime date}}" placeholder="Date">
+    </div>
+  </div>
+  <textarea class="form-control col-md-12">{{comments}}</textarea>
+  <input type="hidden" value="{{_id}}">
+  <button class="btn btn-info"><a href="./dashboard/mailItems?id={{_id}}" class="text-light">Regenerate Email</a></button>
+  {{{detailsReturnBtn 'pto'}}}
+  <div class="dropdown-divider" role="separator"></div>
+</form>
+{{/with}}
+{{/if}}

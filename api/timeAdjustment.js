@@ -6,8 +6,8 @@ const translator = require('translate');
 const pdf = require('html-pdf');
 const fs = require('fs');
 const fsPromises = fs.promises;
-let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
-let { options } = require('../src/config/html')
+let { transporter, mailOptions, message } = require('../config/mailer');
+let { options } = require('../config/html')
 let timeAdjust = require('../src/Model/timeadjustModel');
 let Store = require('../src/Model/Stores');
 let DepartmentModel = require('../src/Model/departmentModel');
@@ -56,7 +56,7 @@ timeadjustRouter.post('/', async (req, res) => {
         await fsPromises.mkdir(`../../uploads/signatures/timeadjustment/${employeeNum}`, { recursive: true });
         console.log(`Folder ${employeeNum} Created`);
 
-        noteAdjustment = await translator(noteAdjustment, {to:'en', from: 'es'});
+        //noteAdjustment = await translator(noteAdjustment, {to:'en', from: 'es'});
         base64String = req.body[0].employeesig;
         // Remove header
         base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');

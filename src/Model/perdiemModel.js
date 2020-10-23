@@ -39,6 +39,9 @@ const perdiemForm = new Schema({
         },
         mileage: {
             type: Array,
+        },
+        date: {
+            type: String
         }
 });
 

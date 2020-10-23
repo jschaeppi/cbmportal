@@ -1,0 +1,47 @@
+<h2>{{title}}</h2>
+{{#if result}}
+{{#with result}}
+<div class="container">
+<form>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">Employee #</label>
+      <input type="input" class="form-control" value="{{employeeNum}}" id="inputPassword4" placeholder="Employee #">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">Employee Name</label>
+      <input type="input" class="form-control" value="{{firstName}} {{firstLast}} {{secondLast}}" id="inputEmail4" placeholder="Employee Name">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputAddress">Date</label>
+      <input type="input" class="form-control" value="{{convertTime date}}" id="inputAddress" placeholder="Date">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputAddress2">DM</label>
+      <input type="input" class="form-control" value="{{dm}}" id="inputAddress2" placeholder="DM">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-4">
+      <label for="inputAddress">Two Weeks</label>
+      <input type="input" class="form-control" value="{{twoWeeks}}" id="inputAddress" placeholder="Two Weeks">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputAddress2">Rehire Eligible</label>
+      <input type="input" class="form-control" value="{{rehire}}" id="inputAddress2" placeholder="Rehire Eligible">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputAddress2">Last Day Worked</label>
+      <input type="input" class="form-control" value="{{lastWorked}}" id="inputAddress2" placeholder="Last Day Worked">
+    </div>
+  </div>
+ <div class="form-row">
+   <textarea class="col-md-12">{{norehireReason}}</textarea>
+ </div>
+  {{{detailsReturnBtn 'termination'}}}
+</form>
+</div>
+{{/with}}
+{{/if}}

@@ -5,10 +5,11 @@ const pdf = require('html-pdf');
 const fs = require('fs');
 const fsPromises = fs.promises;
 const moment = require('moment');
-let { transporter, mailOptions, message } = require('../src/config/mailer');
-let { options } = require('../src/config/html')
+const apiFunc = require('../config/api_funcs');
+const HTML = require('../config/html');
+let { transporter, mailOptions, message } = require('../config/mailer');
+let { options } = require('../config/html')
 const Bonuses = require('../src/Model/bonusModel');
-const Store = require('../src/Model/Stores');
 const DepartmentModel = require('../src/Model/departmentModel');
 const translator = require('translate');
 
@@ -17,52 +18,22 @@ bonusRouter.use(bodyParser.json());
 bonusRouter.use(bodyParser.urlencoded({extended: false}));
 
 // current date
-let date_ob = new Date();
+const date = apiFunc.date();
+const baseSite = apiFunc.baseSite();
+const uploadsDir = apiFunc.uploadsDir();
 
-// adjust 0 before single digit date
-let date = ("0" + date_ob.getDate()).slice(-2);
-
-// current month
-let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-
-// current year
-let year = date_ob.getFullYear();
-
-bonusRouter.get('/stores/:district', (req, res) => {
-    const districts = req.params.district;
-    console.log(districts);
-    if (districts.length > 1) {
-        Store.find({district: {$in: districts.split(',')}}, (err, result) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(result);
-                res.json(result);
-            }
-        }).sort( { district: -1})
-    } else {
-    Store.find({ district: districts }, (err, result) => {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log(result);
-            res.json(result)
-        }
-    }
-    ).sort({ district: -1})
-}
-});
 bonusRouter.post('/', async (req, res) => {
-    const { dm } = req.body[0];
+    const { dm, employeeNum, sig, employeeName } = req.body[0];
+    let { comments } = req.body[0];
     const rows = [];
     let bonusInfo = [];
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
     
     //Translating from spanish to English
-    req.body[0].comments = await translator(req.body[0].comments, { to: 'en', from: 'es'});
-    console.log(req.body[0].comments);
+    comments = await translator(comments, { to: 'en', from: 'es'});
+
     //acquiring signature
-    let base64String = req.body[0].sig;
+    let base64String = sig;
     // Remove header
     let base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
  
@@ -70,180 +41,33 @@ bonusRouter.post('/', async (req, res) => {
     let base64Image = new Buffer.from(base64Data, 'base64');
     try {
     //Make new folder for request
-    await fsPromises.mkdir(`../../uploads/signatures/bonusPaySig/${req.body[0].employeeNum}`, { recursive: true });
-    console.log(`Folder ${req.body[0].employeeNum} Created`);
+    await fsPromises.mkdir(`${uploadsDir}signatures/bonusPaySig/${employeeNum}`.split(' ').join(''), { recursive: true });
+    console.log(`Folder ${employeeNum} Created`);
     //Write signature to file
-    await fs.writeFile(`../../uploads/signatures/bonusPaySig/${req.body[0].employeeNum}/${month}-${date}-${year}.png`, base64Image, (err) => {
-        if (err) {
-          console.log(err);
-        }
-        console.log('File succeeded.');
-      });
+    await fsPromises.writeFile(`${uploadsDir}signatures/bonusPaySig/${employeeNum}/${date}.png`.split(' ').join(''), base64Image);
     } catch(err) {
         console.log(err);
     }
 
     //Generating Bonuse Rows
         req.body.forEach( (item,i) => {
-                rows.push(moment(item.date).format('L'));
+                rows.push(item.date);
                 rows.push(item.location);
                 rows.push(item.bonus);
                 bonusInfo.push('<tr style="height: 25px;">' +
-    '<td style="width: 15%; height: 25px; text-align: center; font-weight: bold; border: 1px solid black;">&nbsp;' + item.date + '</td>' +
+    '<td style="width: 15%; height: 25px; text-align: center; font-weight: bold; border: 1px solid black;">&nbsp;' + moment(item.date).format('L') + '</td>' +
    '<td style="text-align: center; width: 70%; font-weight: bold; height: 25px; border: 1px solid black;">&nbsp;' + item.location + '</td>' +
     '<td style="width: 15%; font-weight: bold; height: 25px; border: 1px solid black; text-align: center;">&nbsp;' + item.bonus + '</td></tr>');
 })
-    let pdfFile = `Employee_${req.body[0].employeeNum}`;
+    let pdfFile = `Employee_${employeeNum}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
 
 
-    let content = `<head>
-  <style>
-  .EEsignature img{
-  width:100px; vertical-align: text-bottom;
-  }
-  .DMOSsign img{
-  width:100px;vertical-align: text-bottom;
-  }
-  table {
-      border-spacing: 0;
-  }
-  html {
-    zoom: .55;
-}
-td {
-    padding-top: 5px;
-}
-  </style>
-  </head>
-  <body>
-  <table style="width: 100%;" border="0" cellpadding="0">
-  <tbody>
-  <tr>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  </tr>
-  </tbody>
-  </table>
-  <table style="width: 100%;" border="0" cellpadding="0">
-  <tbody>
-  <tr>
-  <td style="color: white; font-weight: bold; font-size: 140%; font-family: Arial; text-align: center; height: 29px; background-color: white; border: 20px solid #EDEDED; padding: 5px;"><img src="http://portal.cbmportal.com/cbm_forms/images/CBM_Logo.png" alt="" width="336" height="102" /></td>
-  </tr>
-  <tr>
-  <td style="font-weight: bold; font-size: 190%; text-align: center;">BONUS FORM</td>
-  </tr>
-  <tr>
-  <td style="font-weight: bold; font-size: 190%; text-align: center;">&nbsp;</td>
-  </tr>
-  </tbody>
-  </table>
-  <table style="width: 100%;" border="0" cellpadding="0">
-  <tbody>
-  <tr style="height: 25px;">
-  <td style="width: 15%; height: 25px; text-align: right; font-weight: bold;">&nbsp;Name</td>
-  <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 40%; font-weight: bold; height: 25px;">&nbsp;${req.body[0].employeeName}</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 40%; font-weight: bold; text-align: right; height: 25px;">&nbsp;Emp#</td>
-  <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 30%; font-weight: bold; height: 25px; text-align: center;">${req.body[0].employeeNum}</td>
-  </tr>
-  <tr style="height: 25px;">
-  <td style="width: 15%; height: 25px; text-align: right; font-weight: bold;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: left; width: 40%; font-weight: bold; height: 25px;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 30%; font-weight: bold; text-align: right; height: 25px;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 15%; font-weight: bold; height: 25px;">&nbsp;</td>
-  </tr>
-  </tbody>
-  </table>
-  <table style="width: 100%;" border="0" cellpadding="0" cellspacing="0">
-  <tbody>
-  <tr style="height: 25px;">
-  <td style="width: 15%; height: 25px; text-align: center; font-weight: bold; border: 1px solid black;"><span style="font-size: 16pt;">Date</span></td>
-  <td style="text-align: center; width: 70%; font-weight: bold; height: 25px; border: 1px solid black;"><span style="font-size: 16pt; line-height: 22.8571px;">Location</span></td>
-  <td style="width: 15%; font-weight: bold; height: 25px; border: 1px solid black; text-align: center;"><span style="font-size: 16pt;">Amount</span></td>
-  </tr>
-  </tbody>
-  </table>
-  <table style="width: 100%;" border="0" cellpadding="0">
-  <tbody>
- ${bonusInfo.join().replace(/,/g," ")}
-  </tbody>
-  </table>
-  <table style="width: 100%;" border="0" cellpadding="0">
-  <tbody>
-  <tr style="height: 25px;">
-  <td style="width: %; height: 25px; text-align: left; font-weight: bold;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 50%; font-weight: bold; height: 25px;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; font-weight: bold; text-align: right; height: 25px;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 15%; font-weight: bold; height: 25px;">&nbsp;</td>
-  </tr>
-  </tbody>
-  </table>
-  <table style="width: 100%;" border="0" cellpadding="0">
-  <tbody>
-  <tr style="height: 50px; vertical-align: bottom;">
-  <td style="width: 15%; height: 25px; text-align: right; font-weight: normal;">&nbsp;Manager:</td>
-  <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 40%; font-weight: bold; height: 25px;">&nbsp;
-  <div class="DMOSsign"><img src="http://portal.cbmportal.com/uploads/signatures/bonusPaySig/${req.body[0].employeeNum}/${month}-${date}-${year}.png"</div>
-  </td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; font-weight: normal; text-align: right; height: 25px;">&nbsp;Date:</td>
-  <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; width: 20%; font-weight: bold; height: 25px;">&nbsp;${month}/${date}/${year}</td>
-  </tr>
-  <tr style="height: 25px;">
-  <td style="width: 15%; height: 25px; text-align: left; font-weight: bold; vertical-align: bottom;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 50%; font-weight: bold; height: 25px;"><sup>sign</sup></td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; font-weight: bold; text-align: right; height: 25px;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 15%; font-weight: bold; height: 25px;">&nbsp;</td>
-  </tr>
-  
-  <tr style="height: 25px;">
-  <td style="width: 15%; height: 25px; text-align: left; font-weight: bold;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 50%; font-weight: bold; height: 25px;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; font-weight: bold; text-align: right; height: 25px;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 15%; font-weight: bold; height: 25px;">&nbsp;</td>
-  </tr>
-  <tr style="height: 25px;">
-  <td style="width: 15%; height: 25px; text-align: left; font-weight: bold;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 50%; font-weight: bold; height: 25px;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; font-weight: bold; text-align: right; height: 25px;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 15%; font-weight: bold; height: 25px;">&nbsp;</td>
-  </tr>
-  </tbody>
-  </table>
-  <table style="width: 100%;" border="0" cellpadding="0">
-  <tbody>
-  <tr style="height: 25px; vertical-align: bottom;">
-  <td style="width: 15%; height: 25px; text-align: right; font-weight: normal;">&nbsp;Comments:</td>
-  <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: left; width: 85%; font-weight: bold; height: 25px;"> ${req.body[0].comments}</td>
-  </tr>
-  <tr style="height: 25px; vertical-align: bottom;">
-  <td style="width: 15%; height: 25px; text-align: right; font-weight: bold;">&nbsp;</td>
-  <td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: left; width: 85%; font-weight: bold; height: 25px;">&nbsp;</td>
-  </tr>
-  <tr style="height: 25px; vertical-align: bottom;">
-  <td style="width: 15%; height: 25px; text-align: right; font-weight: bold;">&nbsp;</td>
-  <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; text-align: left; width: 85%; font-weight: bold; height: 25px;">&nbsp;</td>
-  </tr>
-  </tbody>
-  </table>
-  <table style="width: 100%;" border="0" cellspacing="0" cellpadding="0">
-  <tbody>
-  <tr style="height: 10px;">
-  <td style="width: 15%; height: 25px; text-align: center; font-weight: bold;">&nbsp;</td>
-  <td style="text-align: center; width: 70%; font-weight: bold; height: 25px; border: 2px solid black;"><span style="font-size: 16px; line-height: 25px;">Payroll Use Only </span></td>
-  <td style="width: 15%; font-weight: bold; height: 25px; text-align: center;">&nbsp;</td>
-  </tr>
-  <tr style="height: 25px;">
-  <td style="width: 15%; height: 25px; text-align: center; font-weight: bold;">&nbsp;</td>
-  <td style="text-align: center; width: 70%; font-weight: bold; height: 200px; border: 2px solid black;">&nbsp;</td>
-  <td style="width: 15%; font-weight: bold; height: 25px; text-align: center;">&nbsp;</td>
-  </tr>
-  </tbody>
-  </table>
-  </body>
-  </html>`;
+    let content = HTML.bonusHtml(employeeName, employeeNum, bonusInfo, comments, date, baseSite);
 
   //Create PDF
-    pdf.create(content, options).toFile(`../../uploads/pdf/bonus/${pdfFile}`, function(err, res) {
+    pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/bonus/${pdfFile}`, function(err, res) {
       if (err) {
       return console.log(err);
       }
@@ -255,15 +79,15 @@ td {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
     cc: dm.email,
-    subject: `Bonus request for ${req.body[0].employeeNum}`, // Subject line
+    subject: `Bonus request for ${employeeNum}`, // Subject line
     text: `${receiver.department} ${message}`, // plain text body
     attachments: {
         filename: `${pdfFile}`,
-        path: `../../uploads/pdf/bonus/${pdfFile}`
+        path: `${uploadsDir}pdf/bonus/${pdfFile}`.split(' ').join('')
     },
 };
     try { 
-        transporter.sendMail(mailOptions,(err, info) => {
+        apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
             console.log(err)
         } else {
@@ -276,14 +100,15 @@ td {
 
     //DB insertions
     let form = new Bonuses();
-        form.employeeName = req.body[0].employeeName;
-        form.employeeNum = req.body[0].employeeNum;
-        form.dm = req.body[0].dm;
-    bonusInfo.forEach((item, i) => {
-        form.bonus.push(item);
-    })
-        form.comments = req.body[0].comments;
-    form.save(function(err) {
+        form.employeeName = employeeName;
+        form.employeeNum = employeeNum;
+        form.dm = dm.fullName;
+        bonusInfo.forEach((item, i) => {
+            form.bonus.push(item);
+        })
+        form.comments = comments;
+        form.date = date;
+        form.save(function(err) {
         if (err) {
             console.log(err);
             return;

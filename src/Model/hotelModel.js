@@ -53,9 +53,8 @@ const hotelForm = new Schema({
         newPS: {
             type: String
         },
-        Date: {
-            type: Date,
-            default: Date.now
+        date: {
+            type: String
         },
 });
 

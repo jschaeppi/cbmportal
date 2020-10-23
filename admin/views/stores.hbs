@@ -1,9 +1,10 @@
-<script type="text/javascript">
-    Handlebars.registerPartial('nav', 'partials/nav.hbs');
-</script>
-{{> nav}}
-<div id="storesList">
-<table class="table">
+<script>Handlebars.registerPartial('createStoreForm', '../partials/createStore.hbs');</script>
+{{> createStore}}
+<div id="storesList" class="">
+  {{{successMessage "delete" storeDeleteStatus store}}}
+  {{{successMessage "create" created store}}}
+  {{{successMessage "updated" updated store}}}
+<table class="table table-striped table-responsive-md">
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -18,14 +19,11 @@
 
       <td scope="row">{{@key}}</td>
       <td scope="row">{{banner}}</td>
-      <td scope="row">{{store}}</td>
-      <td scope="row">{{makeLink "removeStore" _id}}</td>
+      <td scope="row">{{{makeLink "stores/editStore" _id 'primary' store}}}</td>
+      <td scope="row">{{{makeLink "stores/removeStore" _id  'danger' 'Delete'}}}</td>
     </tr>
 {{/each}}
 
 </tbody>  
 </table>
 </div>
-<script>
-
-</script>

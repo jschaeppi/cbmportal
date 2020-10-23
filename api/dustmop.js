@@ -3,8 +3,8 @@ const dustmopRouter = express.Router();
 const formidable = require('express-formidable');
 const fs = require('fs');
 const path = require('path');
-let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
-let { options } = require('../src/config/html')
+let { transporter, mailOptions, message } = require('../config/mailer');
+let { options } = require('../config/html')
 const Dustmop = require('../src/Model/dustmopModel');
 const Store = require('../src/Model/Stores')
 

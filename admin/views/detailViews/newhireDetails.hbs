@@ -1,0 +1,100 @@
+<h2>{{title}}</h2>
+{{#if result}}
+{{#with result}}
+<div class="container">
+<form>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">First Name</label>
+      <input type="input" class="form-control" value="{{firstName}}" id="inputEmail4" placeholder="First Name">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">Last Name</label>
+      <input type="input" class="form-control" value="{{firstLast}}" id="inputPassword4" placeholder="Last Name">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputAddress">Address</label>
+    <input type="input" class="form-control" value="{{address}}" id="inputAddress" placeholder="Address">
+  </div>
+  <div class="form-group">
+    <label for="inputAddress2">Location</label>
+    <input type="input" class="form-control" value="{{location}}" id="inputAddress2" placeholder="Location">
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputCity">Phone</label>
+      <input type="input" class="form-control" value="{{phone}}" id="inputCity" placeholder="Phone">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputState">Alternate Phone</label>
+      <input type="input" id="inputState" value="{{phone2}}" class="form-control" placeholder="Alternate Phone">
+    </div>
+    <div class="form-group col-md-2">
+      <label for="inputZip">Email</label>
+      <input type="input" class="form-control" value="{{email}}" id="inputZip" placeholder="Email">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputAddress">First Day</label>
+      <input type="input" class="form-control" value="{{convertTime firstDay}}" id="inputAddress" placeholder="First Day">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputAddress2">Date of Birth</label>
+      <input type="input" class="form-control" value="{{convertTime dob}}" id="inputAddress2" placeholder="Date of Birth">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputCity">Hire Type</label>
+      <input type="input" class="form-control" value="{{hireType}}" id="inputCity" placeholder="Hire Type">
+    </div>
+    <div class="form-group col-md-6">
+    <label for="inputAddress">DM</label>
+    <input type="input" class="form-control" value="{{dm}}" id="inputAddress" placeholder="DM">
+  </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputAddress2">Num of days working</label>
+      <input type="input" class="form-control" value="{{numDays}}" id="inputAddress2" placeholder="Num of days working">
+    </div>
+      <div class="form-group col-md-6">
+        <label for="inputCity">Sex</label>
+        <input type="text" class="form-control" rows="1" value="{{sex}}" id="inputCity" placeholder="Sex">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputAddress2">Wage</label>
+      <input type="number" class="form-control" value="{{wage}}" id="inputAddress2" placeholder="Wage">
+    </div>
+      <div class="form-group col-md-6">
+        <label for="inputCity">Position</label>
+        <input type="text" class="form-control" rows="1" value="{{positions}}" id="inputCity" placeholder="Position">
+    </div>
+    <div class="form-group col-md-6">
+        <label for="inputCity">Language</label>
+        <input type="text" class="form-control" rows="1" value="{{language}}" id="inputCity" placeholder="Language">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputAddress2">I-9 1st Page</label>
+      <img src="{{i91}}" class="img-thumbnail" id="inputAddress2" />
+    </div>
+      <div class="form-group col-md-6">
+        <label for="inputCity">I-9 2nd Page</label>
+        <img src="{{i92}}" class="img-thumbnail" id="inputCity" />
+    </div>
+    <div class="form-group col-md-6">
+        <label for="inputCity">ID Badge</label>
+        <img src="{{idbadge}}"  class="img-thumbnail" id="inputCity" />
+    </div>
+  </div>
+  {{{detailsReturnBtn 'newhire'}}}
+</form>
+</div>
+{{/with}}
+{{/if}}

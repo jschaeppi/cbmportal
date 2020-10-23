@@ -1,0 +1,48 @@
+<div class="text-left mt-2">
+    <p>Create Portal User</p>
+</div>
+<form method="POST" action="portalUsers/createPortalUser">
+  <div class="form-row align-items-center">
+    <div class="col-auto">
+      <label class="sr-only" for="inlineFormInput">Full Name</label>
+      <input type="text" class="form-control mb-2" id="inlineFormInput" name="fullName" required placeholder="Full Name">
+    </div>
+    <div class="col-auto">
+      <label class="sr-only" for="inlineFormInput">Email</label>
+      <input type="email" class="form-control mb-2" id="inlineFormInput" name="email" required placeholder="Email">
+    </div>
+    <div class="col-auto">
+      <label class="sr-only" for="inlineFormInput">Password</label>
+      <input type="password" class="form-control mb-2" id="inlineFormInput" name="password" required placeholder="Password">
+    </div>
+    <div class="col-auto">
+      <div class="input-group mb-2">
+        <select class="form-control" id="inlineFormInputGroup" name="district" required placeholder="District">
+            <option value="">Select District</option>
+            <option value="MN RETAIL DIST,MN Northern Dist">MN Target District</option>
+            <option value="MN Grocery-Retail">MN Grocery-Retail</option>
+            <option value="IA-IL">IA-IL</option>
+            <option value="IL-WI">IL-WI</option>
+            <option value="ND-NW-MN">ND-NW-MN</option>
+            <option value="office,MN RETAIL DIST,MN Northern Dist,MN Grocery-Retail,IA-IL,IL-WI,ND-NW-MN">Office</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-auto">
+      <div class="input-group mb-2">
+        {{#with user}}
+    <select class="form-control" id="inlineFormInputGroup" name="permission" required placeholder="Permission Level">
+            <option value="">Select Permission Level</option>
+            {{{permissionCheck permission "portalUsers"}}}
+            <option value="4">Office Employee</option>
+            <option value="3">District Manager</option>
+            <option value="2">PS/OS</option>
+        </select>
+        {{/with}}
+      </div>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary mb-2">Submit</button>
+    </div>
+  </div>
+</form>

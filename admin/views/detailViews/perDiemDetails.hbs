@@ -1,0 +1,69 @@
+<h2>{{title}}</h2>
+{{#if result}}
+{{#with result}}
+<div class="container">
+<form>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">Employee #</label>
+      <input type="input" class="form-control" value="{{employeeNum}}" id="inputEmail4" placeholder="Employee #">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">Employee Name</label>
+      <input type="input" class="form-control" value="{{employeeName}}" id="inputPassword4" placeholder="Employee Name">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputAddress">Location</label>
+      <input type="input" class="form-control" value="{{location}}" id="inputAddress" placeholder="Location">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputAddress2">DM</label>
+      <input type="input" class="form-control" value="{{dm}}" id="inputAddress2" placeholder="DM">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputAddress">City</label>
+      <input type="input" class="form-control" value="{{city}}" id="inputAddress" placeholder="City">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputAddress2">State</label>
+      <input type="input" class="form-control" value="{{state}}" id="inputAddress2" placeholder="State">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="inputCity">First Night</label>
+      <input type="input" class="form-control" value="{{firstNight}}" id="inputCity" placeholder="First Night">
+    </div>
+  
+    <div class="form-group col-md-3">
+      <label for="inputState">Last Night</label>
+      <input type="input" id="inputState" value="{{lastNight}}" class="form-control" placeholder="Last Night">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="inputZip">Arrival Date</label>
+      <input type="input" class="form-control" value="{{arrivalDate}}" id="inputZip" placeholder="Arrival Date">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="inputZip">Departure Date</label>
+      <input type="input" class="form-control" value="{{depatureDate}}" id="inputZip" placeholder="Departure Date">
+    </div>
+  </div>
+  <div class="form-row">
+    <table class="table table-striped">
+      <tbody>
+        {{{mileageDetailsLoop mileage 'perDiem'}}}
+      </tbody>
+    </table>
+ </div>
+ <div class="form-row">
+   <textarea class="col-md-12">{{comments}}</textarea>
+ </div>
+  {{{detailsReturnBtn 'perDiem'}}}
+</form>
+</div>
+{{/with}}
+{{/if}}

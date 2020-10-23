@@ -12,12 +12,16 @@ const cors = require('cors');
 const compression = require('compression');
 const PORT = process.env.PORT || 5000;
 const exhbs = require('express-handlebars');
-const config = require('config');
-//const MongoStore = require('connect-mongo')(session);
-const db = require('./src/config/db');
 
+//const config = require('config');
+//const MongoStore = require('connect-mongo')(session);
+process.traceDeprecation = true;
+const db = require('./src/config/db');
+//const hbshelpers = require('./admin/helpers/hbs_helpers');
 translator.engine = 'google';
 translator.key = process.env.translateAPI;
+
+
 app.use(cors({
     origin: ['https://portal.cbmportal.com','https://portal.cbmportal.com:5000', 'https://127.0.0.1:3000', 'http://localhost:3000'],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
@@ -31,7 +35,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(morgan('dev'));
 
 app.set('views', path.join(__dirname, '/admin/views'));
-app.engine('.hbs', exhbs({extname: '.hbs', helpers: require('./admin/helpers/hbs_helpers'), defaultLayout: 'index'}))
+app.engine('.hbs', exhbs({extname: '.hbs', helpers: require('./admin/helpers/hbs_helpers'), defaultLayout: 'index'}));
 app.set('view engine', '.hbs');
 
 app.set('trust proxy', 1) // trust first proxy
@@ -66,7 +70,7 @@ const wtRouter = require('./api/WT');
 const timeadjustRouter = require('./api/timeAdjustment');
 const ptoRouter = require('./api/pto');
 const quitRouter = require('./api/quit');
-const otherRouter = require('./api/other');
+const termRouter = require('./api/term');
 const nsfdRouter = require('./api/nsfd');
 const ncnsRouter = require('./api/ncns');
 const newhireRouter = require('./api/newhire');
@@ -75,6 +79,9 @@ const storeRouter = require('./api/updateStores');
 const storesRouter = require('./api/stores');
 const targetorderRouter = require('./api/targetOrder');
 const adminRouter = require('./admin/admin');
+const psListRouter = require('./admin/routes/psListRoute');
+const portalUserRouter = require('./admin/routes/portalRoute');
+const storeListRouter = require('./admin/routes/storeRoute');
 
 
 
@@ -92,7 +99,7 @@ app.use('/api/WT', wtRouter);
 app.use('/api/timeAdjustment', timeadjustRouter);
 app.use('/api/pto', ptoRouter);
 app.use('/api/quit', quitRouter);
-app.use('/api/other', otherRouter);
+app.use('/api/term', termRouter);
 app.use('/api/nsfd', nsfdRouter);
 app.use('/api/ncns', ncnsRouter);
 app.use('/api/newhire', newhireRouter);
@@ -101,6 +108,9 @@ app.use('/api/updateStores', storeRouter);
 app.use('/api/stores', storesRouter);
 app.use('/api/targetOrder', targetorderRouter);
 app.use('/admin', adminRouter);
+app.use('/admin/dashboard/psList', psListRouter);
+app.use('/admin/dashboard/portalUsers', portalUserRouter);
+app.use('/admin/dashboard/stores', storeListRouter);
 
 
 

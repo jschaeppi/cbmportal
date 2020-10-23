@@ -22,18 +22,20 @@
   </button>
 </div>
 {{/if}}
-<form action="https://admin.cbmportal.com:5000/api/users/loginSubAdmin"  method="POST">
-    <div class="form-group">
-        <label>Enter Username:</label>
-        <input class="form-control" type="text" name="username" id="user"></input>
-    </div>
-        <div class="form-group">
-        <label>Enter Password: </label>
-        <input class="form-control" type="password" name="password" id="pass" />
-    </div>
-    <div >
-        <button onclick="validateForm(event)" value="submit">Submit </button>
-        
-    </div>
+<div class="container w-50 mx-auto">
+  <form action="https://admin.cbmportal.com:5000/api/users/loginSubAdmin"  method="POST">
+      <div class="form-group">
+          <label>Enter Username:</label>
+          <input class="form-control" type="text" name="username" id="user"></input>
+      </div>
+          <div class="form-group">
+          <label>Enter Password: </label>
+          <input class="form-control" type="password" name="password" id="pass" />
+      </div>
+      <div >
+          <button onclick="validateForm(event)" value="submit">Submit </button>
+          
+      </div>
     
-</form>
+  </form>
+</div> 

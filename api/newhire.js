@@ -6,33 +6,16 @@ const fsPromises = fs.promises;
 const path = require('path');
 const pdf = require('html-pdf');
 const moment = require('moment')
-let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
-let { options } = require('../src/config/html')
+const apiFunc = require('../config/api_funcs');
+const HTML = require('../config/html');
 const NewHire = require('../src/Model/newhireModel');
-const Store = require('../src/Model/Stores');
 const DepartmentModel = require('../src/Model/departmentModel');
 
 newhireRouter.use(formidable({ uploadDir: './uploads/'}));
 
-// current date
-let date_ob = new Date();
-// adjust 0 before single digit date
-let day = ("0" + date_ob.getDate()).slice(-2);
-// current month
-let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-// current year
-let year = date_ob.getFullYear();
-
-/*newhireRouter.get('/stores/:id', (req, res) => {
-    Store.find( { dm: req.params.id }, (err, result) => {
-        if (err) {
-            console.log(err)
-        } else {
-            res.json(result)
-        }
-    }
-    )
-});*/
+const date = apiFunc.date();
+const uploadsDir = apiFunc.uploadsDir();
+const baseSite = apiFunc.baseSite();
 
 newhireRouter.post('/', formidable(), async (req, res) => {
 
@@ -44,27 +27,12 @@ newhireRouter.post('/', formidable(), async (req, res) => {
     const receiver = await DepartmentModel.findOne({ department: 'New Hires'});
     if (file1.name === file2.name) {
         file2.name = path.basename(file2.name, path.extname(file2.name)) + "(1)" + path.extname(file2.name);
-        console.log(file2.name);
     }
     try {
-        await fsPromises.mkdir(`../../uploads/images/newhires/${firstName} ${firstLast}`,{ recursive: true })
-        await fs.rename(file1.path, `../../uploads/images/newhires/${firstName} ${firstLast}/I-9 Page #1${path.extname(file1.name)}`, (err) => {
-            if (err) {
-                console.log('File couldn\'t be moved!');
-            } else {
-                console.log(`I-9 Page #1${path.extname(file1.name)}`);
-            }
-        })
-        await fs.rename(file2.path, `../../uploads/images/newhires/${firstName} ${firstLast}/I-9 Page #2${path.extname(file2.name)}`, (err) => {
-            if (err) {
-                console.log('File couldn\'t be moved!');
-            }
-        })
-        await fs.rename(file3.path, `../../uploads/images/newhires/${firstName} ${firstLast}/${file3.name}`, (err) => {
-            if (err) {
-                console.log('File couldn\'t be moved!');
-            }
-        })
+        await fsPromises.mkdir(`${uploadsDir}images/newhires/${firstName}-${firstLast}`.split(' ').join(''),{ recursive: true })
+        await fsPromises.rename(file1.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`.split(' ').join(''));
+        await fsPromises.rename(file2.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`.split(' ').join(''));
+        await fsPromises.rename(file3.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join(''));
     } catch(err) {
         console.log(err);
     }
@@ -75,232 +43,10 @@ newhireRouter.post('/', formidable(), async (req, res) => {
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
 
-    content = `<html>
-    <head>
-    <style>
-    .EEsignature img{
-    width:200px; vertical-align: text-bottom;
-    }
-    .DMOSsign img{
-    width:200px;vertical-align: text-bottom;
-    }
-    html {
-        zoom: .55;
-    }
-    </style>
-    </head>
-    <body>
-    <table style="width: 100%;" border="0" cellpadding="1" cellspacing="0">
-<tbody>
-<tr>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-</tr>
-</tbody>
-</table>
-<table style="width: 100%;" border="0" cellpadding="1" cellspacing="0">
-<tbody>
-<tr>
-<td><img src="http://portal.cbmportal.com/cbm_forms/images/CBM_Logo.png" alt="" width="336" height="102" /></td>
-<td style="text-align: right; font-weight: bold; font-size: 330%;">Carlson Building Maintenance</td>
-</tr>
-<tr>
-<td style="font-weight: bold; font-size: 140%;">&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-<tr>
-<td style="font-weight: bold; font-size: 140%;">&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-<tr>
-<td style="font-weight: bold; font-size: 190%; padding-left: 5px;">New Hire Form</td>
-<td style="font-weight: bold; font-size: 190%; padding-left: 5px;text-align:right">&nbsp;${month}/${day}/${year}</td>
-</tr>
-<tr>
-<td style="font-weight: bold; font-size: 190%;">&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-<tr>
-<td style="font-weight: bold; font-size: 190%;">&nbsp;</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-<table style="width: 100%;" border="0" cellpadding="1" cellspacing="0">
-<tbody>
-<tr style="color: white; font-weight: bold; font-size: 140%; font-family: Arial; text-align: center; height: 29px; background-color: #25354c;">
-<td style="height: 29px; font-weight: bold; font-size: 110%;">New Hire Details</td>
-</tr>
-</tbody>
-</table>
-<table style="width: 100%;" border="0" cellpadding="1" cellspacing="0">
-<tbody>
-<tr>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">New Hire/Rehire</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${hireType}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">First Name</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${firstName}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Middle Name</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${middleName}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Last name</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${firstLast} </td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Second Last Name</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${secondLast}</td>
-</tr>
-<tr>
-<td style="border-bottom: 0px solid black; background-color: #f9fafc;">&nbsp;</td>
-<td style="border-bottom: 0px solid black; background-color: #f9fafc;">&nbsp;</td>
-<td style="border-bottom: 0px solid black; background-color: #f9fafc;">&nbsp;</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Address</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${address}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Phone Number</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${phone}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Phone Alternative</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${phone2}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Email</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${email}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Social Security Number</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${ssn}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Date Of Birth</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${dob}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Male/Female</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${sex}</td>
-</tr>
-<tr>
-<td style="border-bottom: 0px solid black; background-color: #f9fafc;">&nbsp;</td>
-<td style="border-bottom: 0px solid black; background-color: #f9fafc;">&nbsp;</td>
-<td style="border-bottom: 0px solid black; background-color: #f9fafc;">&nbsp;</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">First Day Worked</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${firstDay}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Title Position</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${positions} ${number}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Store Name and Number</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${location}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">District Manager</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${dm_userFirst} ${dm_userLast}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Pay Rate/hour</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${wage}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Hours Scheduled per week</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${hours}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Number of Working Days</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${numDays}</td>
-</tr>
-<tr>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">Preferred Language</td>
-<td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
-<td style="width: 48%; border: 1px solid black; padding: 3px;">${language}</td>
-</tr>
-<tr>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-</tr>
-<tr>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-</tr>
-<tr>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-</tr>
-<tr>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-</tr>
-<tr>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-</tr>
-<tr>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-</tr>
-<tr>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-</tr>
-</tbody>
-</table>
-<table style="width: 100%;" border="0" cellpadding="1" cellspacing="0">
-<tbody>
-<tr>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-</tr>
-<tr>
-<td style="border-bottom: 0px solid black;">&nbsp;</td>
-</tr>
-</tbody>
-</table>
-    </body>
-    </html>`;
+    content = HTML.newhire(firstName, middleName, dm_userFirst, dm_userLast, dm_email, firstLast, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number)
 
     //Create PDF
-    pdf.create(content, options).toFile(`../../uploads/pdf/newhires/${pdfFile}`, function(err, res) {
+    pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/newhires/${pdfFile}`, function(err, res) {
         if (err) {
         return console.log(err);
         }
@@ -321,24 +67,24 @@ newhireRouter.post('/', formidable(), async (req, res) => {
     attachments: [
         {
         filename: pdfFile,
-        path: `../../uploads/pdf/newhires/${pdfFile}`
+        path: `${uploadsDir}pdf/newhires/${pdfFile}`
     },
     {
-        filename: `I-9 Page #1${path.extname(file2.name)}`,
-        path: `../../uploads/images/newhires/${firstName} ${firstLast}/I-9 Page #1${path.extname(file1.name)}`
+        filename: `I-9 Page 1${path.extname(file2.name)}`,
+        path: `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`.split(' ').join('')
     },
     {
-        filename: `I-9 Page #2${path.extname(file2.name)}`,
-        path: `../../uploads/images/newhires/${firstName} ${firstLast}/I-9 Page #2${path.extname(file2.name)}`
+        filename: `I-9 Page 2${path.extname(file2.name)}`,
+        path: `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`.split(' ').join('')
     },
     {
         filename: file3.name,
-        path: `../../uploads/images/newhires/${firstName} ${firstLast}/${file3.name}`
+        path: `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join('')
     },
     ]
 };
     try { 
-        transporter.sendMail(mailOptions,(err, info) => {
+        apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
             console.log(err)
         } else {
@@ -351,6 +97,7 @@ newhireRouter.post('/', formidable(), async (req, res) => {
 
     //DB insertions
     let form = new NewHire();
+    form.date = date;
     form.firstName = firstName;
     form.middleName = middleName;
     form.dm = `${dm_userFirst} ${dm_userLast}`;
@@ -371,9 +118,9 @@ newhireRouter.post('/', formidable(), async (req, res) => {
     form.hours = hours;
     form.language = language;
     form.ssn = ssn;
-    form.i91 = `../../uploads/${file1.name}`;
-    form.i92 =  `../../uploads/${file2.name}`;
-    form.idbadge = `../../uploads/${file3.name}`;
+    form.i91 = `${baseSite}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`.split(' ').join('');
+    form.i92 =  `${baseSite}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`.split(' ').join('');
+    form.idbadge = `${baseSite}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join('');
     form.save(function(err) {
         if (err) {
             console.log(err);

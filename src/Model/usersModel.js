@@ -20,10 +20,15 @@ const userSchema = new Schema({
             type: String,
         },
         password: {
-            type: String
+            type: String,
         },
         username: {
-            type: String
+            type: String,
+            unique: true
+        },
+        fullName: {
+            type: String,
+            unique: true
         },
 });
 

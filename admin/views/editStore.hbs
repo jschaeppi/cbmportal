@@ -1,0 +1,37 @@
+<form method="POST" action="editStore">
+    <div class="container">
+        {{#with result}}
+        <input type="hidden" name="id" value="{{_id}}" />
+        <div class="form-group row w-50">
+            <label for="inputStore" class="col-sm-2 col-form-label">Store Name</label>
+            <div class="col-sm-10">
+            <input type="text" class="form-control" value="{{store}}" id="inputStore" name="store" placeholder="Store Name">
+            </div>
+        </div>
+        <div class="form-group row w-50">
+            <label for="inputDM" class="col-sm-2 col-form-label">DM</label>
+            <div class="col-sm-10">
+            <input type="text" class="form-control" value="{{dm}}" id="inputDM" name="dm" placeholder="Password">
+            </div>
+        </div>
+        <div class="form-group row w-50">
+            <label for="inputDistrict" class="col-sm-2 col-form-label">District</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="inputDistrict" value={{district}} name="district" placeholder="District">
+                    <option value="MN RETAIL DIST">MN Retail District</option>
+                    <option value="MN Northern Dist">MN Northern District</option>
+                    <option value="MN Grocery-Retail">MN Grocery-Retail</option>
+                    <option value="IA-IL">IA-IL</option>
+                    <option value="IL-WI">IL-WI</option>
+                    <option value="ND-NW-MN">ND-NW-MN</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+        {{/with}}
+    </div>
+</form>

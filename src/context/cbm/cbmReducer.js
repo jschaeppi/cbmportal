@@ -33,16 +33,16 @@ export default (state, action) => {
             case GET_AUTH:
                 return {
                     ...state,
-                    user: action.payload,
+                    user: action.user,
                     isAuthenticated: true,
                     loading: false,
-                    token: localStorage.token,
+                    token: action.payload,
                 }
             case GET_USER:
                 localStorage.setItem('token', action.payload);
                 return {
                     ...state,
-                    token: localStorage.token,
+                    token: action.payload,
                     user: action.user,
                     isAuthenticated: true,
                     loading: false

@@ -19,18 +19,17 @@ router.use(cors({
 
 
 router.get('/loginSub', async (req, res) => {
-    //console.log(req.header['Authorization'])
     const token = req.header('x-auth-token');
     try {
     const decoded = await jwt.verify(token, process.env['jwtSecret']);
     const { exp } = decoded;
-
     let user = await User.findOne({ _id: decoded.user.id })
     .select('-password');
-    res.cookie('auth-token', token, {domain: 'cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: 'strict' });
-    res.json({decoded, user});
+    res.cookie('auth-token', token, {domain: 'cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: 'none' });
+    res.json({decoded, token, user});
     }
     catch(err) {
+        console.log(err);
         if (!token) {
             res.status(401).json({msg: 'Not Authorized'});
         } else if (err === 'TokenExpiredError: jwt expired') {
@@ -39,11 +38,10 @@ router.get('/loginSub', async (req, res) => {
         res.status(500).json({ msg: 'Server Error'});
         }
     }
-
 })
 
 router.get('/loginSubTest', async (req, res, next) => { 
-    const token = req.cookies['auth-token'];
+
     console.log(req.cookies)
     try {
     const decoded = jwt.verify(token, process.env['jwtSecret']);
@@ -65,7 +63,7 @@ router.get('/loginSubTest', async (req, res, next) => {
 
 router.post('/loginSubAdmin', async (req, res, next) => {
     try {
-        const username = req.body.username;
+        const username = req.body.username.toLowerCase();
         const password = req.body.password;
 
     let user = await User.findOne({ username });
@@ -98,7 +96,7 @@ router.post('/loginSubAdmin', async (req, res, next) => {
 router.post('/loginSub', async (req, res) => { 
     try {
         const { username, password } = req.body.data;
-    let user = await User.findOne({ username });
+        let user = await User.findOne({ username });
 
         if (!user) {
             res.status(400).json({ msg: 'Invalid Credentials'});
@@ -115,8 +113,8 @@ router.post('/loginSub', async (req, res) => {
         }
             jwt.sign(payload, process.env['jwtSecret'], { expiresIn: '3h'}, (err, token) => {
                 if (err) throw err;
-                res.cookie('auth-token', token, {domain: 'cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });
-                //res.cookie('auth-token', token, { maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });
+                res.cookie('auth-token', token, {domain: '*.cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: 'none' }).json({token, user, msg: true});
+                //res.cookie('auth-token', token, { domain: 'cbmportal.com' maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });
                 res.json({token, user, msg: true});
 
             })

@@ -1,0 +1,72 @@
+<h2>{{title}}</h2>
+{{#if result}}
+{{#with result}}
+<div class="container">
+<form>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">PS</label>
+      <input type="input" class="form-control" value="{{listPS1}}" id="inputEmail4" placeholder="PS">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">PS</label>
+      <input type="input" class="form-control" value="{{listPS2}}" id="inputPassword4" placeholder="PS">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputAddress">Store</label>
+    <input type="input" class="form-control" value="{{store}}" id="inputAddress" placeholder="Store">
+  </div>
+  <div class="form-group">
+    <label for="inputAddress2">Hotel Reason</label>
+    <input type="input" class="form-control" value="{{hotelReason}}" id="inputAddress2" placeholder="Hotel Reason">
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputCity">Room Count</label>
+      <input type="input" class="form-control" value="{{roomNum}}" id="inputCity" placeholder="Room Count">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputState">Total People</label>
+      <input type="input" id="inputState" value="{{peopleNum}}" class="form-control" placeholder="Total People">
+    </div>
+    <div class="form-group col-md-2">
+      <label for="inputZip">Beds</label>
+      <input type="input" class="form-control" value="{{beds}}" id="inputZip" placeholder="Beds">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputAddress">Check In</label>
+      <input type="input" class="form-control" value="{{checkIn}}" id="inputAddress" placeholder="Check In">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputAddress2">Check Out</label>
+      <input type="input" class="form-control" value="{{checkOut}}" id="inputAddress2" placeholder="Check Out">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputCity">New PS</label>
+      <input type="input" class="form-control" value="{{newPS}}" id="inputCity" placeholder="New PS">
+    </div>
+    <div class="form-group col-md-6">
+    <label for="inputAddress">DM</label>
+    <input type="input" class="form-control" value="{{dm}}" id="inputAddress" placeholder="DM">
+  </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputAddress2">Work Ticket</label>
+      <input type="input" class="form-control" value="{{wt}}" id="inputAddress2" placeholder="Work Ticket">
+    </div>
+      <div class="form-group col-md-6">
+        <label for="inputCity">Notes</label>
+        <textarea class="form-control" rows="1" value="{{notes}}" id="inputCity" placeholder="Notes"></textarea>
+    </div>
+  </div>
+  {{{detailsReturnBtn 'hotel'}}}
+</form>
+</div>
+{{/with}}
+{{/if}}

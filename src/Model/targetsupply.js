@@ -19,6 +19,9 @@ const targetSupplyForm = new Schema({
         dm: {
             type: String,
         },
+        date: {
+            type: Date
+        }
 });
 
 module.exports = TargetSupply = mongoose.model('Target Supply', targetSupplyForm, 'TargetSupply' );

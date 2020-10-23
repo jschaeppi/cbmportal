@@ -48,12 +48,9 @@ const NavBar = () => {
                     <li>
                         <Link to="/timeadjustment">Time Adjustment </Link>
                     </li>
-                    {(user && !loading && isAuthenticated) ?
-                    ((!user.district.includes('MN Grocery-Retail'))) ?
                     <li>
                         <Link to="/targetOrder">Target Order </Link>
                     </li>
-                    : '':''}
                     <li>
                         <Link to="/workticket">Work Ticket </Link>
                     </li>

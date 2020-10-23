@@ -1,0 +1,26 @@
+<div class="text-left mt-2">
+    <p>Create New PS</p>
+</div>
+<form method="POST" action="psList/createPS">
+  <div class="form-row align-items-center">
+    <div class="col-auto">
+      <label class="sr-only" for="inlineFormInput">Employee #</label>
+      <input type="number" class="form-control mb-2" id="inlineFormInput" name="employee" required placeholder="Employee #">
+    </div>
+    <div class="col-auto">
+      <label class="sr-only" for="inlineFormInput">New PS</label>
+      <input type="text" class="form-control mb-2" id="inlineFormInput" name="ps" required placeholder="PS Name">
+    </div>
+    <div class="col-auto">
+      <div class="input-group mb-2">
+        <select class="form-control" id="inlineFormInputGroup" name="district" required placeholder="District">
+            <option value="">Select District</option>
+            {{{districtCount user.district}}}
+        </select>
+      </div>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary mb-2">Submit</button>
+    </div>
+  </div>
+</form>

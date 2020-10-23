@@ -1,0 +1,32 @@
+<script>Handlebars.registerPartial('psCreateForm', '../partials/psCreate.hbs');</script>
+  {{> psCreate}}
+<div id="storesList">
+  {{{successMessage "delete" psDeleteStatus ps}}}
+  {{{successMessage "create" created ps}}}
+  {{{successMessage "updated" updated ps}}}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">PS</th>
+      <th scope="col">DM</th>
+      <th scope="col">Delete PS</th>
+    </tr>
+  </thead>
+  <tbody>
+{{#each result}}
+    <tr>
+
+      <td scope="row">{{@key}}</td>
+      <td scope="row">{{{makeLink "psList/editPS" _id 'primary' ps}}}</td>
+      <td scope="row">{{dm}}</td>
+      <td scope="row">{{{makeLink "psList/removePS" _id 'danger' 'Delete'}}}</td>
+    </tr>
+{{/each}}
+
+</tbody>  
+</table>
+</div>
+<script>
+
+</script>

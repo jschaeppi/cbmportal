@@ -4,30 +4,23 @@ const bodyParser = require('body-parser');
 const translator = require('translate');
 const moment = require('moment');
 const pdf = require('html-pdf');
-let { transporter, mailOptions, receiver, message } = require('../src/config/mailer');
-let { options } = require('../src/config/html')
+const apiFunc = require('../config/api_funcs');
 const Term = require('../src/Model/termModel');
 const DepartmentModel = require('../src/Model/departmentModel');
 
 ncnsRouter.use(bodyParser.json());
 ncnsRouter.use(bodyParser.urlencoded({ extended: false }));
 
-// current date
-let date_ob = new Date();
-
-// adjust 0 before single digit date
-let day = ("0" + date_ob.getDate()).slice(-2);
-// current month
-let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-// current year
-let year = date_ob.getFullYear();
+const date = apiFunc.date();
+const uploadsDir = apiFunc.uploadsDir();
 
 
 ncnsRouter.post('/', async (req, res) => {
     const { firstLast, firstName, employeeNum, secondLast, dm, rehire } = req.body;
     let { norehireReason, quitReason } = req.body;
+    norehireReason = (norehireReason != '')? norehireReason:'';
+    quitReason = (quitReason != '')? quitReason:'';
     const lastWorked = moment(req.body.lastWorked).format('L');
-    console.log(rehire)
     const receiver = await DepartmentModel.findOne({ department: 'Carlson Terminations'});
     norehireReason = await translator(norehireReason, {to: 'en', from: 'es'});
     quitReason = await translator(quitReason, {to: 'en', from: 'es'});
@@ -175,7 +168,7 @@ ncnsRouter.post('/', async (req, res) => {
 </tr>
 <tr style="height: 25px;">
 <td style="width: 25%; height: 25px; text-align: right;"><span style="font-size: 14pt;">Eligible for rehire?</span></td>
-<td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 27%; font-weight: bold; height: 25px;"><span style="font-size: 16px; line-height: 22.8571px;">${rehire} ${norehireReason}</span></td>
+<td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black; text-align: center; width: 27%; font-weight: bold; height: 25px;"><span style="font-size: 16px; line-height: 22.8571px;">${rehire.toUpperCase()} ${norehireReason}</span></td>
 <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; text-align: right; height: 25px;"><span style="font-size: 12pt;">&nbsp;&nbsp;</span></td>
 <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 26%; font-weight: bold; height: 25px;">&nbsp;</td>
 </tr>
@@ -201,7 +194,7 @@ ncnsRouter.post('/', async (req, res) => {
 <td style="width: 70%; border-bottom: 1px solid black; vertical-align: bottom; height: 43px;">&nbsp; &nbsp; &nbsp;&nbsp;
 <div class="DMOSsign">${dm.userFirst} ${dm.userLast}</div>
 </td>
-<td style="width: 30%; border-bottom: 1px solid black; vertical-align: bottom; height: 43px;">&nbsp;${month}/${day}/${year}</td>
+<td style="width: 30%; border-bottom: 1px solid black; vertical-align: bottom; height: 43px;">&nbsp;${date}</td>
 </tr>
 <tr style="height: 29px;">
 <td style="width: 70%; border-bottom: 0px solid black; height: 29px;"><span style="font-size: 14pt;">&nbsp;&nbsp;</span></td>
@@ -222,7 +215,7 @@ ncnsRouter.post('/', async (req, res) => {
 </table>`;
 
     //Create PDF
-    pdf.create(content, options).toFile(`../../uploads/pdf/term/${pdfFile}`, function(err, res) {
+    pdf.create(content, apiFunc.options()).toFile(`${uploadsDir}pdf/term/${pdfFile}`, function(err, res) {
         if (err) {
         return console.log(err);
         }
@@ -242,11 +235,11 @@ ncnsRouter.post('/', async (req, res) => {
     html: `${receiver.department} ${message}`, // html body
     attachments: {
         filename: pdfFile,
-        path: `../../uploads/pdf/term/${pdfFile}`
+        path: `${uploadsDir()}pdf/term/${pdfFile}`
     },
 };
     try { 
-        transporter.sendMail(mailOptions,(err, info) => {
+        apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
             console.log(err)
         } else {
@@ -268,6 +261,7 @@ ncnsRouter.post('/', async (req, res) => {
     form.norehireReason = norehireReason;
     form.lastWorked = lastWorked;
     form.quitReason = quitReason
+    form.date = date;
     form.save(function(err) {
         if (err) {
             console.log(err);

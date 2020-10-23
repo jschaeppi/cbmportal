@@ -1,0 +1,26 @@
+<div class="container">
+<div class="font-weight-bold">
+    <h2>{{title}}</h2>
+</div>
+
+{{#if result}}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Employee #</th>
+      <th scope="col">Employee Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each result}}
+    <tr>
+      <th scope="row">{{@key}}</th>
+      <td>{{employeeNum}}</td>
+    <td>{{{makeLink "./admin/dashboard/viewFormDetails/uniform" _id "info" firstName lastName}}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{/if}}
+</div>

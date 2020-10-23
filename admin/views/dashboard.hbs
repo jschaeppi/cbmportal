@@ -1,10 +1,16 @@
-<script>Handlebars.registerPartial('nav', '/partials/nav.hbs');</script>
-{{> nav}}
 Welcome 
 {{#if user}}
 {{#with user}}
-{{userFirst}} {{userLast}}
+<div id="main" class="container font-weight-bold">
+    <div>
+        {{userFirst}} {{userLast}}
+    </div>
+    <div class="jumbotron">
+        <p>To modify attributes of PS', DM's, or Portal Users(if you have the option) select the select tool dropdown and select the appropriate field.  If you have the options for loading form details, that will be under the Forms dropdown and you can access each type of form and every individual is available as well.s</p>
+    </div>
+</div>
 {{/with}}
 {{/if}}
 <br />
-{{content}}
+
+</div>

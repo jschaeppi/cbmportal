@@ -1,0 +1,30 @@
+<script>Handlebars.registerPartial('createPortalUser', '../partials/createPortalUser.hbs');</script>
+{{> createPortalUser}}
+<div id="portalUserList" class="">
+  {{{successMessage "delete" puDeleteStatus portalUser}}}
+  {{{successMessage "create" created portalUser}}}
+  {{{successMessage "updated" updated portalUser}}}
+<table class="table table-striped table-responsive-md">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">District</th>
+      <th scope="col">E-Mail</th>
+      <th scope="col">Portal User</th>
+      <th scope="col">Delete Job</th>
+    </tr>
+  </thead>
+  <tbody>
+{{#each result}}
+    <tr>
+      <td scope="row">{{@key}}</td>
+      <td scope="row">{{district}}</td>
+      <td scope="row">{{email}}</td>
+      <td scope="row">{{{makeLink "portalUsers/editPortalUser" _id 'primary' fullName}}}</td>
+      <td scope="row">{{{makeLink "portalUsers/removePortalUser" _id  'danger' "Delete"}}}</td>
+    </tr>
+{{/each}}
+
+</tbody>  
+</table>
+</div>

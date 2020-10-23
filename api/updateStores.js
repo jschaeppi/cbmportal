@@ -3,7 +3,6 @@ const storeRouter = express.Router();
 const bodyParser = require('body-parser');
 const Mongoose = require('mongoose');
 const cors = require('cors');
-
 let Store = require('../src/Model/Stores');
 storeRouter.use(bodyParser.json());
 storeRouter.use(bodyParser.urlencoded({extended: false}));

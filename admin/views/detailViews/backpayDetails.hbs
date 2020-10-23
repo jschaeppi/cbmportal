@@ -1,0 +1,33 @@
+<h2> {{title}}
+{{#if result}}
+{{#with result}}
+for {{employeeName}}</h2>
+<div id="formContent" class="container m-auto text-left">
+<form>
+  <div class="form-group">
+    <label for="exampleFormControlInput1">Employee Num</label>
+    <input type="number" class="form-control" value={{employeeNum}} id="exampleFormControlInput1" placeholder="Employee Num">
+  </div>
+  <div class="form-group ">
+    <label for="exampleFormControlInput1">Employee Name</label>
+    <input type="text" class="form-control" value="{{employeeName}}" id="exampleFormControlInput1" placeholder="Employee Name">
+  </div>
+  <div class="form-group">
+      <table class="table table-responsive-md ">
+        <tbody>
+            {{{backpay}}}  
+        </tbody>
+    </table>
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">Comments</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" value="{{comments}}" rows="3">{{comments}}</textarea>
+  </div>
+  <input type="hidden" value="{{_id}}">
+  <button class="btn btn-info"><a href="./dashboard/mailItems?id={{_id}}" class="text-light">Regenerate Email</a></button>
+  {{{detailsReturnBtn 'backpay'}}}
+  <div class="dropdown-divider" role="separator"></div>
+</form>
+{{/with}}
+{{/if}}
+</div>

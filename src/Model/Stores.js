@@ -13,6 +13,7 @@ const StoreSchema = new Schema({
     }, 
     dm: {
         type: String,
+        required: true
     },
     district: {
         type: String,

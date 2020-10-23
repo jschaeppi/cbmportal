@@ -131,18 +131,19 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
             setAuthToken(localStorage.token);
         }
     try {
-        
 
         const res = await axios.get('https://portal.cbmportal.com:5000/api/users/loginSub');
-
+    
     dispatch({
         type: GET_AUTH,
-        payload: res.data.user,
+        payload: res.data.token,
+        user: res.data.user,
 
     });
     } 
     catch (err) {
-        //console.log(err)
+        console.log(err)
+        console.log(err.response.data);
         dispatch({
             type: AUTH_ERROR,
             payload: err.response.data.msg,
@@ -162,6 +163,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
            credentials: 'include',
             
     })
+    console.log(res.data);
         dispatch({
             type: GET_USER,
             payload: res.data.token,

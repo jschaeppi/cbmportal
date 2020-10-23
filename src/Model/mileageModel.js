@@ -19,6 +19,9 @@ const mileageForm = new Schema({
         comments: {
             type: String,
         },
+        date: {
+            type: String,
+        }
 });
 
 module.exports = Mileage = mongoose.model('Mileage', mileageForm, 'Mileage' );
