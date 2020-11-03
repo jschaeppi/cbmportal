@@ -19,20 +19,22 @@ const baseSite = apiFunc.baseSite();
 
 newhireRouter.post('/', formidable(), async (req, res) => {
 
-    const { firstName, middleName, dm_userFirst, dm_userLast, dm_email, firstLast, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, number } = req.fields;
+    const { dm_userFirst, dm_userLast, dm_email, location, hireType, email, address, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, number } = req.fields;
     let { file1, file2, file3 } = req.files;
-    let {firstDay, dob } = req.fields;
-    firstDay = moment(firstDay).format('L');
-    dob = moment(dob).format('L');
+    let {firstDay, dob, firstName, firstLast, secondLast, middleName } = req.fields;
+    firstDay = moment(firstDay).format('MMM DD YYYY');
+    dob = moment(dob).format('MMM DD YYYY');
+    firstName = firstName.trim();
+    firstLast = firstLast.trim();
     const receiver = await DepartmentModel.findOne({ department: 'New Hires'});
     if (file1.name === file2.name) {
         file2.name = path.basename(file2.name, path.extname(file2.name)) + "(1)" + path.extname(file2.name);
     }
     try {
-        await fsPromises.mkdir(`${uploadsDir}images/newhires/${firstName}-${firstLast}`.split(' ').join(''),{ recursive: true })
-        await fsPromises.rename(file1.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`.split(' ').join(''));
-        await fsPromises.rename(file2.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`.split(' ').join(''));
-        await fsPromises.rename(file3.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join(''));
+        await fsPromises.mkdir(`${uploadsDir}images/newhires/${firstName}-${firstLast}`,{ recursive: true })
+        await fsPromises.rename(file1.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`);
+        await fsPromises.rename(file2.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`);
+        await fsPromises.rename(file3.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file3.name}`);
     } catch(err) {
         console.log(err);
     }
@@ -41,9 +43,8 @@ newhireRouter.post('/', formidable(), async (req, res) => {
 
     let pdfFile = `Employee-${firstName}-${firstLast} ${secondLast}`;
     // Stripping special characters
-    pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-
-    content = HTML.newhire(firstName, middleName, dm_userFirst, dm_userLast, dm_email, firstLast, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number)
+    pdfFile = pdfFile + '.pdf'
+    content = HTML.newhire(firstName, middleName='', dm_userFirst, dm_userLast, firstLast, location, hireType, address, email, secondLast='', phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number)
 
     //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/newhires/${pdfFile}`, function(err, res) {
@@ -100,15 +101,15 @@ newhireRouter.post('/', formidable(), async (req, res) => {
     form.date = date;
     form.firstName = firstName;
     form.middleName = middleName;
-    form.dm = `${dm_userFirst} ${dm_userLast}`;
     form.firstLast = firstLast;
+    form.secondLast = secondLast;
+    form.dm = `${dm_userFirst} ${dm_userLast}`;
     form.firstDay = firstDay;
     form.dob = dob;
     form.location = location;
     form.hireType = hireType;
     form.address = address;
     form.email = email;
-    form.secondLast = secondLast;
     form.phone = phone;
     form.phone2 = phone2;
     form.sex = sex;

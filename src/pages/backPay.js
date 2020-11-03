@@ -76,6 +76,7 @@ function BackPay() {
     }
     const onSubmit = e => {
         e.preventDefault();
+        document.getElementById('heading').innerHTML = '<br /> <p>Your submission is processing';
         let rows = [];
         if (managerPad.current.isEmpty()) {
             alert('Please provide a signature');
@@ -126,7 +127,7 @@ function BackPay() {
 }
         return (
             <div className="container">
-                <h1 className="mainHeading">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Back Pay</span></h1><br />
+                <h1 className="mainHeading" id="heading">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Back Pay</span></h1><br />
                     <form onSubmit={e => onSubmit(e)} className="mainForm">
                         <div className="wrapper1">
                             <div id="employeeInfo">

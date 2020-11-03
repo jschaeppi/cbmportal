@@ -6,11 +6,11 @@
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="inputEmail4">PS</label>
-      <input type="input" class="form-control" value="{{listPS1}}" id="inputEmail4" placeholder="PS">
+      <input type="input" class="form-control" value="{{listPs1}}" id="inputEmail4" placeholder="PS">
     </div>
     <div class="form-group col-md-6">
       <label for="inputPassword4">PS</label>
-      <input type="input" class="form-control" value="{{listPS2}}" id="inputPassword4" placeholder="PS">
+      <input type="input" class="form-control" value="{{listPs2}}" id="inputPassword4" placeholder="PS">
     </div>
   </div>
   <div class="form-group">
@@ -58,13 +58,14 @@
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="inputAddress2">Work Ticket</label>
-      <input type="input" class="form-control" value="{{wt}}" id="inputAddress2" placeholder="Work Ticket">
+      <input type="input" class="form-control" value="{{WT}}" id="inputAddress2" placeholder="Work Ticket">
     </div>
       <div class="form-group col-md-6">
         <label for="inputCity">Notes</label>
         <textarea class="form-control" rows="1" value="{{notes}}" id="inputCity" placeholder="Notes"></textarea>
     </div>
   </div>
+  <button class="btn btn-info"><a href="/admin/dashboard/mailItems/hotel/{{_id}}" class="text-light">Regenerate Email</a></button>
   {{{detailsReturnBtn 'hotel'}}}
 </form>
 </div>

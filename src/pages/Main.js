@@ -4,7 +4,7 @@ import CbmContext from '../context/cbm/cbmContext';
 
 const Main = (props) => {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, loading, isAuthenticated, getStores, getStates, user } = cbmContext;
+    const { loginStatus, loading, isAuthenticated, getStores, getStates, user, success } = cbmContext;
     useEffect(() =>{
         if (!isAuthenticated && user && !loading) {
             loginStatus();
@@ -22,6 +22,7 @@ const Main = (props) => {
 
         return (
             <Fragment>
+                {(success && !loading) ? <p>Your form was submitted successfully</p>:<p>An issue arised with your form, please re-submit.</p>}
                 {(isAuthenticated && user) ? (
                 <div style={{width: '200px', margin: '0 auto'}}>
                 {`Welcome, ${user.userFirst} ${user.userLast}`}

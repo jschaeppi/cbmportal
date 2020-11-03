@@ -11,6 +11,7 @@ import {
     GET_STATES,
     GET_CITIES,
     ERROR_STATES,
+    FORM_SUBMISSION
 } from '../types';
 
 export default (state, action) => {
@@ -45,6 +46,13 @@ export default (state, action) => {
                     token: action.payload,
                     user: action.user,
                     isAuthenticated: true,
+                    loading: false
+                }
+
+            case FORM_SUBMISSION:
+                return {
+                    ...state,
+                    success: false,
                     loading: false
                 }
         case GET_STATES:

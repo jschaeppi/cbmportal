@@ -24,7 +24,7 @@ wtRouter.post('/', async (req, res) => {
     const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
     notes = await translator(notes, {to: 'en', from: 'es'});
     equipment = await translator(equipment, {to: 'en', from: 'es'});
-    let pdfFile = `WT-request-${dm.userFirst} ${du.userLast}-${date}`;
+    let pdfFile = `WT-request-${dm.userFirst} ${dm.userLast}-${date}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
 

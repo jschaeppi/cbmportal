@@ -24,9 +24,10 @@ const date = apiFunc.date();
 const uploadsDir = apiFunc.uploadsDir();
 
 targetorderRouter.post('/', async (req, res) => {
-    const { employeeName, location, notes, order } = req.body;
+    const { employeeName, location, order } = req.body;
     const dm = req.body.dm;
-    //notes = await translator(notes, {to: 'en', from: 'es'});
+    let { notes } = req.body;
+    notes = await translator(notes, {to: 'en', from: 'es'});
     order.shift();
     const receiver = await DepartmentModel.findOne({ department: 'Supplies'});
     try {

@@ -49,7 +49,7 @@
     </div>
     <div class="form-group col-md-3">
       <label for="inputZip">Departure Date</label>
-      <input type="input" class="form-control" value="{{depatureDate}}" id="inputZip" placeholder="Departure Date">
+      <input type="input" class="form-control" value="{{departureDate}}" id="inputZip" placeholder="Departure Date">
     </div>
   </div>
   <div class="form-row">
@@ -62,6 +62,7 @@
  <div class="form-row">
    <textarea class="col-md-12">{{comments}}</textarea>
  </div>
+ <button class="btn btn-info"><a href="/admin/dashboard/mailItems/perDiem/{{_id}}" class="text-light">Regenerate Email</a></button>
   {{{detailsReturnBtn 'perDiem'}}}
 </form>
 </div>

@@ -6,16 +6,19 @@ const checkAuth = require('../../api/authCheck');
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser');
 let User = require('../../src/Model/usersModel');
-const FormFuncs = require('../helpers/hbs_helpers');
 
 portalUserRouter.use(bodyParser.json());
 portalUserRouter.use(bodyParser.urlencoded({extended: false}));
 portalUserRouter.use(cookieParser());
 
 portalUserRouter.get('/', checkAuth, cors(), async (req, res) => {
-    const { portalUser, created, puDeleteStatus, updated } = req.query;
-    const result = await User.find().sort( { email: 1 }).lean();
-    res.render('portalUsers', {title: 'Portal Users', portalUser, created, puDeleteStatus, updated, result, user: req.user})
+    if (req.user.permission > 3) {
+        const { portalUser, created, puDeleteStatus, updated } = req.query;
+        const result = await User.find().sort( { email: 1 }).lean();
+        res.render('portalUsers', {title: 'Portal Users', portalUser, created, puDeleteStatus, updated, result, user: req.user})
+    } else {
+        res.redirect('./');
+    }
 });
 
 portalUserRouter.get('/editPortalUser/:puID', checkAuth, cors(), async (req, res) => {
@@ -35,8 +38,6 @@ portalUserRouter.get('/editPortalUser/:puID', checkAuth, cors(), async (req, res
     console.log(username)
     const saltRounds = 12;
     let { password } = req.body; 
-    let userFirst = "",
-        userLast = "";
     const userSplit = fullName.split(' ');
         
         try {

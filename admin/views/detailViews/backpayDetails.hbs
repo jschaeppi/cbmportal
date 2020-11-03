@@ -24,7 +24,7 @@ for {{employeeName}}</h2>
     <textarea class="form-control" id="exampleFormControlTextarea1" value="{{comments}}" rows="3">{{comments}}</textarea>
   </div>
   <input type="hidden" value="{{_id}}">
-  <button class="btn btn-info"><a href="./dashboard/mailItems?id={{_id}}" class="text-light">Regenerate Email</a></button>
+  <button class="btn btn-info"><a href="/admin/dashboard/mailItems/backpay/{{_id}}" class="text-light">Regenerate Email</a></button>
   {{{detailsReturnBtn 'backpay'}}}
   <div class="dropdown-divider" role="separator"></div>
 </form>

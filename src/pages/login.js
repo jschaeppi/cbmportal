@@ -14,11 +14,8 @@ const Login = (props) => {
         const user = document.getElementById('user').value.toLowerCase();
         const pass = document.getElementById('pass').value;
         loginUser(user, pass)
-            console.log('I\'m Redirecting')
             if (!loading) {
             history.push('/')
-            } else {
-                history.push('/login');
             }
             
 }

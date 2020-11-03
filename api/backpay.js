@@ -115,6 +115,7 @@ backpayRouter.post('/', async (req, res) => {
         })
         form.comments = comments;
         form.date = date;
+        form.sig = `${baseSite}signatures/backPaySig/${employeeNum}/${date}.png`;
         form.save(function(err) {
         if (err) {
             console.log(err);

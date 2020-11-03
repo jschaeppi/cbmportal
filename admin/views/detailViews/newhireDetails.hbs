@@ -38,11 +38,11 @@
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="inputAddress">First Day</label>
-      <input type="input" class="form-control" value="{{convertTime firstDay}}" id="inputAddress" placeholder="First Day">
+      <input type="input" class="form-control" value="{{firstDay}}" id="inputAddress" placeholder="First Day">
     </div>
     <div class="form-group col-md-6">
       <label for="inputAddress2">Date of Birth</label>
-      <input type="input" class="form-control" value="{{convertTime dob}}" id="inputAddress2" placeholder="Date of Birth">
+      <input type="input" class="form-control" value="{{dob}}" id="inputAddress2" placeholder="Date of Birth">
     </div>
   </div>
   <div class="form-row">
@@ -61,8 +61,8 @@
       <input type="input" class="form-control" value="{{numDays}}" id="inputAddress2" placeholder="Num of days working">
     </div>
       <div class="form-group col-md-6">
-        <label for="inputCity">Sex</label>
-        <input type="text" class="form-control" rows="1" value="{{sex}}" id="inputCity" placeholder="Sex">
+        <label for="inputCity">Hours</label>
+        <input type="text" class="form-control" rows="1" value="{{hours}}" id="inputCity" placeholder="Hours Working">
     </div>
   </div>
   <div class="form-row">
@@ -78,21 +78,18 @@
         <label for="inputCity">Language</label>
         <input type="text" class="form-control" rows="1" value="{{language}}" id="inputCity" placeholder="Language">
     </div>
+    <div class="form-group col-md-6">
+        <label for="inputCity">Sex</label>
+        <input type="text" class="form-control" rows="1" value="{{sex}}" id="inputCity" placeholder="Sex">
+    </div>
   </div>
   <div class="form-row">
     <div class="form-group col-md-6">
-      <label for="inputAddress2">I-9 1st Page</label>
-      <img src="{{i91}}" class="img-thumbnail" id="inputAddress2" />
-    </div>
-      <div class="form-group col-md-6">
-        <label for="inputCity">I-9 2nd Page</label>
-        <img src="{{i92}}" class="img-thumbnail" id="inputCity" />
-    </div>
-    <div class="form-group col-md-6">
-        <label for="inputCity">ID Badge</label>
-        <img src="{{idbadge}}"  class="img-thumbnail" id="inputCity" />
+        <label for="inputCity">ID Badge</label> <br />
+        <img src="{{idbadge}}"  class="img-thumbnail" width="200px" height="auto" id="inputCity" />
     </div>
   </div>
+  <button class="btn btn-info"><a href="/admin/dashboard/mailItems/newhire/{{_id}}" class="text-light">Regenerate Email</a></button>
   {{{detailsReturnBtn 'newhire'}}}
 </form>
 </div>

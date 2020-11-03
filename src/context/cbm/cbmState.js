@@ -19,6 +19,7 @@ import {
     GET_STATES, 
     GET_CITIES,
     ERROR_STATES,
+    FORM_SUBMISSION,
 } from '../types';
 
 const CbmState = props => {
@@ -163,7 +164,6 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
            credentials: 'include',
             
     })
-    console.log(res.data);
         dispatch({
             type: GET_USER,
             payload: res.data.token,
@@ -181,6 +181,44 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
         }
     }
 
+    const formSubmit = async (body, form) => {
+        setLoading();
+        try {
+            fetch(`https://portal.cbmportal.com:5000/api/${form}/test`, { 
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: body,
+                })
+                .then(res => res.json())
+                .then(data => {
+                    dispatch({
+                        type: FORM_SUBMISSION,
+                        payload: true,
+                        loading: false,
+                    })
+                    if (state.success && !state.loading) {
+                        console.log('I\'m redirecting');
+                        console.log(state.success);
+                        history.push('/success');
+                    } else {
+                        history.push('/')
+                    }
+                })
+                .catch((err) => {
+                console.log(err);
+            })
+} 
+    
+catch (err) {
+    console.log(err.response.data.msg);
+    dispatch({
+    type: FORM_SUBMISSION,
+    payload: err.response.data.msg,
+    })
+    }
+}
     const setLoading = () => {
         dispatch({ type: SET_LOADING})
     }
@@ -196,6 +234,7 @@ return <CbmContext.Provider
         token: state.token,
         cities: state.cities,
         usstates:state.usstates,
+        success: state.success,
         loginUser,
         loginStatus,
         logout,
@@ -204,6 +243,7 @@ return <CbmContext.Provider
         getStates,
         getCities,
         setAuthToken,
+        formSubmit,
     }}>
         {props.children}
 </CbmContext.Provider>

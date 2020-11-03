@@ -7,7 +7,7 @@ import CbmContext from '../context/cbm/cbmContext';
 
 function Bonus() {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, getStores, stores, isAuthenticated, loading, user } = cbmContext;
+    const { loginStatus, getStores, stores, isAuthenticated, loading, user, formSubmit, success } = cbmContext;
     const { district} = cbmContext.user;
     const history = useHistory();
     
@@ -101,8 +101,16 @@ function Bonus() {
                 });
             })
         }
+        formSubmit(JSON.stringify(rows), 'bonus');
+        if (success && !loading) {
+            console.log('I\'m redirecting');
+            console.log(success);
+            history.push('/success');
+        } else {
+            history.push('/')
+        }
     // On submit of the form, send a POST request with the data to the server.
-        fetch('https://portal.cbmportal.com:5000/api/bonus', { 
+        /*fetch('https://portal.cbmportal.com:5000/api/bonus', { 
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
@@ -117,7 +125,7 @@ function Bonus() {
             })
             .catch((err) => {
             console.log(err);
-        }) 
+        })*/ 
     }
 }
 
@@ -130,7 +138,7 @@ function Bonus() {
                             <div className="wrapper1">
                                 <div>
                                     <label htmlFor="employeenum">Employee #:</label><br />
-                                    <input type="text" id="employeenum" name="employeeNum" required title="Please enter the required information" onChange={e => handleChange(e, 1)}/>
+                                    <input type="number" id="employeenum" name="employeeNum" required title="Please enter the required information" onChange={e => handleChange(e, 1)}/>
                                 </div>
                                 <div>
                                     <label htmlFor="employeename"> Employee Name:</label>

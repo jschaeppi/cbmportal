@@ -3,6 +3,8 @@ import '../css/New_Hire.css';
 import Stores from '../Components/Stores';
 import { useHistory } from 'react-router-dom';
 import CbmContext from '../context/cbm/cbmContext';
+import Spinner from '../Components/SpinnerImage';
+
 const NewHire = () =>  {
 
     const cbmContext = useContext(CbmContext);
@@ -51,8 +53,8 @@ const NewHire = () =>  {
         let first, middle, end = '';
         first = phoneForm.substring(0,3)
         middle = phoneForm.substring(3,6);
-        end = phoneForm.substring(6,11);
-        list[0][name] = `${first} - ${middle} - ${end}`;
+        end = phoneForm.substring(6,10);
+        list[0][name] = `${first}-${middle}-${end}`;
         setData(list);
     }
 
@@ -95,9 +97,7 @@ const NewHire = () =>  {
         formData.append('file3', file3);
         for (let key in data[0]) {
             formData.append(key, data[0][key])
-            console.log(key, data[0][key]);
         }
-        console.log(formData.entries());
         fetch('https://portal.cbmportal.com:5000/api/newhire',
             {
                 method: 'POST',
@@ -105,7 +105,11 @@ const NewHire = () =>  {
             })
         .then (res => res.json())
         .then( data => {
-            if (data.message) history.push('/success');
+            if (data.message && !loading) {
+                history.push('/success')
+            } else {
+                return <Spinner />
+            }
         })
         .catch(err => console.log(err))
     }
@@ -130,7 +134,7 @@ const NewHire = () =>  {
                             </div>
                             <div className="content">
                             <label htmlFor="middleName">Middle Name:</label>
-                            <input type="text" id="middleName" name="middleName"   title="Please enter the required information" required onChange={e => handleChange(e)}/>
+                            <input type="text" id="middleName" name="middleName"   title="Please enter the required information" onChange={e => handleChange(e)}/>
                             </div>
                         </div>
                         <br /><br />

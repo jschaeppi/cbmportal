@@ -751,7 +751,7 @@ ${otherWhyQuit}
 </table>`;
     },
 
-    newhire: function(firstName, middleName, dm_userFirst, dm_userLast, firstLast, location, hireType, address, email='N/A', secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number) {
+    newhire: function(firstName, middleName, dm_userFirst, dm_userLast, firstLast, location, hireType, address, email="N/A", secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number='', i91="No Link", i92="No Link", idbadge="No Link") {
       return `<html>
       <head>
       <style>
@@ -927,34 +927,19 @@ ${otherWhyQuit}
   <td style="width: 48%; border: 1px solid black; padding: 3px;">${language}</td>
   </tr>
   <tr>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
+  <td style="width: 48%; border: 1px solid black; padding: 3px;">I-9 First Page</td>
+  <td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
+  <td style="width: 48%; border: 1px solid black; padding: 3px;">${i91}</td>
   </tr>
   <tr>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
+  <td style="width: 48%; border: 1px solid black; padding: 3px;">I-9 Second Page</td>
+  <td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
+  <td style="width: 48%; border: 1px solid black; padding: 3px;">${i92}</td>
   </tr>
   <tr>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  </tr>
-  <tr>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  </tr>
-  <tr>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  </tr>
-  <tr>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
-  <td style="border-bottom: 0px solid black;">&nbsp;</td>
+  <td style="width: 48%; border: 1px solid black; padding: 3px;">Employee Picture</td>
+  <td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
+  <td style="width: 48%; border: 1px solid black; padding: 3px;">${idbadge}</td>
   </tr>
   <tr>
   <td style="border-bottom: 0px solid black;">&nbsp;</td>
@@ -1588,7 +1573,8 @@ ${otherWhyQuit}
   </table>`;
     },
 
-    pto: function(employeeName, employeeNum, dmUserFirst, dmUserLast, departments, hours, approval, comments, absencefrom, absenceto) {
+    pto: function(employeeName, employeeNum, dmUserFirst, dmUserLast, departments, hours, approval, comments, absencefrom, absenceto, date) {
+
       return `<html>
       <head>
       <style>
@@ -1602,7 +1588,6 @@ ${otherWhyQuit}
           zoom: .55;
       }
       </style>
-      <script src="https://kit.fontawesome.com/b46fe6b39d.js" crossorigin="anonymous"></script>
       </head>
       <body>
       <table style="width: 100%;" border="0" cellpadding="1">
@@ -1701,27 +1686,27 @@ ${otherWhyQuit}
       </tr>
       <tr style="height: 25px;">
       <td style="width: 25%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-      <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 27%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-      <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-      <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 26%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
+      <td style="border-bottom-width: 0px; border-bottom-style: solid;  width: 27%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
+      <td style="border-bottom-width: 0px; border-bottom-style: solid; width: 10%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
+      <td style="border-bottom-width: 0px; border-bottom-style: solid; width: 26%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
       </tr>
-      <tr style="height: 23px;">
-      <td style="width: 25%; height: 23px;">&nbsp;</td>
-      <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 27%; height: 23px;">&nbsp;</td>
-      <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; height: 23px;">&nbsp;</td>
-      <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 26%; height: 23px;">&nbsp;</td>
+      <tr style="height: 25px;">
+      <td style="width: 25%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
+      <td style="border-bottom-width: 0px; border-bottom-style: solid;  width: 27%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
+      <td style="border-bottom-width: 0px; border-bottom-style: solid; width: 10%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
+      <td style="border-bottom-width: 0px; border-bottom-style: solid; width: 26%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
       </tr>
       <tr style="height: 25px;">
       <td style="width: 25%; height: 25px; text-align: right;"><span style="font-size: 12pt;">&nbsp; Number of hours:</span></td>
       <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 27%; font-weight: bold; height: 25px;">&nbsp;<span style="font-size: 12pt;">${hours}</span></td>
-      <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; height: 25px; text-align: right;"><span style="font-size: 12pt;">&nbsp;</span></td>
-      <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 26%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
+      <td style="border-bottom-width: 0px; border-bottom-style: solid; width: 10%; height: 25px; text-align: right;"><span style="font-size: 12pt;">&nbsp;</span></td>
+      <td style="border-bottom-width: 0px; border-bottom-style: solid; width: 26%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
       </tr>
       <tr style="height: 25px;">
       <td style="width: 25%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-      <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 27%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-      <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 10%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
-      <td style="border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: black; width: 26%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
+      <td style="border-bottom-width: 0px; border-bottom-style: solid;  width: 27%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
+      <td style="border-bottom-width: 0px; border-bottom-style: solid; width: 10%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
+      <td style="border-bottom-width: 0px; border-bottom-style: solid; width: 26%; height: 25px;"><span style="font-size: 12pt;">&nbsp;</span></td>
       </tr>
       </tbody>
       </table>
@@ -1747,7 +1732,7 @@ ${otherWhyQuit}
       <table style="width: 100%;" border="0" cellpadding="1">
       <tbody>
       <tr style="height: 23px;">
-      <td style="height: 23px; width: 49.5083%;"><i class="fas fa-check"></i><span style="font-size: 14pt;">${approval}</span></td>
+      <td style="height: 23px; width: 49.5083%;"><input type="checkbox" name="approvalCheck" checked />&nbsp;&nbsp;<span style="font-size: 14pt;">${approval}</span></td>
       <td style="height: 23px; width: 47.4917%;">&nbsp;</td>
       </tr>
       </tbody>

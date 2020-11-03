@@ -3,6 +3,7 @@ import {useHistory} from 'react-router-dom';
 import '../css/PTO.css';
 import SignatureCanvas from 'react-signature-canvas'
 import CbmContext from '../context/cbm/cbmContext';
+
 const PTO = () => {
     
     const cbmContext = useContext(CbmContext);
@@ -114,13 +115,6 @@ const PTO = () => {
                         <div>
                             <label forhtml="hours">Enter hours:</label>
                             <input type="number" step="any" id="hours" name="hours" required title="Please enter the required information" onChange={e => handleChange(e)}></input>
-                        </div>
-                        <div>
-                            <label >Manager Approval:</label><br />
-                            <label >Approved:</label>
-                            <input type="checkbox" name="approval" id="approved" value="Approved" defaultChecked></input><br />
-                            <label >Not approved:</label>
-                            <input type="checkbox" name="approval" id="approved" value="Not Approved"></input>
                         </div>
                     </div>
                     <br /><br />

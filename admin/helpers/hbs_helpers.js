@@ -1,6 +1,18 @@
 const moment = require('moment');
+let Backpay = require('../../src/Model/backpayModel');
+let Bonus = require('../../src/Model/bonusModel');
+let Hotel = require('../../src/Model/hotelModel');
+let Mileage = require('../../src/Model/mileageModel');
+let Newhire = require('../../src/Model/newhireModel');
+let PerDiem = require('../../src/Model/perdiemModel');
+let PTO = require('../../src/Model/ptoModel');
+let TargetSupply = require('../../src/Model/targetsupply');
+let Term = require('../../src/Model/termModel');
+let TimeAdjustment = require('../../src/Model/timeadjustModel');
+let Uniform = require('../../src/Model/uniformModel');
+let WT = require('../../src/Model/wtModel');
 module.exports = {
-    makeLink: function(route, id, linkBG="light", text, text1) {
+    makeLink: function(route, id='', linkBG="light", text, text1) {
         const options = arguments[arguments.length - 1];
             if ((typeof text1) == "string") {
             const result = `<a class='text-white' href='/${route}/${id}' ><button type=button class='badge badge-${linkBG}' />${text} ${text1}</a>`;
@@ -9,6 +21,10 @@ module.exports = {
             text1 = " ";
             text = text.toDateString();
             const result = `<a class='text-white' href='${route}/${id}' ><button type=button class='badge badge-${linkBG}' />${text} ${text1}</a>`;
+            return result;
+        } else if ((typeof id) == "string" && (typeof text1) == "object") {
+            const text1 = '';
+            const result = `<a class='text-white' href='/admin/dashboard/${route}' ><button type=button class='btn btn-${linkBG} mr-3' />${text} ${text1}</a>`;
             return result;
         } else {
             text1 = " ";
@@ -64,7 +80,7 @@ module.exports = {
             }
         }
         if (tool == "navPortalUsers") {
-            if (permission > 3) {
+            if (permission > 4) {
                 const result = '<a class="dropdown-item" href="/admin/dashboard/portalUsers">Portal Users</a>';
                 return result;
             } 
@@ -72,8 +88,12 @@ module.exports = {
             const result = '<a class="dropdown-item" href="/admin/dashboard/stores">Store List</a>';                          
             return result;  
 	   } else if (tool === 'psList') {
+           if (permission > 2) {
             const result = '<a class="dropdown-item" href="/admin/dashboard/psList">PS List</a>';                          
             return result;
+           } else {
+               return;
+           }
 	   } else if (tool === 'Forms') {
            if (permission > 2) {
             const result = `<li class="nav-item dropdown">
@@ -129,32 +149,176 @@ module.exports = {
         return form.replace(form[0],form[0].toUpperCase()) + ' ' + text.replace(text[0],text[0].toUpperCase());
     },
     mileageDetailsLoop: function(arr, form) {
-        let result = '';
+        let result = [];
         if (form === 'mileage') {
             for (i=0; i < arr.length; i+=3) {
             result +='<tr>' +
-                '<td height="25px" width="25%" style="border: 1px solid black; border-bottom: 0; border-right: 0; padding: 3px;">' + arr[i] + '</td>' +
-                '<td height="25px" style="border: 1px solid black; border-bottom: 0; border-right: 0; padding: 3px;">' + arr[i+1] + '</td>' +
+                '<td height="25px" width="25%" style="border: 1px solid black; border-right: 0; padding: 3px;">' + arr[i] + '</td>' +
+                '<td height="25px" style="border: 1px solid black; border-right: 0; padding: 3px;">' + arr[i+1] + '</td>' +
                 '<td height="25px" style="border: 1px solid black; padding: 3px;">' + arr[i+2] + '</td>' +
                 '</tr>';
             }
+            return result;
         } else if (form === 'perDiem') {
             for (i=0; i < arr.length; i+=4) {
                 result += '<tr>' +
-                '<tr><!-- STARTS ROW1-->' +
-                '<td style="width: 20%;border: 2px solid black; padding:3px;text-align: center; font-size:90%;" class="col-md-2">' + arr[i]+ '</td>' +
+                '<td style="width: 20%;border: 2px solid black; padding:3px;text-align: center; font-size:90%;" class="col-md-2">' + arr[i] + '</td>' +
                 '<td style="width: 30%;border: 2px solid black; padding:3px;text-align: center;font-size:90%;" class="col-md-2">' + arr[i+1] + '</td>' +
                 '<td style="width: 30%;border: 2px solid black; padding:3px;text-align: center;font-size:90%;" class="col-md-6">' + arr[i+2] + '</td>' +
                 '<td style="width: 20%;border: 2px solid black; padding:3px;text-align: center;font-size:90%;"  class="col-md-2">' + arr[i+3] + '</td>' +
                 '</tr><!-- ENDS ROW1-->';
             }
+            return result;
         }
-        return result;
     },
     convertTime: function(time) {
         return moment(time).format('L');
     },
     detailsReturnBtn: function(form) {
         return `<a href=../../?form=${form}><button type="button" class="btn btn-primary">Back</button></a>`;
+    },
+    formSelection: async function(sort=true, form, id='') {
+        if (sort === false) {
+            switch (form) {
+
+                case "backpay":
+                result = await Backpay.findOne({_id: id}).lean();
+                return result;
+
+                case "bonus":
+                result = await Bonus.findOne({_id: id}).lean();
+                return result;
+
+                case "hotel":
+                result = await Hotel.findOne({_id: id}).lean();
+                return result;
+
+                case "mileage":
+                result = await Mileage.findOne({_id: id}).lean();
+                return result;
+
+                case "newhire":
+                result = await Newhire.findOne({_id: id}).lean();
+                return result;
+                
+                case "perDiem":
+                result = await PerDiem.findOne({_id: id}).lean();
+                return result;
+
+                case "pto":
+                result = await PTO.findOne({_id: id}).lean();
+                return result;
+
+                case "termination":
+                result = await Term.findOne({_id: id}).lean();
+                return result;
+
+                case "targetOrder":
+                result = await TargetSupply.findOne({_id: id}).lean();
+                return result;
+
+                case "uniform":
+                result = await Uniform.findOne({_id: id}).lean();
+                return result;
+
+                case "wt":
+                result = await WT.findOne({_id: id}).lean();
+                return result;
+            }
+        } else {
+            switch (form) {
+                case "backpay":
+                result = await Backpay.find().lean().sort({dm: 1});
+                return result;
+
+                case"bonus":
+                result = await Bonus.find().lean().sort({dm: 1});
+                return result;
+
+                case "hotel":
+                result = await Hotel.find().lean().sort({dm: 1});
+                return result;
+
+                case "mileage":
+                result = await Mileage.find().lean().sort({dm: 1});
+                return result;
+
+                case "newhire":
+                result = await Newhire.find().lean().sort({ date: 1 });
+                return result;
+                
+                case "perDiem":
+                result = await PerDiem.find().lean().sort({dm: 1});
+                return result;
+
+                case "pto":
+                result = await PTO.find().lean().sort({date: 1});
+                return result;
+
+                case "termination":
+                result = await Term.find().lean().sort({dm: 1});
+                return result;
+
+                case "targetOrder":
+                result = await TargetSupply.find().lean().sort({dm: 1});
+                return result;
+
+                case "uniform":
+                result = await Uniform.find().lean().sort({employeeNum: 1});
+                return result;
+                
+                case "wt":
+                result = await WT.find().lean().sort({dm: 1});
+                return result;
+            }
+        }
+    },
+    formSearch: async function(form, value) {
+        switch (form) {
+
+            case "backpay":
+            result = await Backpay.find({employeeName: value}).lean();
+            return result;
+
+            case "bonus":
+            result = await Bonus.findOne({_id: id}).lean();
+            return result;
+
+            case "hotel":
+            result = await Hotel.findOne({_id: id}).lean();
+            return result;
+
+            case "mileage":
+            result = await Mileage.findOne({_id: id}).lean();
+            return result;
+
+            case "newhire":
+            result = await Newhire.findOne({_id: id}).lean();
+            return result;
+            
+            case "perDiem":
+            result = await PerDiem.findOne({_id: id}).lean();
+            return result;
+
+            case "pto":
+            result = await PTO.findOne({_id: id}).lean();
+            return result;
+
+            case "termination":
+            result = await Term.findOne({_id: id}).lean();
+            return result;
+
+            case "targetOrder":
+            result = await TargetSupply.findOne({_id: id}).lean();
+            return result;
+
+            case "uniform":
+            result = await Uniform.findOne({_id: id}).lean();
+            return result;
+
+            case "wt":
+            result = await WT.findOne({_id: id}).lean();
+            return result;
+        }
     }
 }

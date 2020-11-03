@@ -15,6 +15,7 @@ ptoRouter.use(bodyParser.json());
 ptoRouter.use(bodyParser.urlencoded({ extended: false }));
 const date = apiFunc.date();
 const uploadsDir = apiFunc.uploadsDir();
+const baseSite = apiFunc.baseSite();
 
 ptoRouter.post('/', async (req, res) => {
     const { employeeName, employeeNum, dm, departments, hours, approval, sig } = req.body;
@@ -40,7 +41,7 @@ ptoRouter.post('/', async (req, res) => {
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
 
-    content = HTML.pto(employeeName, employeeNum, dm.userFirst, dm.userLast, departments, hours, approval, comments, absencefrom, absenceto);
+    content = HTML.pto(employeeName, employeeNum, dm.userFirst, dm.userLast, departments, hours, approval, comments, absencefrom, absenceto, date);
 
     //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/pto/${pdfFile}`, function(err, res) {
@@ -96,6 +97,7 @@ ptoRouter.post('/', async (req, res) => {
     form.approval = approval;
     form.comments = comments;
     form.date = date;
+    form.sig = `${baseSite}signatures/ptoSig/${employeeNum}/${date}.png/`
     form.save(function(err) {
         if (err) {
             console.log(err);

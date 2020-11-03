@@ -41,13 +41,13 @@ const newhireForm = new Schema({
         type: String
     },
     dob: {
-        type: Date
+        type: String
     },
     sex: {
         type: String
     },
     firstDay: {
-        type: Date
+        type: String
     },
     numDays: {
         type: String
@@ -57,6 +57,9 @@ const newhireForm = new Schema({
     },
     positions: {
         type: String
+    },
+    hours: {
+
     },
     language: {
         type: String

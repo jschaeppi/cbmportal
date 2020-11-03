@@ -6,40 +6,42 @@ const pdf = require('html-pdf');
 const uploadsDir = '/home/public_html/uploads';
 //content = htmlContent.backPayContent;
 module.exports = {
-    prepareEmail: async (employeeNum) => {
-        const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
+    prepareEmail: async (form, content) => {
+        form = form.charAt(0).toUpperCase() + form.substring(1);
+        console.log(form);
         const options = {format: 'letter',orientation: 'portrait'};
-        let pdfFile = `Employee_${employeeNum}`;
+        let pdfFile = `${form}_Reprint`;
             // Stripping special characters
             pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-            const pdfGen = await pdf.create(content, options).toFile(`${uploadsDir}/pdf/backpay_test/${pdfFile}`);
-            if (pdfGen) {
-                return;
-            }
+            pdf.create(content, options).toBuffer( (err, result ) => {
+                if (err) {
+                    console.log(err);
+                }
+                return Buffer.isBuffer(result);
+            });
         },
 
-        transporter: nodemailer.createTransport = {
-            host: "smtp.office365.com",
-            port: 587,
-            secure: false,
-            auth: {
-              user: "cbmmailer@carlsonbuilding.com",
-              pass: "IT5upp0rt"
-            },
-            tls: {
-                rejectUnauthorized: false
-            }
-          },
+    transporter: nodemailer.createTransport = {
+        host: process.env.host,
+        port: process.env.emailPort,
+        secure: false,
+        auth: {
+            user: process.env.authUser,
+            pass: process.env.authPass,
+        },
+        tls: {
+            rejectUnauthorized: process.env.rejectUnauthorized
+        }
+        },
 
-        mailOptions: {
-        from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-        to: 'joseph.schaeppi@carlsonbuilding.com', // list of receivers
-        //cc: dm.email,
-        //subject: `Backpay request for ${employeeNum}`, // Subject line
-        //text: `${receiver.department} ${message}`, // plain text body
-        attachments: {
-            //filename: `${pdfFile}`,
-            //path: `${uploadsDir}/pdf/backpay_test/${pdfFile}`
+    mailOptions: function(dm='', form, receiver, content) {
+        const message = `This is a reprint of ${form} form `;
+        return {
+            from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
+            to: receiver.email, // list of receivers
+            //cc: dm.email,
+            subject: `${form} Reprint`, // Subject line
+            html: `${receiver.department} ${message}<br /> ${content}`, // plain text body
         }
     },
 }

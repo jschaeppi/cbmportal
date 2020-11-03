@@ -1,13 +1,10 @@
 const express = require('express');
 const storesListRouter = express.Router();
-const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const checkAuth = require('../../api/authCheck');
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser');
 let Store = require('../../src/Model/Stores')
-let User = require('../../src/Model/usersModel');
-const FormFuncs = require('../helpers/hbs_helpers');
 
 
 storesListRouter.use(bodyParser.json());
@@ -42,8 +39,7 @@ storesListRouter.get('/removeStore/:storeId', checkAuth, cors(), async (req, res
     }
  });
 
- storesListRouter.post('/editStore/:storeID', checkAuth, cors(), async (req, res) => {
-    const { storeID } = req.params;
+ storesListRouter.post('/editStore/', checkAuth, cors(), async (req, res) => {
     const { dm, district, store, id } = req.body;
     if (dm != null && district != null && store != null) {
         let result = await Store.updateOne({ _id: id}, {$set: { store, district, dm }}).lean();
@@ -64,6 +60,7 @@ storesListRouter.get('/removeStore/:storeId', checkAuth, cors(), async (req, res
         res.render('stores', {result, store, allowed, updated, storeDeleteStatus, created, user: req.user});
     } else {
         const result = await Store.find({ district: districts }).sort({ banner: 1, store: 1 }).lean();
+        res.render('stores', {result, store, allowed, updated, storeDeleteStatus, created, user: req.user});
         }
  });
 

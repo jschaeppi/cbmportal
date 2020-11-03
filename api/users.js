@@ -29,7 +29,6 @@ router.get('/loginSub', async (req, res) => {
     res.json({decoded, token, user});
     }
     catch(err) {
-        console.log(err);
         if (!token) {
             res.status(401).json({msg: 'Not Authorized'});
         } else if (err === 'TokenExpiredError: jwt expired') {
@@ -54,8 +53,9 @@ router.get('/loginSubTest', async (req, res, next) => {
     catch(err) {
         if (!token) {
             res.status(401).json({issue: 'Not Authorized'});
+        } else if (err === 'TokenExpiredError: jwt expired') {
+            res.status(401).json({ msg: 'Session expired, please login again'});
         } else {
-        console.log(err);
         res.status(500).json({ issue: 'Server Error'});
         }
     }
@@ -122,12 +122,7 @@ router.post('/loginSub', async (req, res) => {
 
     }
     catch (err) {
-            if (err === 'JsonWebTokenError') {
-                res.status(401).json({ msg: 'Unauthorized'});
-            }
-            else {
             res.status(500).json({msg: 'Server Error'});
-            }
     }
 })
 router.post('logout', (req, res, next) => {

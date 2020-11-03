@@ -1,12 +1,10 @@
 const express = require('express');
 const psListRouter = express.Router();
-const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const checkAuth = require('../../api/authCheck');
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser');
 let PSList = require('../../src/Model/psModel');
-const FormFuncs = require('../helpers/hbs_helpers');
 
 
 psListRouter.use(bodyParser.json());
@@ -30,14 +28,18 @@ psListRouter.get('/removePS/:psId', checkAuth, cors(), async (req, res) => {
  });
 
  psListRouter.get('/', checkAuth, cors(), async (req, res) => {
-    const { psDeleteStatus, ps, employee, created, updated } = req.query;
-    const districts = req.user.district;
-    if (districts.length > 1) {
-        const result = await PSList.find({district: {$in: districts.split(',')}}).sort( { dm: 1 }).lean();
-        res.render('psList', {result, ps, psDeleteStatus, updated, employee, created, user: req.user});
+     if (req.user.permission > 3) {
+        const { psDeleteStatus, ps, employee, created, updated } = req.query;
+        const districts = req.user.district;
+        if (districts.length > 1) {
+            const result = await PSList.find({district: {$in: districts.split(',')}}).sort( { dm: 1 }).lean();
+            res.render('psList', {result, ps, psDeleteStatus, updated, employee, created, user: req.user});
+        } else {
+            const result = await PSList.find({ district: districts }).sort({ dm: 1 })
+                res.render('psList', {result, ps, psDeleteStatus, employee, updated, created, user: req.user});
+        }
     } else {
-        const result = await PSList.find({ district: districts }).sort({ dm: 1 })
-            res.render('psList', {result, ps, psDeleteStatus, employee, updated, created, user: req.user});
+        res.redirect('./');
     }
 });
 
@@ -58,7 +60,6 @@ psListRouter.get('/editPS/:psID', checkAuth, cors(), async (req, res) => {
     if (dm != null && district != null && ps != null) {
         let result = await PSList.updateOne({ _id: id}, {$set: { ps, district, dm }}).lean();
         result = await PSList.findOne({ _id: id }).lean();
-        console.log(result);
         if (result) {
             res.redirect(`/admin/dashboard/psList?ps=${result.ps}&updated=true` );
         } else {
@@ -69,10 +70,10 @@ psListRouter.get('/editPS/:psID', checkAuth, cors(), async (req, res) => {
 
 psListRouter.post('/createPS', checkAuth, (req, res) => {
     const { ps, employee, district } = req.body;
-    const { userFirst, userLast} = req.user;
+    const { fullName } = req.user;
     let form = new PSList;
     form.ps = `${ps} ${employee}`;
-    form.dm = `${userFirst} ${userLast}`;
+    form.dm = `${fullName}`;
     form.district = district;
     form.save(function(err) {
         if (err) {

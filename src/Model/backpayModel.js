@@ -19,6 +19,12 @@ const backpayForm = new Schema({
         comments: {
             type: String,
         },
+        sig: {
+            type: String,
+        },
+        date: {
+            type: String
+        }
 });
 
 module.exports = Backpay = mongoose.model('Backpay', backpayForm, 'Backpay' );

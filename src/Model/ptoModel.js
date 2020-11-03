@@ -7,7 +7,7 @@ const ptoForm = new Schema({
     employeeNum: {
         type: String
     },
-    firstName: {
+    employeeName: {
         type: String
     },
     dm: {
@@ -16,10 +16,10 @@ const ptoForm = new Schema({
     departments: {
         type: String
     }, 
-    absenceFrom: {
+    absencefrom: {
         type: String
     },
-    absenceTo: {
+    absenceto: {
         type: String
     },
     hours: {
@@ -29,6 +29,9 @@ const ptoForm = new Schema({
         type: String
     },
     comments: {
+        type: String
+    },
+    sig: {
         type: String
     },
     date: {
