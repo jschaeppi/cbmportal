@@ -10,7 +10,8 @@ const Uniform = () => {
     
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
-    const { loginStatus, isAuthenticated, loading, usstates, getCities, cities, user} = cbmContext;
+    const { loginStatus, isAuthenticated, loading, usstates, getCities, cities, user, formSubmit, success} = cbmContext;
+    let body = '';
     const employeePad = useRef({});
     useEffect(() => {
         if (!isAuthenticated && !loading) {
@@ -75,12 +76,8 @@ const Uniform = () => {
         const list = [...data];
         list[0][date] = `${month}/${date}/${year}`
         setData(list);
-        fetch('https://portal.cbmportal.com:5000/api/uniform', { 
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({
+
+            body = JSON.stringify({
                 employeeNum: data[0].employeeNum,
                 firstName: data[0].firstName,
                 lastName: data[0].lastName,
@@ -95,17 +92,15 @@ const Uniform = () => {
                 date: data[0].date,
                 sig: employeePad.current.getTrimmedCanvas().toDataURL('image/png'),
                 dm: user,
-            }),
             })
-            .then(res => res.json())
-            .then(data =>  {
-                if (data.message) {
-                    history.push('/success');
-                }
-            })
-            .catch(err => console.log(err))
-
-
+            formSubmit(body, 'uniform');
+            if (success && !loading) {
+                console.log('I\'m redirecting');
+                console.log(success);
+                history.push('/success');
+            } else {
+                history.push('/')
+            }
     }
 }
 

@@ -10,6 +10,7 @@ const apiFunc = require('../config/api_funcs');
 const HTML = require('../config/html');
 const PTO = require('../src/Model/ptoModel');
 let DepartmentModel = require('../src/Model/departmentModel');
+const { nextTick } = require('process');
 
 ptoRouter.use(bodyParser.json());
 ptoRouter.use(bodyParser.urlencoded({ extended: false }));
@@ -17,7 +18,7 @@ const date = apiFunc.date();
 const uploadsDir = apiFunc.uploadsDir();
 const baseSite = apiFunc.baseSite();
 
-ptoRouter.post('/', async (req, res) => {
+ptoRouter.post('/', async (req, res, next) => {
     const { employeeName, employeeNum, dm, departments, hours, approval, sig } = req.body;
     let { comments, absencefrom, absenceto } = req.body;
     absencefrom = moment(absencefrom).format('L');
@@ -33,9 +34,7 @@ ptoRouter.post('/', async (req, res) => {
             await fsPromises.mkdir(`${uploadsDir}signatures/ptoSig/${employeeNum}`, { recursive: true });
             await fsPromises.writeFile(`${uploadsDir}signatures/ptoSig/${employeeNum}/${date}.png`, base64Image);
         } catch (err) {
-            if (err) {
-                console.log(err);
-            }
+            nextTick(err);
         }
     let pdfFile = `Employee-${employeeNum}-${employeeName}`;
     // Stripping special characters
@@ -76,13 +75,12 @@ ptoRouter.post('/', async (req, res) => {
     try {
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
             if (err) {
-                console.log(err)
-            } else {
+                next(err);
             }
         });
     
     } catch(err) {
-    console.log(err);
+        next(err);
     }
 
     //DB insertions
@@ -100,8 +98,7 @@ ptoRouter.post('/', async (req, res) => {
     form.sig = `${baseSite}signatures/ptoSig/${employeeNum}/${date}.png/`
     form.save(function(err) {
         if (err) {
-            console.log(err);
-            return;
+            next(err);
         } else {
             return res.json({message: true});
         }

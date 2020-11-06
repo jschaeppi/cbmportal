@@ -7,7 +7,8 @@ const WorkTicket = () => {
 
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
-    const { loginStatus, isAuthenticated, loading, getStores, stores, getCities, cities, usstates, user } = cbmContext;
+    const { loginStatus, isAuthenticated, loading, getStores, stores, getCities, cities, usstates, user, formSubmit, success } = cbmContext;
+    let body = '';
     const { district } = cbmContext.user;
 
     useEffect(() => {
@@ -55,14 +56,7 @@ const WorkTicket = () => {
 
         const onSubmit = (e) => {
             e.preventDefault();
-            
-            fetch('https://portal.cbmportal.com:5000/api/WT',
-            {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({
+                body = JSON.stringify({
                     employeeName: data[0].employeeName,
                     employeeNum: data[0].employeeNum,
                     dm: user,
@@ -80,12 +74,14 @@ const WorkTicket = () => {
                     startDate: data[0].startDate,
                     endDate: data[0].endDate,
                 })
-            })
-            .then (res => res.json())
-            .then( data => {
-                if (data.message) history.push('/success');
-            })
-            .catch(err => console.log(err))
+                formSubmit(body, 'WT');
+                if (success && !loading) {
+                    console.log('I\'m redirecting');
+                    console.log(success);
+                    history.push('/success');
+                } else {
+                    history.push('/')
+                }
         }
 
             return (

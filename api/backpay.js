@@ -17,7 +17,7 @@ const date = apiFunc.date();
 const baseSite = apiFunc.baseSite();
 const uploadsDir = apiFunc.uploadsDir();
 
-backpayRouter.post('/', async (req, res) => {
+backpayRouter.post('/', async (req, res, next) => {
     const { dm, employeeNum, employeeName, sig } = req.body[0];
     let { comments } = req.body[0];
     let backpayInfo = []; 
@@ -32,12 +32,13 @@ backpayRouter.post('/', async (req, res) => {
 
     let base64Image = new Buffer.from(base64Data, 'base64');
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
-    
+    try {
     await fsPromises.mkdir(`${uploadsDir}signatures/backPaySig/${employeeNum}`, { recursive: true });
-    console.log(`Folder ${employeeNum} Created`);
     await fsPromises.writeFile(`${uploadsDir}signatures/backPaySig/${employeeNum}/${date}.png`, base64Image);
         //Generating Bonuse Rows
- 
+    } catch (err) {
+            next(err);
+    }
     req.body.forEach( (item,i) => {
         if ((!item.return_lunch) || (!item.left_lunch)) {
             item.return_lunch = 0;
@@ -96,13 +97,12 @@ backpayRouter.post('/', async (req, res) => {
     try { 
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
-            console.log(err)
-        } else {
+            next(err);
         }
     });
     
     } catch(err) {
-    console.log(err);
+        next(err);
     }
 
     //DB insertions
@@ -118,8 +118,7 @@ backpayRouter.post('/', async (req, res) => {
         form.sig = `${baseSite}signatures/backPaySig/${employeeNum}/${date}.png`;
         form.save(function(err) {
         if (err) {
-            console.log(err);
-            return;
+            next(err)
         } else {
             return res.json({message: true});
         }

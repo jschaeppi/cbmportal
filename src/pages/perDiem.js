@@ -6,10 +6,9 @@ import CbmContext from '../context/cbm/cbmContext';
 
 function PerDiem() {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, isAuthenticated, loading, stores, usstates, getCities, cities, user } = cbmContext;
+    const { loginStatus, isAuthenticated, loading, stores, usstates, getCities, cities, user, formSubmit, success } = cbmContext;
+    let body = '';
 
-
-    
     const history = useHistory();
 
     const [perDiem, addPerDiem] = useState([
@@ -61,7 +60,7 @@ function PerDiem() {
         } else if (id === 'Destination Point') {
           list[index].destinationStore = value;
             addPerDiem(list); 
-        }else if (id === `rt${index+1}`) {
+        } else if (id === `rt${index+1}`) {
             list[index].rtow = value;
             addPerDiem(list); 
         } else if (id === `ow${index+1}`) {
@@ -134,20 +133,15 @@ function PerDiem() {
             })
         }
     // On submit of the form, send a POST request with the data to the server.
-        fetch('https://portal.cbmportal.com:5000/api/perdiem', { 
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(rows),
-            })
-            .then(res => res.json())
-            .then(data => {
-                 if (data.message) history.push('/success');
-            })
-            .catch((err) => {
-            console.log(err);
-        }) 
+        body = JSON.stringify(rows);
+        formSubmit(body, 'perDiem');
+        if (success && !loading) {
+            console.log('I\'m redirecting');
+            console.log(success);
+            history.push('/success');
+        } else {
+            history.push('/')
+        }
     }
         return (
             <div className="container">

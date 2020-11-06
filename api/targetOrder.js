@@ -23,7 +23,7 @@ targetorderRouter.use(bodyParser.urlencoded({ extended: false }));
 const date = apiFunc.date();
 const uploadsDir = apiFunc.uploadsDir();
 
-targetorderRouter.post('/', async (req, res) => {
+targetorderRouter.post('/', async (req, res, next) => {
     const { employeeName, location, order } = req.body;
     const dm = req.body.dm;
     let { notes } = req.body;
@@ -32,8 +32,8 @@ targetorderRouter.post('/', async (req, res) => {
     const receiver = await DepartmentModel.findOne({ department: 'Supplies'});
     try {
         await fsPromises.mkdir(`${uploadsDir}pdf/targetsupply/${date}`, {recursive: true});
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        next(err)
     }
 
         //Filter C code items and sorted numerically
@@ -77,7 +77,7 @@ targetorderRouter.post('/', async (req, res) => {
     //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/targetsupply/${date}/${pdfFile}`, function(err, res) {
         if (err) {
-        return console.log(err);
+            next(err);
         }
      });
      const message = `<p><span style="font-size: 12pt;">Here is a new supply request from ${location}
@@ -100,13 +100,13 @@ targetorderRouter.post('/', async (req, res) => {
     try { 
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
-            console.log(err)
+            next(err);
         } else {
         }
     });
     
     } catch(err) {
-    console.log(err);
+        next(err);
     }
     //DB insertions
     let form = new supplyOrder();
@@ -120,8 +120,7 @@ targetorderRouter.post('/', async (req, res) => {
     form.date = date;
     form.save(function(err) {
         if (err) {
-            console.log(err);
-            return;
+           next(err);
         } else {
             return res.json({message: true});
         }

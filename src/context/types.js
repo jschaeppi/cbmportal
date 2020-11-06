@@ -11,3 +11,4 @@ export const GET_STATES = 'GET_STATES';
 export const GET_CITIES = 'GET_CITIES';
 export const ERROR_STATES = 'ERROR_STATES';
 export const FORM_SUBMISSION = 'FORM_SUBMISSION';
+export const FORM_SUCCESS = 'FORM_SUCCESS';

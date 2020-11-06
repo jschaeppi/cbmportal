@@ -15,7 +15,7 @@ wtRouter.use(bodyParser.urlencoded({ extended: false }));
 const date = apiFunc.date();
 const uploadsDir = apiFunc.uploadsDir();
 
-wtRouter.post('/', async (req, res) => {
+wtRouter.post('/', async (req, res, next) => {
     const { employeeNum, employeeName, dm, location, city, state, workType, Billable, currentLocation, orderSubmitted, orderNumber } = req.body;
     let { notes, equipment, orderDate, startDate, endDate } = req.body;
     orderDate = moment(orderDate).format('L');
@@ -32,7 +32,7 @@ wtRouter.post('/', async (req, res) => {
   //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${apiFunc.uploadsDir()}pdf/wt/${pdfFile}`, function(err, res) {
       if (err) {
-      return console.log(err);
+        next(err);
       }
    });
 
@@ -60,13 +60,13 @@ wtRouter.post('/', async (req, res) => {
      
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
-            console.log(err)
+            next(err);
         } else {
         }
     });
     
     } catch(err) {
-    console.log(err);
+        next(err);
     }
 
     //DB insertions
@@ -91,14 +91,13 @@ wtRouter.post('/', async (req, res) => {
         form.date = date;
         form.save(function(err) {
             if (err) {
-                console.log(err);
-                return;
+                next(err);
             } else {
                 return res.json({message: true});
             }
         });
     } catch(err) {
-        console.log(err);
+        next(err)
     }
 });
 

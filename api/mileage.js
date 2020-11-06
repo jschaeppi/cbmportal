@@ -15,7 +15,7 @@ mileageRouter.use(bodyParser.urlencoded({extended: false}))
 
 const date = apiFunc.date();
 
-mileageRouter.post('/', async (req, res) => {
+mileageRouter.post('/', async (req, res, next) => {
     const { dm, employeeName, employeeNum } = req.body[0];
     let { comments } = req.body[0];
     const rows = [];
@@ -41,7 +41,7 @@ mileageRouter.post('/', async (req, res) => {
   //Create PDF
   pdf.create(content, apiFunc.pdfOptions()).toFile(`${apiFunc.uploadsDir()}pdf/mileage/${pdfFile}`, function(err, res) {
     if (err) {
-    return console.log(err);
+        next(err);
     }
   });
    
@@ -64,13 +64,12 @@ mileageRouter.post('/', async (req, res) => {
     try { 
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
-            console.log(err)
-        } else {
+            next(err)
         }
     });
     
     } catch(err) {
-    console.log(err);
+        next(err);
     }
 
     //DB insertions
@@ -85,8 +84,7 @@ mileageRouter.post('/', async (req, res) => {
     })
     form.save(function(err) {
         if (err) {
-            console.log(err);
-            return;
+            next(err);
         } else {
             return res.json({message: true});
         }

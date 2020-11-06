@@ -6,7 +6,8 @@ import '../css/backPay.css';
 import CbmContext from '../context/cbm/cbmContext';
 function BackPay() {
     const cbmContext = useContext(CbmContext);
-        const { loginStatus, isAuthenticated, loading, user } = cbmContext;
+        const { loginStatus, isAuthenticated, loading, user, formSubmit, success } = cbmContext;
+        let body = '';
         useEffect(() => {
             if (!isAuthenticated && !loading) {
             loginStatus();
@@ -109,22 +110,18 @@ function BackPay() {
             })
         }
     // On submit of the form, send a POST request with the data to the server.
-    fetch('https://portal.cbmportal.com:5000/api/backpay', { 
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify(rows),
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.message) history.push('/success');
-        })
-        .catch((err) => {
-            console.log(err);
-        }) 
+
+        body = JSON.stringify(rows)
+        formSubmit(body, 'backpay');
+        if (success && !loading) {
+            console.log('I\'m redirecting');
+            console.log(success);
+            history.push('/success');
+        } else {
+            history.push('/')
+        }
     }
-}
+    }
         return (
             <div className="container">
                 <h1 className="mainHeading" id="heading">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Back Pay</span></h1><br />

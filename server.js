@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 require('dotenv').config({path: __dirname + '/config/.env'});
+require('./src/config/db');
+const errorHandler = require('./middleware/error');
 const bodyParser = require('body-parser');
 const translator = require('translate');
 const morgan = require('morgan')
@@ -12,12 +14,8 @@ const cors = require('cors');
 const compression = require('compression');
 const PORT = process.env.PORT || 5000;
 const exhbs = require('express-handlebars');
-
-//const config = require('config');
 //const MongoStore = require('connect-mongo')(session);
 process.traceDeprecation = true;
-const db = require('./src/config/db');
-//const hbshelpers = require('./admin/helpers/hbs_helpers');
 translator.engine = 'google';
 translator.key = process.env.translateAPI;
 
@@ -55,8 +53,9 @@ app.set('trust proxy', 1) // trust first proxy
         stringify: true,
     }),
 }))*/
-//Declare Routing variables
 
+
+//Declare Routing variables
 const bonusRouter = require('./api/bonus');
 const repairRouter = require('./api/repair');
 const uniformRouter = require('./api/uniform');
@@ -111,7 +110,7 @@ app.use('/admin', adminRouter);
 app.use('/admin/dashboard/psList', psListRouter);
 app.use('/admin/dashboard/portalUsers', portalUserRouter);
 app.use('/admin/dashboard/stores', storeListRouter);
-
+app.use(errorHandler);
 
 
 app.get('/admin/storelist', cors(), (req, res) => {

@@ -11,7 +11,8 @@ import {
     GET_STATES,
     GET_CITIES,
     ERROR_STATES,
-    FORM_SUBMISSION
+    FORM_SUBMISSION,
+    FORM_SUCCESS
 } from '../types';
 
 export default (state, action) => {
@@ -52,7 +53,8 @@ export default (state, action) => {
             case FORM_SUBMISSION:
                 return {
                     ...state,
-                    success: false,
+                    successMessage: action.successMessage,
+                    success: true,
                     loading: false
                 }
         case GET_STATES:
@@ -92,6 +94,12 @@ export default (state, action) => {
                 ...state,
                 loading: true,
         }
+        case FORM_SUCCESS:
+            return {
+                    ...state,
+                    successMessage: null,
+                    success: false,
+            }
         default: 
         return state;
     }

@@ -17,17 +17,19 @@ const date = apiFunc.date();
 const uploadsDir = apiFunc.uploadsDir();
 
 
-uniformRouter.post('/', async (req, res) => {
+uniformRouter.post('/', async (req, res, next) => {
   const { employeeNum, firstName, lastName, address, apt, city, state, zip, cost, quantity, size, date, dm, sig } = req.body;
   const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
     let base64String = sig;
     // Remove header
     let base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
     let base64Image = new Buffer.from(base64Data, 'base64');
-
+try {
     await fsPromises.mkdir(`${uploadsDir}signatures/${employeeNum}`.split(' ').join(''), { recursive: true });
     await fsPromises.writeFile(`${uploadsDir}signatures/${employeeNum}/uniformSig${date}.png`, base64Image);
-
+} catch (err) {
+    next(err);
+}
     let pdfFile = `Uniform-Order-${employeeNum}`;
 
     // Stripping special characters
@@ -38,7 +40,7 @@ uniformRouter.post('/', async (req, res) => {
   //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/uniform/${pdfFile}`, function(err, res) {
       if (err) {
-      return console.log(err);
+        next(err);
       }
    });
 
@@ -61,13 +63,12 @@ uniformRouter.post('/', async (req, res) => {
     
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
-            console.log(err)
-        } else {
+            next(err);
         }
     });
     
     } catch(err) {
-    console.log(err);
+        next(err);
     }
 
     //DB insertions
@@ -86,8 +87,7 @@ uniformRouter.post('/', async (req, res) => {
     form.date = date
     form.save(function(err) {
         if (err) {
-            console.log(err);
-            return;
+            next(err);
         } else {
             return res.json({message: true});
         }

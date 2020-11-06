@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const HTML = require('../config/html');
 const FormFunc = require('../admin/helpers/hbs_helpers');
+const moment = require('moment');
 const host = process.env.host;
 const port = process.env.emailPort;
 const authUser = process.env.authUser;
@@ -19,6 +20,9 @@ module.exports = {
         let year = date_ob.getFullYear();*/
         date_ob = date_ob.substr(4);
         return date = `${date_ob}`; 
+    },
+    time: function() {
+      return moment().format('HH:mm');
     },
     uploadsDir: function() {
         return "/home/cbmportal/public_html/uploads/";

@@ -1,6 +1,7 @@
 const express = require('express');
 const hotelRouter = express.Router();
 const pdf = require('html-pdf');
+const fsPromises = require('fs').promises;
 const bodyParser = require('body-parser');
 const translator = require('translate');
 const moment = require('moment');
@@ -27,7 +28,7 @@ hotelRouter.get('/ps/:district', async (req, res) => {
 }
 });
 
-hotelRouter.post('/', async (req, res) => {
+hotelRouter.post('/', async (req, res, next) => {
     const { listPs1, listPs2, dm, store, checkIn, checkOut, roomNum, peopleNum, newPS, hotelReason, WT, beds } = req.body;
     let { notes } = req.body
     if (newPS !== "") {
@@ -35,17 +36,22 @@ hotelRouter.post('/', async (req, res) => {
         const listPs2 = "";
     }
     notes = await translator(notes, {to: 'en', from: 'es'});
+    try {
+        await fsPromises.mkdir(`${uploadsDir}pdf/hotel/${date}`, {recursive: true});
+    } catch (err) {
+        next(err)
+    }
     const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
-    let pdfFile = `Hotel-Request-${dm.userFirst} ${dm.userLast}`;
+    let pdfFile = `Hotel-Request-${dm.userFirst} ${dm.userLast}-${time}`;
     // Stripping special characters
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
 
     let content = HTML.hotelHtml(date, dm.userFirst, dm.userLast, store, moment(checkIn).format('L'), moment(checkOut).format('L'), listPs1, listPs2, newPS, WT, hotelReason, beds, roomNum, notes)
 
   //Create PDF
-    pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/hotel/${pdfFile}`, function(err, res) {
+    pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/hotel/${date}/${pdfFile}`, function(err, res) {
       if (err) {
-      return console.log(err);
+        next(err);
       }
    });
    message = content;
@@ -60,21 +66,20 @@ hotelRouter.post('/', async (req, res) => {
     html: `${receiver.department} ${message}`, // html body
     attachments: [
         {
-        filename: `${pdfFile}`,
-        path: `${uploadsDir}pdf/hotel/${pdfFile}`
+        filename: `Hotel-Request-${dm.userFirst} ${dm.userLast}`,
+        path: `${uploadsDir}pdf/hotel/${date}/${pdfFile}`
         },
     ]
 };
     try { 
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
-            console.log(err)
-        } else {
+            next(err)
         }
     });
     
     } catch(err) {
-    console.log(err);
+        next(err);
     }
 
     //DB insertions
@@ -95,8 +100,7 @@ hotelRouter.post('/', async (req, res) => {
     form.date = date;
     form.save(function(err) {
         if (err) {
-            console.log(err);
-            return;
+            next(err);
         } else {
             return res.json({message: true});
         }

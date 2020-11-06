@@ -7,7 +7,8 @@ function TargetOrder() {
     const history = useHistory();
     const cbmContext = useContext(CbmContext);
     //const history = useHistory();
-    const { loginStatus, isAuthenticated, loading, getStores, stores, user} = cbmContext;
+    const { loginStatus, isAuthenticated, loading, getStores, stores, user, success, formSubmit} = cbmContext;
+    let body = '';
     const { district} = cbmContext.user;
     // eslint-disable-next-line
     const [items5, setItems5] = useState (["C1102 – 16\" Stripping pad (Green)"])
@@ -176,25 +177,22 @@ function TargetOrder() {
 
     const onSubmit = (e) => {
         e.preventDefault();
-            fetch('https://portal.cbmportal.com:5000/api/targetOrder', {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                employeeName: info[0].employeeName,
-                location: info[0].location,
-                notes: info[0].notes,
-                order: orderItems,
-                dm: user,
-            })
-            })
-            .then(res => res.json())
-            .then( data => {
-                if (data.message) history.push('/success');
-            })
-        .catch(err => console.log(err))
-}
+        body = JSON.stringify({
+            employeeName: info[0].employeeName,
+            location: info[0].location,
+            notes: info[0].notes,
+            order: orderItems,
+            dm: user,
+        })
+        formSubmit(body, 'targetOrder');
+        if (success && !loading) {
+            console.log('I\'m redirecting');
+            console.log(success);
+            history.push('/success');
+        } else {
+            history.push('/')
+        }
+    }
 
     useEffect(() => {
         if (!isAuthenticated && !loading) {

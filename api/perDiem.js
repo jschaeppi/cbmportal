@@ -16,7 +16,7 @@ const date = apiFunc.date();
 const uploadsDir = apiFunc.uploadsDir();
 
 
-perdiemRouter.post('/', async (req, res) => {
+perdiemRouter.post('/', async (req, res, next) => {
     const {city, employeeName, employeeNum, location, state, dm }= req.body[0];
     let { comments, firstNight, lastNight, arrivalDate, departureDate } = req.body[0];
     firstNight = moment(firstNight).format('L');
@@ -52,11 +52,11 @@ perdiemRouter.post('/', async (req, res) => {
   try {
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/perDiem/${pdfFile}`, function(err, res) {
         if (err) {
-        return console.log(err);
+            next(err);
         }
     });
 } catch(err) {
-    console.log(err);   
+        next(err);
     }
 
    message = content;
@@ -80,13 +80,12 @@ perdiemRouter.post('/', async (req, res) => {
      
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
-            console.log(err)
-        } else {
+            next(err)
         }
     });
     
     } catch(err) {
-    console.log(err);
+        next(err);
     }
 
     //DB insertions
@@ -108,8 +107,7 @@ perdiemRouter.post('/', async (req, res) => {
     })
     form.save(function(err) {
         if (err) {
-            console.log(err);
-            return;
+            next(err);
         } else {
             return res.json({message: true});
         }

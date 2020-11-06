@@ -3,13 +3,13 @@ import '../css/New_Hire.css';
 import Stores from '../Components/Stores';
 import { useHistory } from 'react-router-dom';
 import CbmContext from '../context/cbm/cbmContext';
-import Spinner from '../Components/SpinnerImage';
 
 const NewHire = () =>  {
 
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
-    const { loginStatus, isAuthenticated, loading, getStores, stores, user} = cbmContext;
+    const { loginStatus, isAuthenticated, loading, getStores, stores, user, formSubmit, success} = cbmContext;
+    let body = '';
     const { district} = cbmContext.user;
     
     useEffect(() => {
@@ -98,20 +98,15 @@ const NewHire = () =>  {
         for (let key in data[0]) {
             formData.append(key, data[0][key])
         }
-        fetch('https://portal.cbmportal.com:5000/api/newhire',
-            {
-                method: 'POST',
-                body: formData
-            })
-        .then (res => res.json())
-        .then( data => {
-            if (data.message && !loading) {
-                history.push('/success')
-            } else {
-                return <Spinner />
-            }
-        })
-        .catch(err => console.log(err))
+                body = formData;
+                formSubmit(body, 'newhire');
+                if (success && !loading) {
+                    console.log('I\'m redirecting');
+                    console.log(success);
+                    history.push('/success');
+                } else {
+                    history.push('/')
+                }
     }
     
         return (
@@ -225,7 +220,8 @@ const NewHire = () =>  {
                             </div>
                             <div className="content">
                                 <label htmlFor="positions">Positions:</label><br />
-                                <select id="positions" name="positions"  title="Please select an option" required  onChange={e => handleChange(e)}>
+                                <select id="positions" name="positions"  title="Please select an option" onChange={e => handleChange(e)} required>
+                                    <option>Select Position</option>
                                     <option value="lead">Site Lead</option>
                                     <option value="floortech">Floor Tech</option>
                                     <option value="floater">Floater</option>

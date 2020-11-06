@@ -6,7 +6,7 @@ import CbmContext from '../context/cbm/cbmContext';
 function Mileage() {
 
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, loading, isAuthenticated, getStores, stores, user } = cbmContext;
+    const { loginStatus, loading, isAuthenticated, getStores, stores, user, formSubmit, success } = cbmContext;
     const { district } = cbmContext.user;
     const history = useHistory();
     const [mileage, addMileage] = useState([
@@ -92,20 +92,15 @@ function Mileage() {
             })
         }
     // On submit of the form, send a POST request with the data to the server.
-        fetch('https://portal.cbmportal.com:5000/api/mileage', { 
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(rows),
-            })
-            .then(res => res.json())
-            .then(data => {
-            if (data.message) history.push('/success');
-            }).catch((err) => {
-            console.log(err);
-        }) 
+        formSubmit(JSON.stringify(rows), 'mileage');
+        if (success && !loading) {
+            console.log('I\'m redirecting');
+            console.log(success);
+            history.push('/success');
+        } else {
+            history.push('/')
         }
+    }
         
         return (
             <div className="container">

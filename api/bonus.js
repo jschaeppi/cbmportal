@@ -8,7 +8,7 @@ const moment = require('moment');
 const apiFunc = require('../config/api_funcs');
 const HTML = require('../config/html');
 let { transporter, mailOptions, message } = require('../config/mailer');
-let { options } = require('../config/html')
+require('../config/html')
 const Bonuses = require('../src/Model/bonusModel');
 const DepartmentModel = require('../src/Model/departmentModel');
 const translator = require('translate');
@@ -22,12 +22,12 @@ const date = apiFunc.date();
 const baseSite = apiFunc.baseSite();
 const uploadsDir = apiFunc.uploadsDir();
 
-bonusRouter.post('/test', async (req, res) => {
+bonusRouter.post('/test', async (req, res, next) => {
     //console.log(req.data[0].body.sig);
-    const { dm, employeeNum, sig, employeeName } = req.body[0];
-    let { comments } = req.body[0];
-    const rows = [];
-    let bonusInfo = [];
+        const { dm, employeeNum, sig, employeeName } = req.body[0];
+        let { comments } = req.body[0];
+        const rows = [];
+        let bonusInfo = [];
     const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
     
     //Translating from spanish to English
@@ -43,11 +43,11 @@ bonusRouter.post('/test', async (req, res) => {
     try {
     //Make new folder for request
     await fsPromises.mkdir(`${uploadsDir}signatures/bonusPaySig/${employeeNum}`, { recursive: true });
-    console.log(`Folder ${employeeNum} Created`);
+
     //Write signature to file
     await fsPromises.writeFile(`${uploadsDir}signatures/bonusPaySig/${employeeNum}/${date}.png`, base64Image);
     } catch(err) {
-        console.log(err);
+        next(err);
     }
 
     //Generating Bonuse Rows
@@ -58,7 +58,7 @@ bonusRouter.post('/test', async (req, res) => {
                 bonusInfo.push('<tr style="height: 25px;">' +
     '<td style="width: 15%; height: 25px; text-align: center; font-weight: bold; border: 1px solid black;">&nbsp;' + moment(item.date).format('L') + '</td>' +
    '<td style="text-align: center; width: 70%; font-weight: bold; height: 25px; border: 1px solid black;">&nbsp;' + item.location + '</td>' +
-    '<td style="width: 15%; font-weight: bold; height: 25px; border: 1px solid black; text-align: center;">&nbsp;' + item.bonus + '</td></tr>');
+    '<td style="width: 15%; font-weight: bold; height: 25px; border: 1px solid black; text-align: center;">&nbsp;$' + item.bonus + '</td></tr>');
 })
     let pdfFile = `Employee_${employeeNum}`;
     // Stripping special characters
@@ -70,7 +70,7 @@ bonusRouter.post('/test', async (req, res) => {
   //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/bonus/${pdfFile}`, function(err, res) {
       if (err) {
-      return console.log(err);
+        next(err);
       }
    });
 
@@ -90,13 +90,12 @@ bonusRouter.post('/test', async (req, res) => {
     try { 
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
-            console.log(err)
-        } else {
+            next(err);
         }
     });
     
     } catch(err) {
-    console.log(err);
+        next(err);
     }
 
     //DB insertions
@@ -111,14 +110,13 @@ bonusRouter.post('/test', async (req, res) => {
         form.date = date;
         form.save(function(err) {
         if (err) {
-            console.log(err);
-            return;
+            next(err);
         } else {
             return res.json({message: true});
         }
     });
 })
-bonusRouter.post('/', async (req, res) => {
+bonusRouter.post('/', async (req, res, next) => {
     //console.log(req.data[0].body.sig);
     const { dm, employeeNum, sig, employeeName } = req.body[0];
     let { comments } = req.body[0];
@@ -139,11 +137,10 @@ bonusRouter.post('/', async (req, res) => {
     try {
     //Make new folder for request
     await fsPromises.mkdir(`${uploadsDir}signatures/bonusPaySig/${employeeNum}`, { recursive: true });
-    console.log(`Folder ${employeeNum} Created`);
     //Write signature to file
     await fsPromises.writeFile(`${uploadsDir}signatures/bonusPaySig/${employeeNum}/${date}.png`, base64Image);
     } catch(err) {
-        console.log(err);
+        next(err);
     }
 
     //Generating Bonuse Rows
@@ -166,7 +163,7 @@ bonusRouter.post('/', async (req, res) => {
   //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/bonus/${pdfFile}`, function(err, res) {
       if (err) {
-      return console.log(err);
+        next(err);
       }
    });
 
@@ -186,13 +183,12 @@ bonusRouter.post('/', async (req, res) => {
     try { 
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
-            console.log(err)
-        } else {
+            next(err);
         }
     });
     
     } catch(err) {
-    console.log(err);
+        next(err);
     }
 
     //DB insertions
@@ -207,8 +203,7 @@ bonusRouter.post('/', async (req, res) => {
         form.date = date;
         form.save(function(err) {
         if (err) {
-            console.log(err);
-            return;
+            next(err);
         } else {
             return res.json({message: true});
         }

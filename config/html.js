@@ -751,7 +751,7 @@ ${otherWhyQuit}
 </table>`;
     },
 
-    newhire: function(firstName, middleName, dm_userFirst, dm_userLast, firstLast, location, hireType, address, email="N/A", secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number='', i91="No Link", i92="No Link", idbadge="No Link") {
+    newhire: function(firstName, middleName='', dm_userFirst, dm_userLast, firstLast, location, hireType, address, email="N/A", secondLast='', phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number='', i91="No Link", i92="No Link", idbadge="No Link") {
       return `<html>
       <head>
       <style>

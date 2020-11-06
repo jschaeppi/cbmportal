@@ -87,12 +87,13 @@ timeadjustRouter.post('/', async (req, res) => {
         //Generating Bonuse Rows
         req.body.forEach( (item,i) => {
                 rows = [];
-                rows.push(moment(item.date).format('L'));
-                rows.push(moment(item.in).format('LT'));
+                rows.push(item.date);
+                rows.push(item.in);
                 rows.push(item.break);
-                rows.push(moment(item.out).format('LT'));
+                rows.push(item.out);
                 shift = moment(item.out).diff(item.in, 'hours');
                 totaladjustment = (shift-item.break);
+                console.log(shift, totaladjustment);
                 timeadjustInfo.push('<tr>' +
                 '<td style="width: 150px; height: 20px; border: 1px solid black; padding: 1px;">' + moment(item.date).format('L') + '</td>' +
                 '<td style="width: 150px; height: 20px;  border: 1px solid black; padding: 1px;">' + moment(item.in).format('LT') + '</td>' +
@@ -243,7 +244,7 @@ ${timeadjustInfo.join().replace(/,/g," ")}
 </tr>
 <tr style="height: 50px; vertical-align: bottom;">
 <td style=" width: 150px; padding: 1px;">Manager:</td>
-<td style=" width: 150px; border-bottom: border: 1px solid black; padding: 1px; text-align:center;">${dm}</td>
+<td style=" width: 150px; border-bottom: border: 1px solid black; padding: 1px; text-align:center;">${dm.userFirst} ${dm.userLast}</td>
 <td style=" width: 150px; height: 20px; border-bottom: border: 1px solid black; padding: 1px; vertical-align:bottom">
 <div class="DMOSsign"><img src="http://portal.cbmportal.com/uploads/signatures/timeadjustment/${dm.userFirst} ${dm.userLast}/managerAdjustSig${month}-${day}-${year}-${employeeNum}.png"><img></div>
 </td>

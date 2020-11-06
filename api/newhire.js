@@ -17,7 +17,7 @@ const date = apiFunc.date();
 const uploadsDir = apiFunc.uploadsDir();
 const baseSite = apiFunc.baseSite();
 
-newhireRouter.post('/', formidable(), async (req, res) => {
+newhireRouter.post('/', formidable(), async (req, res, next) => {
 
     const { dm_userFirst, dm_userLast, dm_email, location, hireType, email, address, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, number } = req.fields;
     let { file1, file2, file3 } = req.files;
@@ -34,22 +34,22 @@ newhireRouter.post('/', formidable(), async (req, res) => {
         await fsPromises.mkdir(`${uploadsDir}images/newhires/${firstName}-${firstLast}`,{ recursive: true })
         await fsPromises.rename(file1.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`);
         await fsPromises.rename(file2.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`);
-        await fsPromises.rename(file3.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file3.name}`);
+        await fsPromises.rename(file3.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join(''));
     } catch(err) {
-        console.log(err);
+        next(err);
     }
     
 
 
-    let pdfFile = `Employee-${firstName}-${firstLast} ${secondLast}`;
+    let pdfFile = `Employee-${firstName}-${firstLast}-${secondLast}`;
     // Stripping special characters
     pdfFile = pdfFile + '.pdf'
-    content = HTML.newhire(firstName, middleName='', dm_userFirst, dm_userLast, firstLast, location, hireType, address, email, secondLast='', phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number)
+    content = HTML.newhire(firstName, middleName, dm_userFirst, dm_userLast, firstLast, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number)
 
     //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/newhires/${pdfFile}`, function(err, res) {
         if (err) {
-        return console.log(err);
+            next(err);
         }
      });
 
@@ -87,13 +87,12 @@ newhireRouter.post('/', formidable(), async (req, res) => {
     try { 
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
-            console.log(err)
-        } else {
+            next(err);
         }
     });
     
     } catch(err) {
-    console.log(err);
+        next(err);
     }
 
     //DB insertions
@@ -124,8 +123,7 @@ newhireRouter.post('/', formidable(), async (req, res) => {
     form.idbadge = `${baseSite}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join('');
     form.save(function(err) {
         if (err) {
-            console.log(err);
-            return;
+            next(err);
         } else {
             return res.json({message: true});
         }

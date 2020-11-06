@@ -7,8 +7,9 @@ import CbmContext from '../context/cbm/cbmContext';
 
 function HotelRequest() {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, isAuthenticated,loading, getStores, stores, user } = cbmContext;
+    const { loginStatus, isAuthenticated,loading, getStores, stores, user, formSubmit, success } = cbmContext;
     const { district } = cbmContext.user;
+    let body = '';
     const history = useHistory();
     const [psList, setPsList] = useState([]);
     let   [psToggle, setToggle] = useState(false);
@@ -86,13 +87,7 @@ function HotelRequest() {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        fetch(`https://portal.cbmportal.com:5000/api/hotel/`,
-        {
-            method: 'POST',
-            headers: {
-            'content-type': 'application/json',
-            },
-            body: JSON.stringify({
+            body = JSON.stringify({
                 peopleNum: formData[0].peopleNum,
                 roomNum: formData[0].roomNum,
                 store: formData[0].store,
@@ -106,16 +101,16 @@ function HotelRequest() {
                 dm: user,
                 WT: formData[0].WT,
                 newPS: formData[0].newPS
-            })
-        })
-            .then(res => res.json())
-            .then(data => {
-                if(data.message) {
-                    history.push('/success');
-                }
-            }
-            )
+    })
+    formSubmit(body, 'hotel');
+    if (success && !loading) {
+        console.log('I\'m redirecting');
+        console.log(success);
+        history.push('/success');
+    } else {
+        history.push('/')
     }
+}
         return (
             <div className="container">
                 <h1 className="mainHeading"><span>Hotel Request</span></h1><br />

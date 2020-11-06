@@ -7,8 +7,8 @@ import CbmContext from '../context/cbm/cbmContext';
 const PTO = () => {
     
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, isAuthenticated, loading, user } = cbmContext;
- 
+    const { loginStatus, isAuthenticated, loading, user, formSubmit, success } = cbmContext;
+    let body = '';
     const history = useHistory();
     const managerPad = useRef({});
     useEffect(() => {
@@ -45,31 +45,29 @@ const PTO = () => {
         if (managerPad.current.isEmpty()) {
             alert('Please provide a signature');
         } else {
-            fetch('https://portal.cbmportal.com:5000/api/pto/', {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    employeeNum: data[0].employeeNum,
-                    employeeName: data[0].employeeName,
-                    dm: user,
-                    departments: data[0].departments,
-                    absencefrom: data[0].absencefrom,
-                    absenceto: data[0].absenceto,
-                    hours: data[0].hours,
-                    approval: data[0].approval,
-                    comments: data[0].comments,
-                    sig: managerPad.current.getTrimmedCanvas().toDataURL('image/png'),
+            body = JSON.stringify({
+                employeeNum: data[0].employeeNum,
+                employeeName: data[0].employeeName,
+                dm: user,
+                departments: data[0].departments,
+                absencefrom: data[0].absencefrom,
+                absenceto: data[0].absenceto,
+                hours: data[0].hours,
+                approval: data[0].approval,
+                comments: data[0].comments,
+                sig: managerPad.current.getTrimmedCanvas().toDataURL('image/png'),
                 })
-            })
-            .then(res => res.json())
-            .then( data => {
-                if (data.message) history.push('/success');
-            })
-            .catch(err => console.log(err))
+                
+                formSubmit(body, 'pto');
+                if (success && !loading) {
+                    console.log('I\'m redirecting');
+                    console.log(success);
+                    history.push('/success');
+                } else {
+                    history.push('/')
+                }
+            }
         }
-    }
 
         return (
             <div className="container">

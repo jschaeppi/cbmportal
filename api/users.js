@@ -18,7 +18,7 @@ router.use(cors({
   router.use(cookieParser());
 
 
-router.get('/loginSub', async (req, res) => {
+router.get('/loginSub', async (req, res, next) => {
     const token = req.header('x-auth-token');
     try {
     const decoded = await jwt.verify(token, process.env['jwtSecret']);
@@ -29,13 +29,14 @@ router.get('/loginSub', async (req, res) => {
     res.json({decoded, token, user});
     }
     catch(err) {
-        if (!token) {
+        /*if (!token) {
             res.status(401).json({msg: 'Not Authorized'});
         } else if (err === 'TokenExpiredError: jwt expired') {
             res.status(401).json({ msg: 'Unauthorized'});
         } else {
         res.status(500).json({ msg: 'Server Error'});
-        }
+        }*/
+        next(err);
     }
 })
 
@@ -93,23 +94,15 @@ router.post('/loginSubAdmin', async (req, res, next) => {
             res.status(500).json({msg: 'Server Error'});
     }
 })
-router.post('/loginSub', async (req, res) => { 
+router.post('/loginSub', async (req, res, next) => { 
     try {
         const { username, password } = req.body.data;
         let user = await User.findOne({ username });
-
-        if (!user) {
-            res.status(400).json({ msg: 'Invalid Credentials'});
-        } else {
-        const isMatch = await bcrypt.compare(password, user.password);
+        if (await bcrypt.compare(password, user.password)) {
         const payload = {
             user: {
                 id: user.id,
             }
-        }
-
-        if (!isMatch) {
-            res.status(400).json({ msg: 'Invalid Credentials'})
         }
             jwt.sign(payload, process.env['jwtSecret'], { expiresIn: '3h'}, (err, token) => {
                 if (err) throw err;
@@ -119,10 +112,9 @@ router.post('/loginSub', async (req, res) => {
 
             })
         }
-
     }
     catch (err) {
-            res.status(500).json({msg: 'Server Error'});
+            next(err)
     }
 })
 router.post('logout', (req, res, next) => {

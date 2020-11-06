@@ -6,8 +6,8 @@ import CbmContext from '../context/cbm/cbmContext';
 const TimeAdjustment = () => {
 
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, isAuthenticated, loading, user } = cbmContext;
-
+    const { loginStatus, isAuthenticated, loading, user, formSubmit, success } = cbmContext;
+    let body = '';
     useEffect(() => {
         if (!isAuthenticated && !loading) {
         loginStatus();
@@ -113,22 +113,15 @@ const TimeAdjustment = () => {
         }
 
     // On submit of the form, send a POST request with the data to the server.
-    fetch('https://portal.cbmportal.com:5000/api/timeAdjustment', { 
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify(rows),
-        })
-        .then(res => res.json())
-        .then(data => {
-        if (data.message) {       
-        history.push('/success');
+        body = JSON.stringify(rows);
+        formSubmit(body, 'timeAdjustment');
+        if (success && !loading) {
+            console.log('I\'m redirecting');
+            console.log(success);
+            history.push('/success');
+        } else {
+            history.push('/')
         }
-            //showSuccess(data)
-        }).catch((err) => {
-        console.log(err);
-    }) 
         }
     }
         return (

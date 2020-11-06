@@ -5,7 +5,7 @@ import CbmContext from './cbmContext';
 import cbmReducer from './cbmReducer';
 import GeoApi from '../../config/geoLocations.json'
 import setAuthToken from '../../utils/setAuthToken';
-//import setAuthToken from '../../utils/setAuthToken';
+
 import {
     GET_USER,
     GET_AUTH,
@@ -20,6 +20,7 @@ import {
     GET_CITIES,
     ERROR_STATES,
     FORM_SUBMISSION,
+    FORM_SUCCESS,
 } from '../types';
 
 const CbmState = props => {
@@ -38,7 +39,11 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
 
 
     const clearErrors = () => {
-        setTimeout(() => dispatch({ type: CLEAR_ERRORS, errorMessage: null}), 3000);
+        setTimeout(() => dispatch({ type: CLEAR_ERRORS }), 3000);
+    }
+
+    const clearSuccess = () => {
+        setTimeout(() => dispatch({ type: FORM_SUCCESS }),3000);
     }
 
     const getStates = async () => {
@@ -143,8 +148,6 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     });
     } 
     catch (err) {
-        console.log(err)
-        console.log(err.response.data);
         dispatch({
             type: AUTH_ERROR,
             payload: err.response.data.msg,
@@ -153,7 +156,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
   }
 
 //Login User
-        const loginUser = async (user, pass) => {
+    const loginUser = async (user, pass) => {
             setLoading();
             try {
         const res = await axios.post('https://portal.cbmportal.com:5000/api/users/loginSub', { 
@@ -173,7 +176,6 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     } 
         
     catch (err) {
-        //console.log(err.response.data.msg)
         dispatch({
             type: LOGIN_ERROR,
             payload: err.response.data.msg,
@@ -184,22 +186,37 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     const formSubmit = async (body, form) => {
         setLoading();
         try {
-            fetch(`https://portal.cbmportal.com:5000/api/${form}/test`, { 
+            if (form === 'newhire') {
+                await axios.post(`https://portal.cbmportal.com:5000/api/${form}`, body);
+                dispatch({
+                    type: FORM_SUBMISSION,
+                    successMessage: 'Your form has been submitted successfully!',
+                    success: true,
+                    loading: false,
+                })
+                if (state.success && !state.loading) {
+                    console.log(state.success);
+                    history.push('/success');
+                } else {
+                    history.push('/')
+                }
+            } else {
+            fetch(`https://portal.cbmportal.com:5000/api/${form}`, { 
                 method: 'POST',
-                headers: {
-                    'content-type': 'application/json'
-                },
                 body: body,
+                headers: {
+                    'content-type':'application/json',
+                },
                 })
                 .then(res => res.json())
                 .then(data => {
                     dispatch({
                         type: FORM_SUBMISSION,
-                        payload: true,
+                        successMessage: 'Your form has been submitted successfully!',
+                        success: true,
                         loading: false,
                     })
                     if (state.success && !state.loading) {
-                        console.log('I\'m redirecting');
                         console.log(state.success);
                         history.push('/success');
                     } else {
@@ -209,16 +226,17 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
                 .catch((err) => {
                 console.log(err);
             })
+        }
 } 
     
-catch (err) {
-    console.log(err.response.data.msg);
-    dispatch({
-    type: FORM_SUBMISSION,
-    payload: err.response.data.msg,
-    })
+    catch (err) {
+        console.log(err.response.data.msg);
+        dispatch({
+        type: FORM_SUBMISSION,
+        payload: err.response.data.msg,
+        })
+        }
     }
-}
     const setLoading = () => {
         dispatch({ type: SET_LOADING})
     }
@@ -235,6 +253,7 @@ return <CbmContext.Provider
         cities: state.cities,
         usstates:state.usstates,
         success: state.success,
+        successMessage: state.successMessage,
         loginUser,
         loginStatus,
         logout,
@@ -244,6 +263,7 @@ return <CbmContext.Provider
         getCities,
         setAuthToken,
         formSubmit,
+        clearSuccess,
     }}>
         {props.children}
 </CbmContext.Provider>
