@@ -17,8 +17,8 @@ const uploadsDir = apiFunc.uploadsDir();
 
 termRouter.post('/', async (req, res) => {
     //Other
-    const { firstName, firstLast, employeeNum, secondLast, dm, rehire, } = req.body;
-    let { warnings, norehireReason, quitReason, twoWeeks, lastWorked } = req.body;
+    const { firstName, firstLast, employeeNum, secondLast, dm, rehire, } = req.body[0];
+    let { warnings, norehireReason, quitReason, twoWeeks, lastWorked } = req.body[0];
     
     twoWeeks = (twoWeeks != '')? twoWeeks:'';
     warnings = (warnings != '')? warnings:'';

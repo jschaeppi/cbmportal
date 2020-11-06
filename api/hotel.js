@@ -29,82 +29,78 @@ hotelRouter.get('/ps/:district', async (req, res) => {
 });
 
 hotelRouter.post('/', async (req, res, next) => {
-    const { listPs1, listPs2, dm, store, checkIn, checkOut, roomNum, peopleNum, newPS, hotelReason, WT, beds } = req.body;
-    let { notes } = req.body
-    if (newPS !== "") {
-        const listPs1 = "";
-        const listPs2 = "";
-    }
-    notes = await translator(notes, {to: 'en', from: 'es'});
     try {
-        await fsPromises.mkdir(`${uploadsDir}pdf/hotel/${date}`, {recursive: true});
-    } catch (err) {
-        next(err)
-    }
-    const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
-    let pdfFile = `Hotel-Request-${dm.userFirst} ${dm.userLast}-${time}`;
-    // Stripping special characters
-    pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-
-    let content = HTML.hotelHtml(date, dm.userFirst, dm.userLast, store, moment(checkIn).format('L'), moment(checkOut).format('L'), listPs1, listPs2, newPS, WT, hotelReason, beds, roomNum, notes)
-
-  //Create PDF
-    pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/hotel/${date}/${pdfFile}`, function(err, res) {
-      if (err) {
-        next(err);
-      }
-   });
-   message = content;
-
-   //Sending Mail
-   mailOptions = {
-    from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver.email, // list of receivers
-    //to: 'joseph.schaeppi@carlsonbuilding.com',
-    cc: dm.email,
-    subject: pdfFile, // Subject line
-    html: `${receiver.department} ${message}`, // html body
-    attachments: [
-        {
-        filename: `Hotel-Request-${dm.userFirst} ${dm.userLast}`,
-        path: `${uploadsDir}pdf/hotel/${date}/${pdfFile}`
-        },
-    ]
-};
-    try { 
-        apiFunc.transporter.sendMail(mailOptions,(err, info) => {
-        if (err) {
-            next(err)
+        const { listPs1, listPs2, dm, store, checkIn, checkOut, roomNum, peopleNum, newPS, hotelReason, WT, beds } = req.body;
+        let { notes } = req.body
+        if (newPS !== "") {
+            const listPs1 = "";
+            const listPs2 = "";
         }
-    });
-    
-    } catch(err) {
-        next(err);
-    }
+        notes = await translator(notes, {to: 'en', from: 'es'});
+            await fsPromises.mkdir(`${uploadsDir}pdf/hotel/${date}`, {recursive: true});
+        const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
+        let pdfFile = `Hotel-Request-${dm.userFirst} ${dm.userLast}-${time}`;
+        // Stripping special characters
+        pdfFile = encodeURIComponent(pdfFile) + '.pdf'
 
-    //DB insertions
-    let form = new Hotel();
-    form.dm = dm.fullName;
-    form.store = store;
-    form.checkIn = checkIn;
-    form.checkOut = checkOut;
-    form.listPs1 = listPs1;
-    form.listPs2 = listPs2;
-    form.roomNum = roomNum;
-    form.peopleNum = peopleNum;
-    form.beds = beds;
-    form.newPS = newPS;
-    form.hotelReason = hotelReason;
-    form.WT = WT;
-    form.notes = notes;
-    form.date = date;
-    form.save(function(err) {
+        let content = HTML.hotelHtml(date, dm.userFirst, dm.userLast, store, moment(checkIn).format('L'), moment(checkOut).format('L'), listPs1, listPs2, newPS, WT, hotelReason, beds, roomNum, notes)
+
+    //Create PDF
+        pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/hotel/${date}/${pdfFile}`, function(err, res) {
         if (err) {
             next(err);
-        } else {
-            return res.json({message: true});
         }
     });
+    message = content;
+
+    //Sending Mail
+    mailOptions = {
+        from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
+        to: receiver.email, // list of receivers
+        //to: 'joseph.schaeppi@carlsonbuilding.com',
+        cc: dm.email,
+        subject: pdfFile, // Subject line
+        html: `${receiver.department} ${message}`, // html body
+        attachments: [
+            {
+            filename: `Hotel-Request-${dm.userFirst} ${dm.userLast}`,
+            path: `${uploadsDir}pdf/hotel/${date}/${pdfFile}`
+            },
+        ]
+    };
+            apiFunc.transporter.sendMail(mailOptions,(err, info) => {
+            if (err) {
+                next(err)
+            }
+        });
+
+        //DB insertions
+        let form = new Hotel();
+        form.dm = dm.fullName;
+        form.store = store;
+        form.checkIn = checkIn;
+        form.checkOut = checkOut;
+        form.listPs1 = listPs1;
+        form.listPs2 = listPs2;
+        form.roomNum = roomNum;
+        form.peopleNum = peopleNum;
+        form.beds = beds;
+        form.newPS = newPS;
+        form.hotelReason = hotelReason;
+        form.WT = WT;
+        form.notes = notes;
+        form.date = date;
+        form.save(function(err) {
+            if (err) {
+                next(err);
+            } else {
+                return res.json({message: true});
+            }
+        });
+                
+    } catch (err) {
+        next(err);
+    }
 });
 
 module.exports = hotelRouter;

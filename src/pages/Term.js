@@ -1,30 +1,43 @@
-import React, { Component } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import Nocall from '../Components/Nocall';
 import Quit from '../Components/Quit';
 import Nofirstday from '../Components/Nofirstday';
 import Other from '../Components/Other';
+import { useHistory } from 'react-router-dom';
+import CbmContext from '../context/cbm/cbmContext';
 import '../css/term.css';
 
-export class Term extends Component {
-    constructor () {
-        super();
-        this.state = {
-            termtype: ''
+const Term = () => {
+    const cbmContext = useContext(CbmContext);
+    const history = useHistory();
+    const { loginStatus, isAuthenticated, loading, formSubmit, success, user} = cbmContext;
+    let body = '';
+    const [termtype, settermtype] = useState('');
+
+    useEffect(() => {
+        if (!isAuthenticated && !loading) {
+        loginStatus();
         }
-    }
-    termtype(e) {
-        this.setState({
-            termtype: e.target.value
-        })
+        // eslint-disable-next-line
+    }, [])
+
+    let onSubmit = (e, data) => {
+        e.preventDefault();
+            body = JSON.stringify(data)
+            formSubmit(body, 'term');
+            if (success && !loading) {
+                history.push('/success');
+            } else {
+                history.push('/')
+            }
     }
     
-    render() {
-        const component = this.state.termtype;
+        const component = termtype;
         if (!component) {
             return (
                 <div id="selectTerm">
                     <p>Select Termination Type:</p>
-                    <select id="termtype" onChange={this.termtype.bind(this)}>
+                    <select id="termtype" onChange={e => { settermtype(e.target.value) }}>
                         <option value=''>Select Term Type</option>
                         <option value="quit">Quit</option>
                         <option value="nocall">No Call/No Show</option>
@@ -41,7 +54,7 @@ export class Term extends Component {
                 <React.Fragment>
                 <div id="selectTerm">
                     <p>Select Termination Type:</p>
-                    <select id="termtype" onChange={this.termtype.bind(this)}>
+                    <select id="termtype" onChange={e => { settermtype(e.target.value) }}>
                         <option >Select Term Type</option>
                         <option value="quit">Quit</option>
                         <option value="nocall">No Call/No Show</option>
@@ -51,7 +64,7 @@ export class Term extends Component {
                 </div>
                 
                     <div>
-                    <Quit history={this.props.history} />
+                    <Quit onSubmit={onSubmit} user={user} />
                     </div>
                </React.Fragment>
             )
@@ -61,7 +74,7 @@ export class Term extends Component {
                 <React.Fragment>
                 <div id="selectTerm">
                     <p>Select Termination Type:</p>
-                    <select id="termtype" onChange={this.termtype.bind(this)}>
+                    <select id="termtype" onChange={e => { settermtype(e.target.value) }}>
                         <option >Select Term Type</option>
                         <option value="quit">Quit</option>
                         <option value="nocall">No Call/No Show</option>
@@ -70,7 +83,7 @@ export class Term extends Component {
                     </select>
                 </div>
                 <div>
-                        <Nocall history={this.props.history}/>
+                        <Nocall onSubmit={onSubmit} user={user} />
                     </div>
              </React.Fragment>
             )
@@ -80,7 +93,7 @@ export class Term extends Component {
                 <React.Fragment>
                 <div id="selectTerm">
                     <p>Select Termination Type:</p>
-                    <select id="termtype" onChange={this.termtype.bind(this)}>
+                    <select id="termtype" onChange={e => { settermtype(e.target.value) }}>
                         <option >Select Term Type</option>
                         <option value="quit">Quit</option>
                         <option value="nocall">No Call/No Show</option>
@@ -90,7 +103,7 @@ export class Term extends Component {
                     
                 </div>
                 <div>
-                <Nofirstday history={this.props.history}/>
+                <Nofirstday onSubmit={onSubmit} user={user} />
             </div>
             </React.Fragment>
             )
@@ -100,7 +113,7 @@ export class Term extends Component {
                 <React.Fragment>
                 <div id="selectTerm">
                     <p>Select Termination Type:</p>
-                    <select id="termtype" onChange={this.termtype.bind(this)}>
+                    <select id="termtype" onChange={e => { settermtype(e.target.value) }}>
                         <option >Select Term Type</option>
                         <option value="quit">Quit</option>
                         <option value="nocall">No Call/No Show</option>
@@ -110,12 +123,11 @@ export class Term extends Component {
                     
                 </div>
                 <div>
-                <Other history={this.props.history}/>
+                <Other onSubmit={onSubmit} user={user} />
             </div>
             </React.Fragment>
             )
         }   
     }
-}
 
 export default Term

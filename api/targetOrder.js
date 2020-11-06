@@ -24,17 +24,14 @@ const date = apiFunc.date();
 const uploadsDir = apiFunc.uploadsDir();
 
 targetorderRouter.post('/', async (req, res, next) => {
-    const { employeeName, location, order } = req.body;
-    const dm = req.body.dm;
-    let { notes } = req.body;
-    notes = await translator(notes, {to: 'en', from: 'es'});
-    order.shift();
-    const receiver = await DepartmentModel.findOne({ department: 'Supplies'});
     try {
+        const { employeeName, location, order } = req.body;
+        const dm = req.body.dm;
+        let { notes } = req.body;
+        notes = await translator(notes, {to: 'en', from: 'es'});
+        order.shift();
+        const receiver = await DepartmentModel.findOne({ department: 'Supplies'});
         await fsPromises.mkdir(`${uploadsDir}pdf/targetsupply/${date}`, {recursive: true});
-    } catch (err) {
-        next(err)
-    }
 
         //Filter C code items and sorted numerically
         const sortedOrder = order.filter(item => {
@@ -58,73 +55,70 @@ targetorderRouter.post('/', async (req, res, next) => {
             }
         })
 
-        //Created HTML Item list for PDF
-        let orders = [];
-        sortedOrder.forEach(item => {
-        orders.push('<tr>'+
-        '<td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black;  width: 70%;">' + item["item"] + '</td>' +
-            '<td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black;  width: 30%;">' + item["amount"] + '</td>' +
-        '</tr>')
-    })
+            //Created HTML Item list for PDF
+            let orders = [];
+            sortedOrder.forEach(item => {
+            orders.push('<tr>'+
+            '<td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black;  width: 70%;">' + item["item"] + '</td>' +
+                '<td style="border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: black;  width: 30%;">' + item["amount"] + '</td>' +
+            '</tr>')
+        })
 
-    let pdfFile = `${location}-Monthly supply order`;
-    // Stripping special characters
-    pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-    // Setting response to 'attachment' (download).
+        let pdfFile = `${location}-Monthly supply order`;
+        // Stripping special characters
+        pdfFile = encodeURIComponent(pdfFile) + '.pdf'
 
-    const content = HTML.targetOrder(employeeName, location, notes, orders);
+        const content = HTML.targetOrder(employeeName, location, notes, orders);
 
-    //Create PDF
-    pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/targetsupply/${date}/${pdfFile}`, function(err, res) {
-        if (err) {
-            next(err);
-        }
-     });
-     const message = `<p><span style="font-size: 12pt;">Here is a new supply request from ${location}
-     <p><span style="font-size: 12pt;"></span></p>
-     <p> </p>
-     <p>Target Supply submitted by ${dm.userFirst} ${dm.userLast}</p>`
-   //Sending Mail
-   mailOptions = {
-    from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-    to: receiver.email, // list of receivers
-    //to: 'joseph.schaeppi@carlsonbuilding.com',
-    cc: dm.email,
-    subject: `${location} - Monthly supply order`, // Subject line
-    html: message, // html body
-    attachments: {
-        filename: pdfFile,
-        path: `${uploadsDir}pdf/targetsupply/${date}/${pdfFile}`
-    },
-};
-    try { 
+        //Create PDF
+        pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/targetsupply/${date}/${pdfFile}`, function(err, res) {
+            if (err) {
+                next(err);
+            }
+        });
+        const message = `<p><span style="font-size: 12pt;">Here is a new supply request from ${location}
+        <p><span style="font-size: 12pt;"></span></p>
+        <p> </p>
+        <p>Target Supply submitted by ${dm.userFirst} ${dm.userLast}</p>`
+    //Sending Mail
+        mailOptions = {
+            from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
+            to: receiver.email, // list of receivers
+            //to: 'joseph.schaeppi@carlsonbuilding.com',
+            cc: dm.email,
+            subject: `${location} - Monthly supply order`, // Subject line
+            html: message, // html body
+            attachments: {
+                filename: pdfFile,
+                path: `${uploadsDir}pdf/targetsupply/${date}/${pdfFile}`
+            },
+        };
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
             next(err);
-        } else {
         }
     });
-    
-    } catch(err) {
+        //DB insertions
+        let form = new supplyOrder();
+        form.employeeName = employeeName;
+        form.dm = `${dm.userFirst} ${dm.userLast}`;
+        orders.forEach((item, i) => {
+            form.order.push(item);
+        })
+        form.location = location;
+        form.notes = notes;
+        form.date = date;
+        form.save(function(err) {
+            if (err) {
+            next(err);
+            } else {
+                return res.json({message: true});
+            }
+        });
+                
+    } catch (err) {
         next(err);
     }
-    //DB insertions
-    let form = new supplyOrder();
-    form.employeeName = employeeName;
-    form.dm = `${dm.userFirst} ${dm.userLast}`;
-    orders.forEach((item, i) => {
-        form.order.push(item);
-    })
-    form.location = location;
-    form.notes = notes;
-    form.date = date;
-    form.save(function(err) {
-        if (err) {
-           next(err);
-        } else {
-            return res.json({message: true});
-        }
-    });
 });
 
 module.exports = targetorderRouter;

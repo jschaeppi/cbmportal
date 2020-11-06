@@ -1,30 +1,19 @@
-import React, { useEffect, useContext, useState } from 'react'
-import { useHistory } from 'react-router-dom';
-import CbmContext from '../context/cbm/cbmContext';
+import React, { useState } from 'react'
 
-const Nofirstday = () => {
-
-    const history = useHistory();
-    const cbmContext = useContext(CbmContext);
-    const {loginStatus, isAuthenticated, loading, user} = cbmContext;
+const Nofirstday = ({ onSubmit, user }) => {
     const [toggleRehire, setToggleRehire] = useState(true);
 
     const [data, setData] = useState([{
         rehire: '',
         firstName: '',
         employeeNum: '',
-        dm: '',
+        dm: user,
         firstLast: '',
         secondLast: '',
         norehireReason: '',
         lastWorked: '',
     }]);
-    useEffect(() => {
-        if (!isAuthenticated && !loading) {
-        loginStatus();
-        }
-        // eslint-disable-next-line
-    }, [])
+
     const noRehire = (e) => {
         const { name, value } = e.target;
         const list = [...data];
@@ -40,36 +29,15 @@ const Nofirstday = () => {
         setData(list);
     }
 
-    const onSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-            
-            fetch('https://portal.cbmportal.com:5000/api/term', {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                rehire: data[0].rehire,
-                firstName: data[0].firstName,
-                employeeNum: data[0].employeeNum,
-                dm: user,
-                firstLast: data[0].firstLast,
-                secondLast: data[0].secondLast,
-                norehireReason: data[0].norehireReason,
-                lastWorked: data[0].lastWorked,
-            }),
-            })
-            .then(res => res.json())
-            .then( data => {
-                if (data.message) history.push('/success');
-            })
-            .catch(err => console.log(err))
+        onSubmit(e, data);
 }
 
         return (
             <div className="container">
                 <h1 id="termHeading"><span>No Show/First Day</span></h1><br />
-                <form onSubmit={e => onSubmit(e)} id="termForm">
+                <form onSubmit={e => handleSubmit(e)} id="termForm">
                 <div className="wrapper1">
                 <div>
                     <label forhtml="employeenum">Employee #:</label><br />

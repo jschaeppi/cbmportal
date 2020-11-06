@@ -16,6 +16,7 @@ const date = apiFunc.date();
 const uploadsDir = apiFunc.uploadsDir();
 
 wtRouter.post('/', async (req, res, next) => {
+    try {
     const { employeeNum, employeeName, dm, location, city, state, workType, Billable, currentLocation, orderSubmitted, orderNumber } = req.body;
     let { notes, equipment, orderDate, startDate, endDate } = req.body;
     orderDate = moment(orderDate).format('L');
@@ -43,7 +44,6 @@ wtRouter.post('/', async (req, res, next) => {
    '<p>'+ dm.fullName + '</p>';
 
    //Sending Mail
-   try {
    mailOptions = {
     from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
     to: receiver.email, // list of receivers
@@ -61,16 +61,10 @@ wtRouter.post('/', async (req, res, next) => {
         apiFunc.transporter.sendMail(mailOptions,(err, info) => {
         if (err) {
             next(err);
-        } else {
         }
     });
-    
-    } catch(err) {
-        next(err);
-    }
 
     //DB insertions
-    try {
         let form = new WorkTicket();
         form.employeeName = employeeName;
         form.employeeNum = employeeNum;
