@@ -47,7 +47,7 @@ perdiemRouter.post('/', async (req, res, next) => {
             '<td style="width: 70px; border: 2px solid black; padding:3px;text-align: center;font-size:90%; background: darkgray;" colspan="0">&nbsp;</td>' +
             '</tr><!-- ENDS ROW1-->');
     })
-        let content = HTML.perDiem(city, employeeName, employeeNum, location, state, dm.userFirst, dm.userLast, comments, firstNight, lastNight, arrivalDate, departureDate, perDiemInfo);
+        let content = HTML.perDiem(city, employeeName, employeeNum, location, state, dm.userFirst, dm.userLast, comments, firstNight, lastNight, arrivalDate, departureDate, perDiemInfo, date);
 
         pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/perDiem/${pdfFile}`, function(err, res) {
             if (err) {

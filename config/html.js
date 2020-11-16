@@ -1,5 +1,6 @@
+const moment = require('moment');
 module.exports = {
-    backPayHtml: function(employeeName, employeeNum, backpayInfo, comments, dmUserFirst, dmUserLast, date, baseSite) {
+    backPayHtml: function(employeeName, employeeNum, backpayInfo, comments, dmUserFirst, dmUserLast, date=moment().format('MM/DD/YYYY'), baseSite) {
       return `<html>
     <head>
     <style>
@@ -135,7 +136,7 @@ module.exports = {
     </html>`;
     },
 
-    bonusHtml: function(employeeName, employeeNum, bonusInfo, comments, date, baseSite) {
+    bonusHtml: function(employeeName, employeeNum, bonusInfo, comments, date=moment().format('MM/DD/YYYY'), baseSite) {
       return `<head>
       <style>
       .EEsignature img{
@@ -448,7 +449,7 @@ module.exports = {
       </table>`;
     },
 
-    mileageHtml: function(employeeName, employeeNum, dmUserFirst, dmUserLast, mileageInfo, comments) {
+    mileageHtml: function(employeeName, employeeNum, dmUserFirst, dmUserLast, mileageInfo, comments, date=moment().format('MM/DD/YYYY')) {
       return `
       <head>
       <style>
@@ -751,7 +752,7 @@ ${otherWhyQuit}
 </table>`;
     },
 
-    newhire: function(firstName, middleName='', dm_userFirst, dm_userLast, firstLast, location, hireType, address, email="N/A", secondLast='', phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number='', i91="No Link", i92="No Link", idbadge="No Link") {
+    newhire: function(firstName, middleName='', dm_userFirst, dm_userLast, firstLast, location, hireType, address, email="N/A", secondLast='', phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date=moment().format('MM/DD/YYYY'), number='', newHireNotes='', i91="No Link", i92="No Link", idbadge="No Link") {
       return `<html>
       <head>
       <style>
@@ -927,6 +928,11 @@ ${otherWhyQuit}
   <td style="width: 48%; border: 1px solid black; padding: 3px;">${language}</td>
   </tr>
   <tr>
+  <td style="width: 48%; border: 1px solid black; padding: 3px;">Comments/Notes</td>
+  <td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
+  <td style="width: 48%; border: 1px solid black; padding: 3px;">${newHireNotes}</td>
+  </tr>
+  <tr>
   <td style="width: 48%; border: 1px solid black; padding: 3px;">I-9 First Page</td>
   <td style="width: 2%; border: 1px solid black; background-color: #25354c;">&nbsp;</td>
   <td style="width: 48%; border: 1px solid black; padding: 3px;">${i91}</td>
@@ -962,7 +968,7 @@ ${otherWhyQuit}
       </html>`;
     },
 
-    perDiem: function(city, employeeName, employeeNum, location, state, dmUserFirst, dmUserLast, comments, firstNight, lastNight, arrivalDate, departureDate, perDiemInfo) {
+    perDiem: function(city, employeeName, employeeNum, location, state, dmUserFirst, dmUserLast, comments, firstNight, lastNight, arrivalDate, departureDate, perDiemInfo, date=moment().format('MM/DD/YYYY')) {
       return `
       <head>
       <style>
@@ -1199,7 +1205,7 @@ ${otherWhyQuit}
     </html>`;
     },
 
-    uniform: function(employeeNum, firstName, lastName, address, apt, city, state, zip, cost, quantity, size, date) {
+    uniform: function(employeeNum, firstName, lastName, address, apt, city, state, zip, cost, quantity, size, date=moment().format('MM/DD/YYYY')) {
       return `<html>
       <head>
       <style>
@@ -1573,7 +1579,7 @@ ${otherWhyQuit}
   </table>`;
     },
 
-    pto: function(employeeName, employeeNum, dmUserFirst, dmUserLast, departments, hours, approval, comments, absencefrom, absenceto, date) {
+    pto: function(employeeName, employeeNum, dmUserFirst, dmUserLast, departments, hours, approval, comments, absencefrom, absenceto, date=moment().format('MM/DD/YYYY')) {
 
       return `<html>
       <head>

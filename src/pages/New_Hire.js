@@ -41,6 +41,7 @@ const NewHire = () =>  {
         positions: '',
         language: '',
         number: '',
+        newHireNotes: '',
         dm_userFirst: user.userFirst,
         dm_userLast: user.userLast,
         dm_email: user.email,
@@ -77,7 +78,7 @@ const NewHire = () =>  {
     const handleChange = (e) => {
         let {name, value} = e.target;
         const list = [...data];
-        if (value === 'floortech') {
+        if (value === 'FloorTech') {
             let number = prompt('Enter the number of the floor tech', '');
             value = value + ' ' + number;
         }
@@ -222,11 +223,14 @@ const NewHire = () =>  {
                                 <label htmlFor="positions">Positions:</label><br />
                                 <select id="positions" name="positions"  title="Please select an option" onChange={e => handleChange(e)} required>
                                     <option>Select Position</option>
-                                    <option value="lead">Site Lead</option>
-                                    <option value="floortech">Floor Tech</option>
-                                    <option value="floater">Floater</option>
-                                    <option value="substitute">Substitute</option>
-                                    <option value="ps">Project Specialist</option>
+                                    <option value="PS">Disinfecting</option>
+                                    <option value="Floater">Floater</option>
+                                    <option value="FloorTech">Floor Tech</option>
+                                    <option value="Disinfecting">Disinfecting</option>
+                                    <option value="Porter">Porter</option>
+                                    <option value="PS">Project Specialist</option>
+                                    <option value="Site Lead">Site Lead</option>
+                                    <option value="Substitute">Substitute</option>
                                 </select>
                             </div>
                         </div>
@@ -255,6 +259,13 @@ const NewHire = () =>  {
                                 <label htmlFor="spanish" >Spanish</label> 
                                 &nbsp;<input type="radio" className="radiohire" name="language" id="spanish" value="Spanish"  title="Please select a language" required onChange={e => handleChange(e)}/>
                             </div>
+                        </div>
+                    </div>
+                    <br /><br />
+                    <div className="wrapper1">
+                        <div id="notesDiv">
+                        <label htmlFor="i91">Comments/Notes</label>
+                        <textarea id="newHireNotes" name="newHireNotes" onChange={e => handleChange(e)}></textarea>
                         </div>
                     </div>
                     <br /><br />

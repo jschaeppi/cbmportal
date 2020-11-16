@@ -98,22 +98,26 @@ router.post('/loginSub', async (req, res, next) => {
     try {
         const { username, password } = req.body.data;
         let user = await User.findOne({ username });
-        if (await bcrypt.compare(password, user.password)) {
-        const payload = {
-            user: {
-                id: user.id,
+        let passCompare = await bcrypt.compare(password, user.password);
+        if (passCompare === true) {
+            const payload = {
+                user: {
+                    id: user.id,
+                }
             }
-        }
-            jwt.sign(payload, process.env['jwtSecret'], { expiresIn: '3h'}, (err, token) => {
-                if (err) throw err;
-                res.cookie('auth-token', token, {domain: '*.cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: 'none' }).json({token, user, msg: true});
-                //res.cookie('auth-token', token, { domain: 'cbmportal.com' maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });
-                res.json({token, user, msg: true});
+                jwt.sign(payload, process.env['jwtSecret'], { expiresIn: '3h'}, (err, token) => {
+                    if (err) throw err;
+                    res.cookie('auth-token', token, {domain: '*.cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: 'none' }).json({token, user, msg: true});
+                    //res.cookie('auth-token', token, { domain: 'cbmportal.com' maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true });
+                    res.json({token, user, msg: true});
 
-            })
-        }
-    }
+                })
+            } else {
+                res.status(401).json({ msg: 'Bad Credentials'});
+            }
+        } 
     catch (err) {
+        console.log(err);
             next(err)
     }
 })

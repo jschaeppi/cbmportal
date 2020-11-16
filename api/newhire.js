@@ -21,7 +21,7 @@ newhireRouter.post('/', formidable(), async (req, res, next) => {
     try {
         const { dm_userFirst, dm_userLast, dm_email, location, hireType, email, address, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, number } = req.fields;
         let { file1, file2, file3 } = req.files;
-        let {firstDay, dob, firstName, firstLast, secondLast, middleName } = req.fields;
+        let {firstDay, dob, firstName, firstLast, secondLast, middleName, newHireNotes } = req.fields;
         firstDay = moment(firstDay).format('MMM DD YYYY');
         dob = moment(dob).format('MMM DD YYYY');
         firstName = firstName.trim();
@@ -38,8 +38,10 @@ newhireRouter.post('/', formidable(), async (req, res, next) => {
         let pdfFile = `Employee-${firstName}-${firstLast}-${secondLast}`;
         // Stripping special characters
         pdfFile = pdfFile + '.pdf'
-        content = HTML.newhire(firstName, middleName, dm_userFirst, dm_userLast, firstLast, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number)
-
+        content = HTML.newhire(firstName, middleName, dm_userFirst, dm_userLast, firstLast, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number, newHireNotes, i91=`${baseSite}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`, i92=`${baseSite}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`, idbadge=`${baseSite}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join(''))
+        if (!content) {
+            res.status(500).json({ msg: 'Your form didn\'t process successfully.  Please reach out to IT.'});
+        }
         //Create PDF
         pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/newhires/${pdfFile}`, function(err, res) {
             if (err) {

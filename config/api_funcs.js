@@ -10,7 +10,7 @@ const rejectUnauthorized = process.env.rejectUnauthorized;
 let DepartmentModel = require('../src/Model/departmentModel');
 module.exports = {
     date: function() {
-        let date_ob = new Date().toDateString();
+        //let date_ob = new Date().toDateString();
         // current date
         // adjust 0 before single digit date
         /*let day = ("0" + date_ob.getDate()).slice(-2);
@@ -18,8 +18,9 @@ module.exports = {
         let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
         // current year
         let year = date_ob.getFullYear();*/
-        date_ob = date_ob.substr(4);
-        return date = `${date_ob}`; 
+        //date_ob = date_ob.substr(4);
+        //return date = `${date_ob}`;
+        return moment().format('MMM DD YYYY'); 
     },
     time: function() {
       return moment().format('HH:mm');

@@ -38,7 +38,10 @@ mileageRouter.post('/', async (req, res, next) => {
             '<td height="25px" style="border: 1px solid black; border-bottom: 0; padding: 3px;">' + item.destination + '</td>' +
             '</tr>');
     })
-        let content = HTML.mileageHtml(employeeName, employeeNum, dm.userFirst, dm.userLast, mileageInfo, comments)
+        let content = HTML.mileageHtml(employeeName, employeeNum, dm.userFirst, dm.userLast, mileageInfo, comments, date)
+        if (!content) {
+            res.status(500).json({ msg: 'An error happened while processing your request.'});
+        }
     //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${apiFunc.uploadsDir()}pdf/mileage/${pdfFile}`, function(err, res) {
         if (err) {

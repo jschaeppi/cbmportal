@@ -15,6 +15,8 @@ hotelRouter.use(bodyParser.json());
 hotelRouter.use(bodyParser.urlencoded({extended: false}))
 
 const date = apiFunc.date();
+const time = apiFunc.time();
+console.log(time);
 const uploadsDir = apiFunc.uploadsDir();
 
 hotelRouter.get('/ps/:district', async (req, res) => {
@@ -42,7 +44,7 @@ hotelRouter.post('/', async (req, res, next) => {
         let pdfFile = `Hotel-Request-${dm.userFirst} ${dm.userLast}-${time}`;
         // Stripping special characters
         pdfFile = encodeURIComponent(pdfFile) + '.pdf'
-
+        console.log(pdfFile)
         let content = HTML.hotelHtml(date, dm.userFirst, dm.userLast, store, moment(checkIn).format('L'), moment(checkOut).format('L'), listPs1, listPs2, newPS, WT, hotelReason, beds, roomNum, notes)
 
     //Create PDF
@@ -63,7 +65,7 @@ hotelRouter.post('/', async (req, res, next) => {
         html: `${receiver.department} ${message}`, // html body
         attachments: [
             {
-            filename: `Hotel-Request-${dm.userFirst} ${dm.userLast}`,
+            filename: `Hotel-Request-${dm.userFirst} ${dm.userLast}-${time}.pdf`,
             path: `${uploadsDir}pdf/hotel/${date}/${pdfFile}`
             },
         ]
