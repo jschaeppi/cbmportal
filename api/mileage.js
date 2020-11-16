@@ -40,7 +40,7 @@ mileageRouter.post('/', async (req, res, next) => {
     })
         let content = HTML.mileageHtml(employeeName, employeeNum, dm.userFirst, dm.userLast, mileageInfo, comments, date)
         if (!content) {
-            res.status(500).json({ msg: 'An error happened while processing your request.'});
+            res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
         }
     //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${apiFunc.uploadsDir()}pdf/mileage/${pdfFile}`, function(err, res) {

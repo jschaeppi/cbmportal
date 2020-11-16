@@ -70,6 +70,10 @@ targetorderRouter.post('/', async (req, res, next) => {
 
         const content = HTML.targetOrder(employeeName, location, notes, orders);
 
+        if (!content) {
+            res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+        }
+        
         //Create PDF
         pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/targetsupply/${date}/${pdfFile}`, function(err, res) {
             if (err) {

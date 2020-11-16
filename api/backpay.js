@@ -70,6 +70,9 @@ backpayRouter.post('/', async (req, res, next) => {
         pdfFile = encodeURIComponent(pdfFile) + '.pdf'
         let content = HTML.backPayHtml(employeeName, employeeNum, backpayInfo, comments, dm.userFirst, dm.userLast, date, baseSite);
 
+        if (!content) {
+            res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+        }
         message = 'Please process this backpay request.';
         //Create PDF
         pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/backpay/${pdfFile}`, function(err, res) {

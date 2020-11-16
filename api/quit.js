@@ -282,6 +282,10 @@ quitRouter.post('/', async (req, res) => {
     </tbody>
     </table>`;
 
+    if (!content) {
+        res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+    }
+    
     //Create PDF
     pdf.create(content, options).toFile(`${apiFunc.uploadsDir()}/${pdfFile}`, function(err, res) {
         if (err) {

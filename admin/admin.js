@@ -21,7 +21,7 @@ adminRouter.get('/', cors(), (req, res) => {
         res.render('main');
     }
 });
-adminRouter.get('/dashboard/viewFormDetails/:form/:id', checkAuth, async (req, res) => {
+adminRouter.get('/dashboard/viewFormDetails/:form/:id', checkAuth, async (req, res, next) => {
     const { form, id } = req.params;
     let result = {};
     try {
@@ -32,7 +32,7 @@ adminRouter.get('/dashboard/viewFormDetails/:form/:id', checkAuth, async (req, r
         console.log(err);
     }
 })
- adminRouter.get('/dashboard', checkAuth, cors(), async (req, res) => {
+ adminRouter.get('/dashboard', checkAuth, cors(), async (req, res, next) => {
         if (req.user.permission > 1) {
             if (req.user.permission >= 3 && (req.query.form)) { 
                 const { form } = req.query;
@@ -47,22 +47,19 @@ adminRouter.get('/dashboard/viewFormDetails/:form/:id', checkAuth, async (req, r
                         res.render(`dashViews/${form}Dash`, {title: upperTitle(form, 'submissions'), result, user: req.user})
                     }
                 } catch (err) {
-                    if (err) {
                         console.log(err);
-                    }
+
                 } 
             } else if (!req.params.form) {
                 res.render('dashboard', {title: 'CBM Admin Dashboard', user: req.user});
             } 
-        } else if (!req.cookies['auth-token']) {
-                res.render('main', {msg: 'Please Login'});
         } else {
                 res.render('main', {msg: 'Invalid Credentials'}); 
         }
 
  });
 
-adminRouter.post('/dashboard', checkAuth, async (req, res) => {
+adminRouter.post('/dashboard', checkAuth, async (req, res, next) => {
     let { form, searchString } = req.query;
         if (searchString) {
         let submission = await formSearch(form, searchString);
@@ -78,7 +75,7 @@ adminRouter.post('/dashboard', checkAuth, async (req, res) => {
     }
             
 })
-adminRouter.get('/dashboard/mailItems/:form/:id', checkAuth, async (req, res) => {
+adminRouter.get('/dashboard/mailItems/:form/:id', checkAuth, async (req, res, next) => {
     const { form, id } = req.params;
     
     let result = {};

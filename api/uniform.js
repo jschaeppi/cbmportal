@@ -36,6 +36,10 @@ uniformRouter.post('/', async (req, res, next) => {
 
         let content = HTML.uniform(employeeNum, firstName, lastName, address, apt, city, state, zip, cost, quantity, size, date, dm);
 
+        if (!content) {
+            res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+        }
+        
     //Create PDF
         pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/uniform/${pdfFile}`, function(err, res) {
         if (err) {

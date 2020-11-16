@@ -247,6 +247,10 @@ timeadjustRouter.post('/', async (req, res, next) => {
     </body>
     </html>`;
 
+        if (!content) {
+            res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+        }
+        
         message = 'Please process this Time Adjustment request.';
     //Create PDF
         pdf.create(content, options).toFile(`../../uploads/pdf/timeadjustment/${pdfFile}`, function(err, res) {

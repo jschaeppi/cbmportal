@@ -39,6 +39,10 @@ ptoRouter.post('/', async (req, res, next) => {
 
         content = HTML.pto(employeeName, employeeNum, dm.userFirst, dm.userLast, departments, hours, approval, comments, absencefrom, absenceto, date);
 
+        if (!content) {
+            res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+        }
+        
         //Create PDF
         pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/pto/${pdfFile}`, function(err, res) {
             if (err) {

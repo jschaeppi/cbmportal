@@ -47,6 +47,10 @@ hotelRouter.post('/', async (req, res, next) => {
         console.log(pdfFile)
         let content = HTML.hotelHtml(date, dm.userFirst, dm.userLast, store, moment(checkIn).format('L'), moment(checkOut).format('L'), listPs1, listPs2, newPS, WT, hotelReason, beds, roomNum, notes)
 
+        if (!content) {
+            res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+        }
+        
     //Create PDF
         pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/hotel/${date}/${pdfFile}`, function(err, res) {
         if (err) {

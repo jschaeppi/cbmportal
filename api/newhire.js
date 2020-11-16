@@ -39,9 +39,11 @@ newhireRouter.post('/', formidable(), async (req, res, next) => {
         // Stripping special characters
         pdfFile = pdfFile + '.pdf'
         content = HTML.newhire(firstName, middleName, dm_userFirst, dm_userLast, firstLast, location, hireType, address, email, secondLast, phone, phone2, sex, numDays, wage, positions, hours, language, ssn, firstDay, dob, date, number, newHireNotes, i91=`${baseSite}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`, i92=`${baseSite}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`, idbadge=`${baseSite}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join(''))
+        
         if (!content) {
             res.status(500).json({ msg: 'Your form didn\'t process successfully.  Please reach out to IT.'});
         }
+        
         //Create PDF
         pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/newhires/${pdfFile}`, function(err, res) {
             if (err) {
@@ -109,6 +111,7 @@ newhireRouter.post('/', formidable(), async (req, res, next) => {
         form.hours = hours;
         form.language = language;
         form.ssn = ssn;
+        form.newHireNotes = newHireNotes;
         form.i91 = `${baseSite}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`.split(' ').join('');
         form.i92 =  `${baseSite}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`.split(' ').join('');
         form.idbadge = `${baseSite}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join('');

@@ -34,6 +34,10 @@ termRouter.post('/', async (req, res) => {
 
     content = HTML.term(firstName, firstLast, employeeNum, secondLast, dm.userFirst, dm.userLast, date, rehire, norehireReason, quitReason, lastWorked, twoWeeks, warnings)
 
+    if (!content) {
+        res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+    }
+    
     //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/term/${pdfFile}`, function(err, res) {
         if (err) {

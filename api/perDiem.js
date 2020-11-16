@@ -49,6 +49,10 @@ perdiemRouter.post('/', async (req, res, next) => {
     })
         let content = HTML.perDiem(city, employeeName, employeeNum, location, state, dm.userFirst, dm.userLast, comments, firstNight, lastNight, arrivalDate, departureDate, perDiemInfo, date);
 
+        if (!content) {
+            res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+        }
+        
         pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/perDiem/${pdfFile}`, function(err, res) {
             if (err) {
                 next(err);

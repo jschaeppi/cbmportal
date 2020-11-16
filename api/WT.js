@@ -30,7 +30,12 @@ wtRouter.post('/', async (req, res, next) => {
     pdfFile = encodeURIComponent(pdfFile) + '.pdf'
 
     let content = HTML.wt(employeeNum, employeeName, dm.userFirst, dm.userLast, location, city, state, workType, Billable, currentLocation, orderSubmitted, orderNumber, notes, equipment, orderDate, startDate, endDate);
-  //Create PDF
+  
+    if (!content) {
+        res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+    }
+    
+    //Create PDF
     pdf.create(content, apiFunc.pdfOptions()).toFile(`${apiFunc.uploadsDir()}pdf/wt/${pdfFile}`, function(err, res) {
       if (err) {
         next(err);

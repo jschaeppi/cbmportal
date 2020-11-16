@@ -40,6 +40,9 @@ const newhireForm = new Schema({
     ssn: {
         type: String
     },
+    newHireNotes: {
+        type: String
+    },
     dob: {
         type: String
     },

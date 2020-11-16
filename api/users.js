@@ -68,30 +68,27 @@ router.post('/loginSubAdmin', async (req, res, next) => {
         const password = req.body.password;
 
     let user = await User.findOne({ username });
-    if (!user) {
-        res.status(400).redirect('https://admin.cbmportal.com:5000/admin/?login=failure')
-    }
         const isMatch = await bcrypt.compare(password, user.password);
-        const payload = {
-            user: {
-                id: user.id,
-            }
-        }
         if (!isMatch) {
-            res.status(400).redirect('https://admin.cbmportal.com:5000/admin/?login=failure');
-        } 
-        jwt.sign(payload, process.env['jwtSecret'], { expiresIn: 19800}, (err, token) => {
-           if (err) throw err;
-                if (token) {
-                    res.cookie('auth-token', token, {domain: 'cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: true }).redirect('https://admin.cbmportal.com:5000/admin/dashboard');
-                }else {
-                    res.redirect('https://admin.cbmportal.com:5000/admin/?login=failure');
+            res.status(401).redirect('https://admin.cbmportal.com:5000/admin/?login=failure');
+        } else {
+            const payload = {
+                user: {
+                    id: user.id,
                 }
-        })
+            }
+            jwt.sign(payload, process.env['jwtSecret'], { expiresIn: 19800}, (err, token) => {
+            if (err) throw err;
+                    if (token) {
+                        res.cookie('auth-token', token, {domain: 'cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: true }).redirect('https://admin.cbmportal.com:5000/admin/dashboard');
+                    }else {
+                        res.redirect('https://admin.cbmportal.com:5000/admin/?login=failure');
+                    }
+            })
+        }
     }
     catch (err) {
-            console.log(err);
-            res.status(500).json({msg: 'Server Error'});
+            next(err);
     }
 })
 router.post('/loginSub', async (req, res, next) => { 

@@ -214,6 +214,10 @@ ncnsRouter.post('/', async (req, res) => {
 </tbody>
 </table>`;
 
+    if (!content) {
+        res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+    }
+    
     //Create PDF
     pdf.create(content, apiFunc.options()).toFile(`${uploadsDir}pdf/term/${pdfFile}`, function(err, res) {
         if (err) {

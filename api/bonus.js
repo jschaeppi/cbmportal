@@ -154,6 +154,10 @@ bonusRouter.post('/', async (req, res, next) => {
 
         let content = HTML.bonusHtml(employeeName, employeeNum, bonusInfo, comments, date, baseSite);
 
+        if (!content) {
+            res.status(500).json({ msg: 'Your form wasn\'t submitted successfully. Please reach out to IT.'})
+        }
+        
     //Create PDF
         pdf.create(content, apiFunc.pdfOptions()).toFile(`${uploadsDir}pdf/bonus/${pdfFile}`, function(err, res) {
         if (err) {
