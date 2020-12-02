@@ -16,7 +16,6 @@ hotelRouter.use(bodyParser.urlencoded({extended: false}))
 
 const date = apiFunc.date();
 const time = apiFunc.time();
-console.log(time);
 const uploadsDir = apiFunc.uploadsDir();
 
 hotelRouter.get('/ps/:district', async (req, res) => {
@@ -41,7 +40,7 @@ hotelRouter.post('/', async (req, res, next) => {
         notes = await translator(notes, {to: 'en', from: 'es'});
             await fsPromises.mkdir(`${uploadsDir}pdf/hotel/${date}`, {recursive: true});
         const receiver = await DepartmentModel.findOne({ department: 'Accounting'});
-        let pdfFile = `Hotel-Request-${dm.userFirst} ${dm.userLast}-${time}`;
+        let pdfFile = `Hotel-Request-${dm.userFirst} ${dm.userLast}-${date}`;
         // Stripping special characters
         pdfFile = encodeURIComponent(pdfFile) + '.pdf'
         console.log(pdfFile)
@@ -65,11 +64,11 @@ hotelRouter.post('/', async (req, res, next) => {
         to: receiver.email, // list of receivers
         //to: 'joseph.schaeppi@carlsonbuilding.com',
         cc: dm.email,
-        subject: pdfFile, // Subject line
+        subject: `Hotel-Request-${dm.userFirst} ${dm.userLast}-${date}`, // Subject line
         html: `${receiver.department} ${message}`, // html body
         attachments: [
             {
-            filename: `Hotel-Request-${dm.userFirst} ${dm.userLast}-${time}.pdf`,
+            filename: `Hotel-Request-${dm.userFirst} ${dm.userLast}-${date}.pdf`,
             path: `${uploadsDir}pdf/hotel/${date}/${pdfFile}`
             },
         ]

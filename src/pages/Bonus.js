@@ -109,23 +109,6 @@ function Bonus() {
         } else {
             history.push('/')
         }
-    // On submit of the form, send a POST request with the data to the server.
-        /*fetch('https://portal.cbmportal.com:5000/api/bonus', { 
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify(rows),
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.message) {
-                history.push('/success');
-                }
-            })
-            .catch((err) => {
-            console.log(err);
-        })*/ 
     }
 }
 
@@ -158,7 +141,7 @@ function Bonus() {
                                             <div className="wrapper1" id="BP">
                                                 <div>
                                                     <label htmlFor={dateName}>{dateName}</label><br />
-                                                    <input key={dateName} pattern="\d{2}-\d{2}-\d{4}}" type="date" name={dateName} required title="Please enter the required information" onChange={e => handleChange(e, incIndex)} ></input>
+                                                    <input key={dateName} pattern="\d{2}-\d{2}-\d{4}}" type="date" id="date" name={dateName} required title="Please enter the required information" onChange={e => handleChange(e, incIndex)} ></input>
                                                 </div>
                                                 <div>
                                                     <label htmlFor={locationName}>{locationName}</label><br />
@@ -171,7 +154,7 @@ function Bonus() {
                                                 </div>
                                                  <div>
                                                     <label htmlFor={bonusName}>{bonusName}</label><br />
-                                                    <input key={bonusName} type="number" step="any" name={bonusName} required title="Please enter the required information" onChange={e => handleChange(e, incIndex)}></input>
+                                                    <input key={bonusName} type="number" step="any" id="bonusInput" name={bonusName} required title="Please enter the required information" onChange={e => handleChange(e, incIndex)}></input>
                                                 </div>
                                             </div>
                                             {formData.length !== 1 && <button onClick={e => handleRemoveRow(e,index)} id="bonusRemoveButton">Remove</button>}

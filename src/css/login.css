@@ -24,16 +24,15 @@ form {
 }
 
 #loginFormBtn {
-    margin: -1rem 16%;
+    margin: -1rem 18%;
     width: 60%;
     border-radius: 10px;
 }
 
 #loginError {
     margin-top: 2%;
-    margin-left: 33%;
+    margin-left: 37%;
     font-weight: 700;
-
 }
 @media screen and (min-width: 769px) and (max-width: 1024px) {
     #loginForm {
@@ -132,5 +131,11 @@ form {
         margin: 1% 5%;
         border-radius: 10px;
         width: 90%;
+    }
+
+    #loginError {
+        margin-top: 2%;
+        margin-left: 15%;
+        font-weight: 700;
     }
 }

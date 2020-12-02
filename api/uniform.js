@@ -26,8 +26,8 @@ uniformRouter.post('/', async (req, res, next) => {
         let base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
         let base64Image = new Buffer.from(base64Data, 'base64');
 
-        await fsPromises.mkdir(`${uploadsDir}signatures/${employeeNum}`.split(' ').join(''), { recursive: true });
-        await fsPromises.writeFile(`${uploadsDir}signatures/${employeeNum}/uniformSig${date}.png`, base64Image);
+        await fsPromises.mkdir(`${uploadsDir}signatures/uniformSig/${employeeNum}`.split(' ').join(''), { recursive: true });
+        await fsPromises.writeFile(`${uploadsDir}signatures/uniformSig/${employeeNum}/uniformSig${date}.png`, base64Image);
 
         let pdfFile = `Uniform-Order-${employeeNum}`;
 

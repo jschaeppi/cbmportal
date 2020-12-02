@@ -35,7 +35,6 @@ portalUserRouter.get('/editPortalUser/:puID', checkAuth, cors(), async (req, res
 
  portalUserRouter.post('/editPortalUser/', checkAuth, cors(), async (req, res) => {
     const { fullName, permission, email, district, id, username } = req.body;
-    console.log(username)
     const saltRounds = 12;
     let { password } = req.body; 
     const userSplit = fullName.split(' ');

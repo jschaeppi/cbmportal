@@ -11,16 +11,14 @@
     margin: 0 0 0 28vw;
 }
 
-#specialNotes {
-    margin-left: 18%;
+#specialNotes, #equipmentMoved {
+    margin-left: 10%;
+    grid-column-start: 1;
+    grid-column-end: 3;
 }
 
 #specialNotes > label{
     margin-left: 2rem;
-}
-
-#equipmentMoved {
-    margin-left: 18%;
 }
 
 #equipmentMoved > label{

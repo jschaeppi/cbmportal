@@ -82,6 +82,7 @@ module.exports = {
     <td style="width: 150px; border-bottom: 0px solid black; background-color: #f9fafc; font-size:24px; font-weight:bold" colspan="5">Missed Pay (to be added through the employee's next generated check):</td>
     </tr>
     <tr>
+    <th style="width: 150px; height: 20px;  border: 1px solid black; padding: 1px;">Date:</th>
     <th style="width: 150px; height: 20px;  border: 1px solid black; padding: 1px;">In:</th>
     <th style="width: 150px; height: 20px;  border: 1px solid black; padding: 1px;">Left for Lunch: </th>
     <th style="width: 150px; height: 20px;  border: 1px solid black; padding: 1px;">Returned from lunch: </th>

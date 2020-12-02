@@ -22,12 +22,32 @@
 #newPS {
     margin-top: 0;
 }
+
 #rooms select, input[type="text"] {
     width: 80%;
 }
 
 #hotelStores select {
     width: 80%;
+}
+
+#psToggleDiv {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+#psList {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+#PS {
+    width: 46%;
+    margin: 0 1.3rem;
+}
+
+#psLabel {
+    margin: 0 16%;
 }
 
 #hotelInfo select, input[type="number"], input[type="text"] {
@@ -57,6 +77,7 @@
 #hotelNotes {
     grid-column-start: 1;
     grid-column-end: 3;
+    width: 100%;
 }
 
 #hotelNotes > label {
@@ -85,6 +106,15 @@
         margin-left: 0
     }
 
+    #PS {
+        width: 40%;
+        margin: 0 .5rem;
+    }
+    
+    #psLabel {
+        margin: 0 11%;
+    }
+    
 }
 
 @media screen and (max-width: 550px) {
@@ -96,6 +126,15 @@
         margin-bottom: 1rem;
     } 
 
+    #PS {
+        width: 40%;
+        margin: 0 1.3rem;
+    }
+    
+    #psLabel {
+        margin: 0 6%;
+    }
+    
     .wrapper1 textarea {
         width: 100%;
     }

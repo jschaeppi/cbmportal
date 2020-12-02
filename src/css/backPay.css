@@ -10,6 +10,9 @@ button {
     border-radius: 1px;
 }
 
+#heading {
+    margin: 0 40%;
+}
 #employeeInfo input[type="text"]{
     width: 80%;
 }
@@ -21,15 +24,11 @@ button {
     border:1px solid black;
 }
 
-#backPays > input[type="datetime-local"] {
+#backPays > input[type="date"], input[type="time"] {
     width: 95%;
 }
-#backPays > input[type="date"] {
-    width: 95%;
-}
-#backPays > input[type="input"] {
-    width: 95%;
-}
+#backPays > 
+
 #backPays > button {
     margin-top: 2%;
     margin-left: 4%;
@@ -68,10 +67,16 @@ button {
     margin-top: 2%;
 }
 
+#bpSub {
+    margin: 0 31%;
+}
+
 @media screen and (min-width: 769px) and (max-width: 1024px) {
     
     
-
+    #heading {
+        margin: 0 30%;
+    }
     #employeeInfo {
         margin-top: 1rem;
     }
@@ -92,17 +97,26 @@ button {
         grid-row-end: 3;
         padding-right: 0;
         margin-top: 2%;
+    }
+
+    #bpSub {
+        margin: 0 30.8%;
     }
 }
 
 @media screen and (min-width: 551px) and (max-width: 768px) {
     
     
-
+    #backPays > input[type="date"] {
+        margin: 0;
+    }
     #employeeInfo {
         margin-top: 1rem;
     }
 
+    #heading {
+        margin-top: 1rem;
+    }
     #missedReasonBox {
         grid-template-columns: 1fr;
         grid-column-start: 1;
@@ -120,10 +134,20 @@ button {
         padding-right: 0;
         margin-top: 2%;
     }
+
+    #bpSub {
+        margin: 0 28%;
+    }
 }
 
 @media screen and (max-width: 550px) {
     
+    #heading {
+        margin: 0 30%;
+    }
+    #backPays {
+        margin: 2.5%;
+    }
     #employeeInfo {
         margin-top: 1rem;
     }
@@ -135,5 +159,9 @@ button {
         grid-row-start: 1;
         grid-row-end: 1;
         padding-left: 0;
+    }
+
+    #bpSub {
+        margin: 0 34%;
     }
 }

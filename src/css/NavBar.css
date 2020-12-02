@@ -6,7 +6,6 @@ nav {
     box-sizing: border-box;
     grid-template-areas: 'logo links login';
     grid-template-columns: 10% 80% 10%;
-    grid-column-gap: 10px;
     
 }
 
@@ -69,8 +68,7 @@ nav {
 
 #login {
     justify-content: center;
-    margin-top: 2px;
-    
+    margin-top: 5px;
     font-weight: 700;
 }
 #login > ul {
@@ -97,6 +95,9 @@ nav {
     
     }
 
+    #login {
+        text-align: right;
+    }
     .logo_con img {
         width: 100%;
         height: auto;

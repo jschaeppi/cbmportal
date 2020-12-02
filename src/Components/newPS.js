@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const newPS = ({ handleChange }) => {
 
         return (
-            <div>
+            <div id="newPSDiv">
                 <label for="newPS">Enter New PS:</label><br />
                 <input type="text" name="newPS" id="newPS" onChange={e => handleChange(e)}></input>
             </div>

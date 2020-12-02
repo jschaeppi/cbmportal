@@ -162,12 +162,12 @@ function HotelRequest() {
                         <br />
                         <br />
                         <div className="wrapper1">
-                            <div>
+                            <div id="psToggleDiv">
                                 <label forhtml="newPS">New PS:</label>
                                 <input type="checkbox" name="psToggle" id="psToggle" onChange={e => toggleChange(e)}></input>
                             </div>
                                 {addNewPS()}
-                            </div>
+                        </div>
                             <br />
                         <div className="wrapper1" id="hotelInfo">
                             <div id="hotelInfo">

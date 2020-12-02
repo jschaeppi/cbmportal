@@ -67,7 +67,7 @@ perdiemRouter.post('/', async (req, res, next) => {
         to: receiver.email, // list of receivers
         //to: 'joseph.schaeppi@carlsonbuilding.com',
         cc: dm.email,
-        subject: pdfFile, // Subject line
+        subject: `PerDiem-Request-${employeeName}-${employeeNum}-${date}`, // Subject line
         html: `${receiver.department} ${message}`, // html body
         attachments: [
             {

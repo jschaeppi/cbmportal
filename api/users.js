@@ -95,6 +95,7 @@ router.post('/loginSub', async (req, res, next) => {
     try {
         const { username, password } = req.body.data;
         let user = await User.findOne({ username });
+        console.log(user, ' ', req.ip);
         let passCompare = await bcrypt.compare(password, user.password);
         if (passCompare === true) {
             const payload = {
