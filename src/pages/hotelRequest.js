@@ -117,7 +117,8 @@ function HotelRequest() {
                     <form onSubmit={e => onSubmit(e)} className="mainForm">
                         <div className="wrapper1">
                             <div id="hotelStores">
-                                <label>Store:</label><br />
+                                <label>Store:</label>
+                                <br />
                                 <select name="store" required title="Please select an option" onChange={e => handleChange(e)}>
                                     <option name="storeSelect">Select a location</option>
                                     {stores.map((store, i) => {

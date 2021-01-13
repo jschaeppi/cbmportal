@@ -6,16 +6,16 @@ const translator = require('translate');
 const pdf = require('html-pdf');
 const fs = require('fs');
 const fsPromises = fs.promises;
-const apiFunc = require('../config/api_funcs');
-const HTML = require('../config/html');
-let Backpay = require('../src/Model/backpayModel');
-let DepartmentModel = require('../src/Model/departmentModel');
+const apiFunc = require('../../config/api_funcs');
+const HTML = require('../../config/html');
+let Backpay = require('../../src/Model/backpayModel');
+let DepartmentModel = require('../../src/Model/departmentModel');
 backpayRouter.use(bodyParser.json());
 backpayRouter.use(bodyParser.urlencoded({extended: false}));
 
 const date = apiFunc.date();
 const baseSite = apiFunc.baseSite();
-const uploadsDir = apiFunc.uploadsDir();
+const uploadsDir = '../uploads';
 
 backpayRouter.post('/', async (req, res, next) => {
     try {
@@ -89,7 +89,7 @@ backpayRouter.post('/', async (req, res, next) => {
     //Sending Mail
     mailOptions = {
         from: '"CBM IT" <cbmmailer@carlsonbuilding.com>', // sender address
-        to: receiver.email, // list of receivers
+        to: 'joseph.schaeppi@carlsonbuilding.com', // list of receivers
         cc: dm.email,
         subject: `Backpay request for ${employeeNum}`, // Subject line
         text: `${receiver.department} ${message}`, // plain text body

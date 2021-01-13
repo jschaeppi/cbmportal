@@ -1,7 +1,7 @@
 const errorHandler = (err, req, res, next) => {
     console.log(err.name);
     console.log(err.message);
-    if (req.headers.host === 'admin.cbmportal.com:5000') {
+    if (req.headers.host === 'admin.cbmportal.com:5000' || req.headers.host === 'admin.cbmportal.com:5001') {
         if (err.name === 'JsonWebTokenError') {
             res.render('main', {msg: 'Please login to access this resource.'})
         }

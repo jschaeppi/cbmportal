@@ -1,6 +1,6 @@
 const moment = require('moment');
 module.exports = {
-    backPayHtml: function(employeeName, employeeNum, backpayInfo, comments, dmUserFirst, dmUserLast, date=moment().format('MM/DD/YYYY'), baseSite) {
+    backPayHtml: function(employeeName, employeeNum, backpayInfo, comments, store, dmUserFirst, dmUserLast, date=moment().format('MM/DD/YYYY'), baseSite) {
       return `<html>
     <head>
     <style>
@@ -97,6 +97,18 @@ module.exports = {
     <td style="width: 150px; border-bottom: 0px solid black; background-color: #f9fafc;" colspan="5">&nbsp;</td>
     </tr>
     <tr>
+    <th style=" padding: 1px; text-align:left;" colspan="5">Location:</th>
+    </tr>
+    <tr>
+    <th style=" padding: 1px; text-align:left;" colspan="5">${store}</th>
+    </tr>
+    <tr>
+    <tr>
+    <td style="width: 150px; border-bottom: 0px solid black; background-color: #f9fafc;" colspan="5">&nbsp;</td>
+    </tr>
+    <tr>
+    <td style="width: 150px; border-bottom: 0px solid black; background-color: #f9fafc;" colspan="5">&nbsp;</td>
+    </tr>
     <th style=" padding: 1px; text-align:left;" colspan="5">Reason this pay was missed:</th>
     </tr>
     <tr>

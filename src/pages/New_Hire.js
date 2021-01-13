@@ -223,10 +223,9 @@ const NewHire = () =>  {
                                 <label htmlFor="positions">Positions:</label><br />
                                 <select id="positions" name="positions"  title="Please select an option" onChange={e => handleChange(e)} required>
                                     <option>Select Position</option>
-                                    <option value="PS">Disinfecting</option>
+                                    <option value="Disinfecting">Disinfecting</option>
                                     <option value="Floater">Floater</option>
                                     <option value="FloorTech">Floor Tech</option>
-                                    <option value="Disinfecting">Disinfecting</option>
                                     <option value="Porter">Porter</option>
                                     <option value="PS">Project Specialist</option>
                                     <option value="Site Lead">Site Lead</option>

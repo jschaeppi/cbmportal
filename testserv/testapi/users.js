@@ -4,14 +4,10 @@ const cookieParser = require('cookie-parser')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const User = require('../src/Model/usersModel');
-const config = require('config');
-const storeRouter = require('./updateStores');
-const MongoStore = require('connect-mongo');
-const sessionLookup = require('../src/Model/sessionValidate');
+const User = require('../../src/Model/usersModel');
 //require('./passport')(passport);
 router.use(cors({
-    origin: ['https://portal.cbmportal.com','https://portal.cbmportal.com:5000', 'https://127.0.0.1:3000', 'https://localhost:3000'],
+    origin: ['https://portal.cbmportal.com','https://portal.cbmportal.com:5001', 'https://portal.cbmportal.com:3000', 'https://localhost:3000'],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
     credentials: true
   }));
@@ -29,6 +25,13 @@ router.get('/loginSub', async (req, res, next) => {
     res.json({decoded, token, user});
     }
     catch(err) {
+        /*if (!token) {
+            res.status(401).json({msg: 'Not Authorized'});
+        } else if (err === 'TokenExpiredError: jwt expired') {
+            res.status(401).json({ msg: 'Unauthorized'});
+        } else {
+        res.status(500).json({ msg: 'Server Error'});
+        }*/
         next(err);
     }
 })
@@ -36,7 +39,6 @@ router.get('/loginSub', async (req, res, next) => {
 router.get('/loginSubTest', async (req, res, next) => { 
 
     console.log(req.cookies)
-    const token = req.header('x-auth-token');
     try {
     const decoded = jwt.verify(token, process.env['jwtSecret']);
     const { exp } = decoded;
@@ -46,7 +48,13 @@ router.get('/loginSubTest', async (req, res, next) => {
     res.json({decoded, user});
     }
     catch(err) {
-        next(err);
+        if (!token) {
+            res.status(401).json({issue: 'Not Authorized'});
+        } else if (err === 'TokenExpiredError: jwt expired') {
+            res.status(401).json({ msg: 'Session expired, please login again'});
+        } else {
+        res.status(500).json({ issue: 'Server Error'});
+        }
     }
 })
 
@@ -58,7 +66,7 @@ router.post('/loginSubAdmin', async (req, res, next) => {
     let user = await User.findOne({ username });
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            res.status(401).redirect('https://admin.cbmportal.com:5000/admin/?login=failure');
+            res.status(401).redirect('https://admin.cbmportal.com:5001/admin/?login=failure');
         } else {
             const payload = {
                 user: {
@@ -68,9 +76,9 @@ router.post('/loginSubAdmin', async (req, res, next) => {
             jwt.sign(payload, process.env['jwtSecret'], { expiresIn: 19800}, (err, token) => {
             if (err) throw err;
                     if (token) {
-                        res.cookie('auth-token', token, {domain: 'cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: true }).redirect('https://admin.cbmportal.com:5000/admin/dashboard');
+                        res.cookie('auth-token', token, {domain: 'cbmportal.com', maxAge: 3 * 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: true }).redirect('https://admin.cbmportal.com:5001/admin/dashboard');
                     }else {
-                        res.redirect('https://admin.cbmportal.com:5000/admin/?login=failure');
+                        res.redirect('https://admin.cbmportal.com:5001/admin/?login=failure');
                     }
             })
         }

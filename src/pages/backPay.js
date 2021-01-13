@@ -7,7 +7,7 @@ import CbmContext from '../context/cbm/cbmContext';
 
 function BackPay() {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, isAuthenticated, loading, user, formSubmit, success } = cbmContext;
+    const { loginStatus, isAuthenticated, loading, user, formSubmit, success, stores } = cbmContext;
     let rows = [];
     useEffect(() => {
         if (!isAuthenticated && !loading) {
@@ -29,6 +29,7 @@ function BackPay() {
             payMissed: '',
             employeeName: '', 
             employeeNum: '',
+            stores: '',
         }
     ]);
 
@@ -95,6 +96,7 @@ function BackPay() {
                 left_lunch: backPays[0].left_lunch,
                 return_lunch: backPays[0].return_lunch,
                 out: backPays[0].out,
+                store: backPays[0].stores,
                 dm: user, 
                 employeeName: backPays[0].employeeName, 
                 employeeNum: backPays[0].employeeNum,
@@ -110,6 +112,7 @@ function BackPay() {
                 return_lunch: item.return_lunch,
                 out: item.out,
                 dm: user, 
+                store: item.stores,
                 employeeName: backPays[0].employeeName, 
                 employeeNum: backPays[0].employeeNum,
                 comments: backPays[0].payMissed,
@@ -171,6 +174,16 @@ function BackPay() {
                         })}
                         </div>
                         <br />
+                        <div className="wrapper1">
+                            <label>&nbsp;&nbsp;&nbsp;&nbsp;Choose store location:</label>
+                            <br />
+                            <select name="storeList" id="stores" required title="Please select an option" onChange={e => handleInputChange(e)}>
+                                <option name="storeSelect">Select a location</option>
+                                {stores.map((store, i) => {
+                                return <option key={i} name="stores" id="store">{store.store}</option>
+                                })}
+                            </select>
+                        </div>
                         <div className="wrapper1">
                             <div id="missedReasonBox">
                                 <label htmlFor="comments">Reason why this pay was missed:</label><br />
