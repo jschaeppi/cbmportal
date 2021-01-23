@@ -6,11 +6,11 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const User = require('../../src/Model/usersModel');
 //require('./passport')(passport);
-router.use(cors({
-    origin: ['https://portal.cbmportal.com','https://portal.cbmportal.com:5001', 'https://portal.cbmportal.com:3000', 'https://localhost:3000'],
+/* router.use(cors({
+    origin: ['*', 'http://portal.cbmportal.com','https://portal.cbmportal.com:5001', 'http://portal.cbmportal.com:3000', 'http://localhost:3000'],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
     credentials: true
-  }));
+  })); */
   router.use(cookieParser());
 
 

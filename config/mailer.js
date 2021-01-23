@@ -5,7 +5,7 @@ let transporter = nodemailer.createTransport({
     secure: false,
     auth: {
       user: "cbmmailer@carlsonbuilding.com",
-      pass: "IT5upp0rt"
+      pass: "f3pKDHbgrxQ4kkZ"
     },
     tls: {
         rejectUnauthorized: false

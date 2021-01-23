@@ -16,7 +16,7 @@ ptoRouter.use(bodyParser.json());
 ptoRouter.use(bodyParser.urlencoded({ extended: false }));
 const date = apiFunc.date();
 const uploadsDir = '../uploads/';
-const baseSite = apiFunc.baseSite();
+const baseSite = 'https://cbmportal.com/cbm_forms/frontend/testserv/uploads/';
 
 ptoRouter.post('/', async (req, res, next) => {
     try {

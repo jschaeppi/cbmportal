@@ -221,7 +221,7 @@ timeadjustRouter.post('/', async (req, res, next) => {
     <td style=" width: 150px; padding: 1px;">Employee:</td>
     <td style=" width: 150px; border-bottom: border: 1px solid black; padding: 1px; text-align:center;">${employeeName}</td>
     <td style=" width: 150px; height: 20px; border-bottom: border: 1px solid black; padding: 1px; vertical-align:bottom">
-    <div class="DMOSsign"><img src="http://portal.cbmportal.com/uploads/signatures/timeadjustment/${employeeNum}/employeeAdjustSig${month}-${day}-${year}.png"><img></div>
+    <div class="DMOSsign"><img src="https://cbmportal.com/cbm_forms/frontend/testserv/uploads/signatures/timeadjustment/${employeeNum}/employeeAdjustSig${month}-${day}-${year}.png"><img></div>
     </td>
     <td style=" width: 150px; border-bottom: border: 1px solid black; padding: 1px; text-align:center;">${month}/${day}/${year}</td>
     </tr>

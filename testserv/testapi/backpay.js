@@ -14,7 +14,7 @@ backpayRouter.use(bodyParser.json());
 backpayRouter.use(bodyParser.urlencoded({extended: false}));
 
 const date = apiFunc.date();
-const baseSite = apiFunc.baseSite();
+const baseSite = 'https://cbmportal.com/cbm_forms/frontend/testserv/uploads/';
 const uploadsDir = '../uploads';
 
 backpayRouter.post('/', async (req, res, next) => {
