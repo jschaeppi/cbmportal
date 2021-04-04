@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 const HTML = require('../config/html');
-const FormFunc = require('../admin/helpers/hbs_helpers');
 const moment = require('moment');
 const host = process.env.host;
 const port = process.env.emailPort;
@@ -10,16 +9,6 @@ const rejectUnauthorized = process.env.rejectUnauthorized;
 let DepartmentModel = require('../src/Model/departmentModel');
 module.exports = {
     date: function() {
-        //let date_ob = new Date().toDateString();
-        // current date
-        // adjust 0 before single digit date
-        /*let day = ("0" + date_ob.getDate()).slice(-2);
-        // current month
-        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-        // current year
-        let year = date_ob.getFullYear();*/
-        //date_ob = date_ob.substr(4);
-        //return date = `${date_ob}`;
         return moment().format('MMM DD YYYY'); 
     },
     time: function() {

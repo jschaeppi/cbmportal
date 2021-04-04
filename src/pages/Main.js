@@ -4,20 +4,16 @@ import CbmContext from '../context/cbm/cbmContext';
 
 const Main = (props) => {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, loading, isAuthenticated, getStores, getStates, user, success, clearSuccess } = cbmContext;
+    const { loading, isAuthenticated, user, getStores, success, clearSuccess } = cbmContext;
     let { successMessage } = cbmContext;
     useEffect(() =>{
-        if (!isAuthenticated && user && !loading) {
-            loginStatus();
-        }   
+        // if (!isAuthenticated && user && !loading) {
+        //     loginStatus();
+        // }   
         if (!loading && user) {
         getStores(user.district);
-        getStates();
+        // getStates();
         }
-
-            
-
-        
         // eslint-disable-next-line
     }, [])
 

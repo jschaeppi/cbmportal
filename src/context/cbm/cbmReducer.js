@@ -8,9 +8,9 @@ import {
     ERROR_STORES,
     CLEAR_ERRORS,
     SET_LOADING,
-    GET_STATES,
-    GET_CITIES,
-    ERROR_STATES,
+    // GET_STATES,
+    // GET_CITIES,
+    // ERROR_STATES,
     FORM_SUBMISSION,
     FORM_SUCCESS
 } from '../types';
@@ -57,20 +57,20 @@ export default (state, action) => {
                     success: true,
                     loading: false
                 }
-        case GET_STATES:
+        // case GET_STATES:
         
-            return {
-                ...state,
-                usstates: action.payload,
-                loading: false
-            }
+        //     return {
+        //         ...state,
+        //         usstates: action.payload,
+        //         loading: false
+        //     }
 
-            case GET_CITIES:
-                return {
-                    ...state,
-                    cities: action.payload,
-                    loading: false
-                }
+        //     case GET_CITIES:
+        //         return {
+        //             ...state,
+        //             cities: action.payload,
+        //             loading: false
+        //         }
 
         case GET_STORES:
             return {
@@ -79,7 +79,7 @@ export default (state, action) => {
                 loading: false
             }
         case ERROR_STORES:
-        case ERROR_STATES:
+        // case ERROR_STATES:
             return {
                 ...state,
                 errorMessage: action.payload,

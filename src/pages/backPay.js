@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 //import SignatureCanvas from 'react-signature-canvas'
 import SigPad from '../Components/sigPad';
 import '../css/backPay.css';
@@ -9,9 +9,10 @@ function BackPay() {
     const cbmContext = useContext(CbmContext);
     const { loginStatus, isAuthenticated, loading, user, formSubmit, success, stores } = cbmContext;
     let rows = [];
+    let location = useLocation();
     useEffect(() => {
         if (!isAuthenticated && !loading) {
-        loginStatus();
+        loginStatus(location.pathname);
         }
         // eslint-disable-next-line
     }, [])

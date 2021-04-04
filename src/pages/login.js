@@ -5,27 +5,31 @@ import Spinner from '../Components/SpinnerImage';
 import '../css/login.css';
 const Login = (props) => {
     const cbmContext = useContext(CbmContext);
-    const history = useHistory();
-
+    let history = useHistory();
     const { loginUser, isAuthenticated, loginStatus, clearErrors, user} = cbmContext;
     let { errorMessage, loading } = cbmContext;
+    
+    
     const onSubmit = (e) => {
         e.preventDefault();
         const user = document.getElementById('user').value.toLowerCase();
         const pass = document.getElementById('pass').value;
-        loginUser(user, pass)
-            if (!loading) {
-            history.push('/')
-            }
-            
+        if (loginUser(user, pass)) {
+            history.push('/');
+        }
 }
 
         useEffect(() => {
-            
-            if (isAuthenticated) {
-                history.push('/');
-            } else if (!isAuthenticated && user && !loading) {
-                    loginStatus();
+                if (!isAuthenticated && user && !loading) {
+                    if (loginStatus()) {
+                        if (history.location.state) {
+                        history.push(history.location.state.prevLocation);
+                        } else {
+                            history.push('/');
+                        }
+                    } else {
+                        history.push('/login')
+                    }
                 }
             // eslint-disable-next-line
             }, [isAuthenticated]);
@@ -34,6 +38,7 @@ const Login = (props) => {
             } else {
 
         return (
+            
             <div className="container">
                 <div id="loginError">
                     {errorMessage ? clearErrors() : errorMessage=''}<p>{errorMessage}</p>

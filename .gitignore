@@ -10,7 +10,6 @@ testserv/node_modules
 /coverage
 
 # production
-/build
 /config/mailer.js
 
 # misc

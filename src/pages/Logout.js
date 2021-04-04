@@ -11,7 +11,7 @@ const Logout = () => {
         logout();
     })
     if (!loading && !isAuthenticated) {
-        history.push('/login');
+        history.push('/');
     }
     return (
         <Fragment>

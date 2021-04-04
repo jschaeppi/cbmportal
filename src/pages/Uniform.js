@@ -10,7 +10,7 @@ const Uniform = () => {
     
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
-    const { loginStatus, isAuthenticated, loading, usstates, getCities, cities, user, formSubmit, success} = cbmContext;
+    const { loginStatus, isAuthenticated, loading, user, formSubmit, success} = cbmContext;
     let body = '';
     const employeePad = useRef({});
     useEffect(() => {
@@ -43,7 +43,7 @@ const Uniform = () => {
     const cityList = (e) => {
         e.preventDefault();
         const { name, value } = e.target;
-        getCities(value);
+        // getCities(value);
         const list = [...data];
         list[0][name] = value;
         setData(list);
@@ -142,21 +142,21 @@ const Uniform = () => {
                         <div className="wrapper1" id="geo">
                             <div id="stateDiv">
                                 <label htmlFor="state">State:</label><br />
-                                <input type="text" id="state" name="state" list="states" placeholder="Select State" onChange={e => cityList(e)} />
-                                        <datalist id="states">
+                                <input type="text" id="state" name="state" list="states" placeholder="Select State" onChange={e => handleChange(e)} />
+                                        {/* <datalist id="states">
                                             {usstates.map((state, i) => {
                                                 return <option key={i}>{state.state_name} </option>
                                             })}
-                                        </datalist>
+                                        </datalist> */}
                              </div>
                             <div id="cityDiv">
                                 <label htmlFor="city">City:</label><br />
-                                <input type="text" id="city" name="city" list="cities" placeholder="Select City" onChange={e => handleChange(e)} />
-                                    <datalist id="cities">
+                                <input type="text" id="city" name="city" list="cities" placeholder="Select City" onChange={e => cityList(e)} />
+                                    {/* <datalist id="cities">
                                         {(cities !== '') ? (cities.map((city,i) => {
                                             return <option key={i}>{city.city_name}</option>
                                         })): <option>No Cities Found</option>}
-                                    </datalist>
+                                    </datalist> */}
                         
                             </div>
                             <div id="zipDiv">

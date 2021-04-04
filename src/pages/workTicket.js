@@ -7,7 +7,7 @@ const WorkTicket = () => {
 
     const cbmContext = useContext(CbmContext);
     const history = useHistory();
-    const { loginStatus, isAuthenticated, loading, getStores, stores, getCities, cities, usstates, user, formSubmit, success } = cbmContext;
+    const { loginStatus, isAuthenticated, loading, stores, user, formSubmit, success } = cbmContext;
     let body = '';
     const { district } = cbmContext.user;
 
@@ -15,7 +15,7 @@ const WorkTicket = () => {
         if (!isAuthenticated && !loading) {
         loginStatus();
         }
-        getStores(district);
+        // getStores(district);
         // eslint-disable-next-line
     }, [district])
 
@@ -41,7 +41,7 @@ const WorkTicket = () => {
         const cityList = (e) => {
             e.preventDefault();
             const { name, value } = e.target;
-            getCities(value);
+            // getCities(value);
             const list = [...data];
             list[0][name] = value;
             setData(list);
@@ -112,22 +112,22 @@ const WorkTicket = () => {
                             <div className="wrapper1">
                                  <div>
                                     <label htmlFor="state"> State:</label><br />
-                                    <input type="text" id="state" name="state" list="states" placeholder="Select State" onChange={e => cityList(e)} />
-                                        <datalist id="states">
+                                    <input type="text" id="state" name="state" list="states" placeholder="Select State" onChange={e => handleChange(e)} />
+                                        {/* <datalist id="states">
                                             {usstates.map((state, i) => {
                                                 return <option key={i}>{state.state_name} </option>
                                             })}
-                                        </datalist>
+                                        </datalist> */}
                                     
                                 </div>
                                 <div>
                                     <label htmlFor="city">City: <span style={{fontSize: '14px', fontWeight: 'normal'}}>(Please select state for list of cities)</span></label><br />
-                                    <input type="text" id="city" name="city" list="cities" placeholder="Select City" onChange={e => handleChange(e)} />
-                                        <datalist id="cities">
+                                    <input type="text" id="city" name="city" list="cities" placeholder="Select City" onChange={e => cityList(e)} />
+                                        {/* <datalist id="cities">
                                             {(cities !== '') ? (cities.map((city,i) => {
                                                 return <option key={i}>{city.city_name}</option>
                                             })): <option>No Cities Found</option>}
-                                        </datalist>
+                                        </datalist> */}
                                 </div>
                             </div>
                         <br /><br />

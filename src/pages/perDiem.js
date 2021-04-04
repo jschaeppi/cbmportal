@@ -6,7 +6,7 @@ import CbmContext from '../context/cbm/cbmContext';
 
 function PerDiem() {
     const cbmContext = useContext(CbmContext);
-    const { loginStatus, isAuthenticated, loading, stores, usstates, getCities, cities, user, formSubmit, success } = cbmContext;
+    const { loginStatus, isAuthenticated, loading, stores, user, formSubmit, success } = cbmContext;
     let body = '';
 
     const history = useHistory();
@@ -42,7 +42,7 @@ function PerDiem() {
     const cityList = (e) => {
         e.preventDefault();
         const { name, value } = e.target;
-        getCities(value);
+        // getCities(value);
         const list = [...perDiem];
         list[0][name] = value;
         addPerDiem(list);
@@ -171,20 +171,20 @@ function PerDiem() {
                             <div>
                                 <label htmlFor="state"> State:</label><br />
                                 <input type="text" id="state" name="state" list="states" placeholder="Select State" onChange={e => cityList(e)} />
-                                   <datalist id="states">
+                                   {/* <datalist id="states">
                                     {usstates.map((state, i) => {
                                         return <option key={i}>{state.state_name} </option>
                                     })}
-                                    </datalist>
+                                    </datalist> */}
                             </div>
                             <div>
                                 <label htmlFor="city">City: <span style={{fontSize: '14px', fontWeight: 'normal'}}>(Please select state for list of cities)</span></label><br />
                                 <input type="text" id="city" name="city" list="cities" placeholder="Select City" onChange={e => handleInputChange(e)} />
-                                <datalist id="cities">
+                                {/* <datalist id="cities">
                                    {(cities !== '') ? (cities.map((city,i) => {
                                        return <option key={i}>{city.city_name}</option>
                                    })): <option>No Cities Found</option>}
-                                   </datalist>
+                                   </datalist> */}
                             </div>
                             
                         </div>

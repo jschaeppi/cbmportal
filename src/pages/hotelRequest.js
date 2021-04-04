@@ -37,7 +37,6 @@ function HotelRequest() {
         if (!isAuthenticated && !loading) {
         loginStatus();
         }
-        console.log(district);
             getStores(district);
             fetch(`https://portal.cbmportal.com:5000/api/hotel/ps/${district}`)
             .then(res => res.json())
@@ -55,6 +54,11 @@ function HotelRequest() {
 
     const toggleChange = () => {
         setToggle(!psToggle);
+        let data = [...formData];
+        data[0].listPs1 = '';
+        data[0].listPs2 = '';
+        data[0].newPS = '';
+        setFormData([...formData]);
         }
 
     //Show the new PS text field
@@ -184,6 +188,7 @@ function HotelRequest() {
                                     <option value="Covering Location">Covering Location</option>
                                     <option value="Closing WOs">Closing WOs</option>
                                     <option value="Store Remodel">Store Remodel</option>
+                                    <option value="Training">Training</option>
                                 </select>
                             </div>
                             <div id="hotelInfo">

@@ -1,9 +1,9 @@
 import React, { useReducer } from 'react';
-import {useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import CbmContext from './cbmContext';
 import cbmReducer from './cbmReducer';
-import GeoApi from '../../config/geoLocations.json'
+// import GeoApi from '../../config/geoLocations.json'
 import setAuthToken from '../../utils/setAuthToken';
 
 import {
@@ -16,9 +16,9 @@ import {
     ERROR_STORES,
     CLEAR_ERRORS,
     SET_LOADING,
-    GET_STATES, 
-    GET_CITIES,
-    ERROR_STATES,
+    // GET_STATES, 
+    // GET_CITIES,
+    // ERROR_STATES,
     FORM_SUBMISSION,
     FORM_SUCCESS,
 } from '../types';
@@ -46,71 +46,71 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
         setTimeout(() => dispatch({ type: FORM_SUCCESS }),3000);
     }
 
-    const getStates = async () => {
-        const { GeoAPI } = GeoApi;
-        try {
-        const resp = await axios.get("https://www.universal-tutorial.com/api/getaccesstoken", {
-            headers: {
-                'Accept': 'application/json',
-                'api-token': GeoAPI,
-                'user-email': 'joseph.schaeppi@carlsonbuilding.com'
-            },
-        })
+    // const getStates = async () => {
+    //     const { GeoAPI } = GeoApi;
+    //     try {
+    //     const resp = await axios.get("https://www.universal-tutorial.com/api/getaccesstoken", {
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'api-token': GeoAPI,
+    //             'user-email': 'joseph.schaeppi@carlsonbuilding.com'
+    //         },
+    //     })
         
-        const res = await axios.get("https://www.universal-tutorial.com/api/states/United States", {
-            headers: {
-                'Authorization': `Bearer ${resp.data.auth_token}`,
-                'Accept': 'application/json'
-            },
-        })
-        const not_states = ['Minnesota', 'Iowa', 'Illinois', 'Wisconsin', 'Nebraska', 'North Dakota', 'South Dakota'];
+    //     const res = await axios.get("https://www.universal-tutorial.com/api/states/United States", {
+    //         headers: {
+    //             'Authorization': `Bearer ${resp.data.auth_token}`,
+    //             'Accept': 'application/json'
+    //         },
+    //     })
+    //     const not_states = ['Minnesota', 'Iowa', 'Illinois', 'Wisconsin', 'Nebraska', 'North Dakota', 'South Dakota'];
         
-        let filtered_states = res.data.filter(id=> {
-                return not_states.includes(id.state_name);
-         })
+    //     let filtered_states = res.data.filter(id=> {
+    //             return not_states.includes(id.state_name);
+    //      })
         
-            dispatch({
-                type: GET_STATES,
-                payload: filtered_states,
-        })
-        } 
-        catch(err) {
-            dispatch({
-                type: ERROR_STATES,
-                payload: err.response,
-            })
-        }
-    }
+    //         dispatch({
+    //             type: GET_STATES,
+    //             payload: filtered_states,
+    //     })
+    //     } 
+    //     catch(err) {
+    //         dispatch({
+    //             type: ERROR_STATES,
+    //             payload: err.response,
+    //         })
+    //     }
+    // }
 
-    const getCities = async (usstate) => {
-        const { GeoAPI } = GeoApi;
-        try {
-            const resp = await axios.get("https://www.universal-tutorial.com/api/getaccesstoken", {
-                headers: {
-                    'Accept': 'application/json',
-                    'api-token': GeoAPI,
-                    'user-email': 'joseph.schaeppi@carlsonbuilding.com'
-                },
-            })
-            const res = await axios.get(`https://www.universal-tutorial.com/api/cities/${usstate}`, {
-                headers: {
-                    'Authorization': `Bearer ${resp.data.auth_token}`,
-                    'Accept': 'application/json'
-                },
-            })
-            console.log(res);
-            dispatch({
-                type: GET_CITIES,
-                payload: res.data
-            })
-            } catch(err) {
-                console.log(err);
-            }
+    // const getCities = async (usstate) => {
+    //     const { GeoAPI } = GeoApi;
+    //     try {
+    //         const resp = await axios.get("https://www.universal-tutorial.com/api/getaccesstoken", {
+    //             headers: {
+    //                 'Accept': 'application/json',
+    //                 'api-token': GeoAPI,
+    //                 'user-email': 'joseph.schaeppi@carlsonbuilding.com'
+    //             },
+    //         })
+    //         const res = await axios.get(`https://www.universal-tutorial.com/api/cities/${usstate}`, {
+    //             headers: {
+    //                 'Authorization': `Bearer ${resp.data.auth_token}`,
+    //                 'Accept': 'application/json'
+    //             },
+    //         })
+    //         console.log(res);
+    //         dispatch({
+    //             type: GET_CITIES,
+    //             payload: res.data
+    //         })
+    //         } catch(err) {
+    //             console.log(err);
+    //         }
 
-    }
+    // }
     const getStores = async (district) => {
         try {
-        const res = await axios.get(`https://portal.cbmportal.com:5001/testserv/testapi/stores/${district}`)
+        const res = await axios.get(`https://portal.cbmportal.com:5000/api/stores/${district}`)
         dispatch({
             type: GET_STORES,
             payload: res.data,
@@ -127,18 +127,17 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
             type: GET_LOGOUT,
         });
         if (!state.loading) {
-        history.push('/login');
+        history.push('/');
         }
     }
 //Get User
-    const loginStatus = async (props, token) => {
+    const loginStatus = async (route) => {
         setLoading();
         if (localStorage.token) {
             setAuthToken(localStorage.token);
         }
     try {
-
-        const res = await axios.get('https://portal.cbmportal.com:5001/testserv/testapi/users/loginSub');
+        const res = await axios.get('https://portal.cbmportal.com:5000/api/users/loginSub');
     
     dispatch({
         type: GET_AUTH,
@@ -159,13 +158,12 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     const loginUser = async (user, pass) => {
             setLoading();
             try {
-        const res = await axios.post('https://portal.cbmportal.com:5001/testserv/testapi/users/loginSub', { 
+        const res = await axios.post('https://portal.cbmportal.com:5000/api/users/loginSub', { 
             data: {
                 username: user,
                 password: pass,
             },
            credentials: 'include',
-            
     })
         dispatch({
             type: GET_USER,
@@ -180,6 +178,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
             type: LOGIN_ERROR,
             payload: err.response.data.msg,
         }) 
+        console.log(err.response.data);
         }
     }
 
@@ -187,7 +186,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
         setLoading();
         try {
             if (form === 'newhire') {
-                await axios.post(`https://portal.cbmportal.com:5001/testserv/testapi/${form}`, body);
+                await axios.post(`https://portal.cbmportal.com:5000/api/${form}`, body);
                 dispatch({
                     type: FORM_SUBMISSION,
                     successMessage: 'Your form has been submitted successfully!',
@@ -201,7 +200,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
                     history.push('/')
                 }
             } else {
-            fetch(`https://portal.cbmportal.com:5001/testserv/testapi/${form}`, { 
+            fetch(`https://portal.cbmportal.com:5000/api/${form}`, { 
                 method: 'POST',
                 body: body,
                 headers: {
@@ -250,8 +249,8 @@ return <CbmContext.Provider
         isAuthenticated: state.isAuthenticated,
         loading: state.loading,
         token: state.token,
-        cities: state.cities,
-        usstates:state.usstates,
+        // cities: state.cities,
+        // usstates:state.usstates,
         success: state.success,
         successMessage: state.successMessage,
         loginUser,
@@ -259,8 +258,8 @@ return <CbmContext.Provider
         logout,
         getStores,
         clearErrors,
-        getStates,
-        getCities,
+        // getStates,
+        // getCities,
         setAuthToken,
         formSubmit,
         clearSuccess,
