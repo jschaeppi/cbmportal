@@ -33,7 +33,11 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(morgan('dev'));
 
 app.set('views', path.join(__dirname, '/admin/views'));
-app.engine('.hbs', exhbs({extname: '.hbs', helpers: require('./admin/helpers/hbs_helpers'), defaultLayout: 'index'}));
+app.engine('.hbs', exhbs({extname: '.hbs',
+                         helpers: require('./admin/helpers/hbs_helpers'),
+                         defaultLayout: 'index',
+                         layoutsDir: __dirname + '/admin/views/layouts/',
+                         partialsDir: __dirname + '/admin/views/partials/'}));
 app.set('view engine', '.hbs');
 
 app.set('trust proxy', 1) // trust first proxy
