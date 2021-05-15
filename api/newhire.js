@@ -30,7 +30,7 @@ newhireRouter.post('/', formidable(), async (req, res, next) => {
         if (file1.name === file2.name) {
             file2.name = path.basename(file2.name, path.extname(file2.name)) + "(1)" + path.extname(file2.name);
         }
-            await fsPromises.mkdir(`${uploadsDir}images/newhires/${firstName}-${firstLast}`,{ recursive: true })
+            await fsPromises.mkdir(`${uploadsDir}images/newhires/${firstName}-${firstLast}`.split(' ').join(''),{ recursive: true });
             await fsPromises.rename(file1.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`);
             await fsPromises.rename(file2.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`);
             await fsPromises.rename(file3.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join(''));
