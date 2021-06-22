@@ -1,12 +1,31 @@
+import { makeStyles, Grid } from '@material-ui/core';
 import React, { Fragment }from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 
+const useStyles = makeStyles((theme) => ({
+    sig: {
+        border: '1px solid black',
+        width: '35rem',
+        backgroundColor: '#c9c8c5',
+    },
+    sigContainer: {
+        display: 'flex',
+        justifyContent: 'center'
+    }
+
+}))
 const SigPad = ( { sigPad, clearPad }) => {
 
+    const classes = useStyles();
         return (
             <Fragment>
-                <SignatureCanvas clearButton="true" penColor='black' canvasProps={{backgroundcolor: 'rgba(255, 255, 255, 1)', width: 400, height: 100, className: 'sigPad', id: 'sigPad'}} ref={sigPad} />
-                <button id="sigButton" onClick={e => clearPad(e)} type="button ">Clear</button>
+                <Grid item xs={12} className={classes.sigContainer}>
+                    <SignatureCanvas clearButton="true" penColor='black' canvasProps={{ className: `${classes.sig}`}} ref = {sigPad} />
+                    <br />
+                </Grid>
+                <Grid item xs={12}>
+                    <button id="sigButton" onClick={e => clearPad(e)} type="button ">Clear</button>
+                </Grid>
             </Fragment>
         )
 }

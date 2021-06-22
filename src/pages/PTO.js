@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef} from 'react'
 import {useHistory} from 'react-router-dom';
-import '../css/PTO.css';
+// import '../css/PTO.css';
 import SignatureCanvas from 'react-signature-canvas'
 import CbmContext from '../context/cbm/cbmContext';
 

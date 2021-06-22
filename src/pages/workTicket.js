@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import '../css/workTicket.css';
+// import '../css/workTicket.css';
 import { useHistory } from 'react-router-dom';
 import Stores from '../Components/Stores';
 import CbmContext from '../context/cbm/cbmContext';

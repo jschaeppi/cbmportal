@@ -1,26 +1,41 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types';
+import {Grid, Select, makeStyles, FormControl, FormHelperText } from '@material-ui/core';
 
+const useStyles = makeStyles((theme => ({
+    gridItem: {
+        paddingBottom: '24px',
+        justifyContent: 'center'
+    },
+})))
 const PSList = ({ ps, handleChange }) => {
+    const classes = useStyles();
     return (
-        <div id="psList">
-        <br />
-        <div id="ps1">
-        <label forhtml="newPS" id="psLabel">Employee 1</label>
-        <label forhtml="newPS" id="psLabel">Employee 2</label>
-        <br />
-        <select name="listPs1" id="PS" required title="Please select an option" onChange={e => handleChange(e)}>
-            {ps.map((managers, i) => {
-                return <option key={i} name="PS" id="listPS" value={managers.ps} onChange={e => handleChange(e)}>{managers.ps}</option>
-            })}
-        </select>
-        <select name="listPs2" id="PS" required title="Please select an option" onChange={e => handleChange(e)}>
-            {ps.map((managers, i) => {
-                return <option key={i} name="PS" id="listPS" value={managers.ps} onChange={e => handleChange(e)}>{managers.ps}</option>
-            })}
-        </select>
-        </div>
-    </div>
+        <Fragment>
+        <Grid item xs={12} sm={6} md={4} className={classes.gridItem}>
+            <FormControl>
+                {/* <InputLabel htmlFor="PS">Select PS</InputLabel> */}
+                <Select native name="listPs1" id="PS" required onChange={e => handleChange(e)}>
+                    <option value="">Select PS</option>
+                    {ps.map((managers, i) => {
+                        return <option key={i} name="PS" id="listPS" value={managers.ps} onChange={e => handleChange(e)}>{managers.ps}</option>
+                    })}
+                </Select>
+                <FormHelperText>Choose PS</FormHelperText>
+            </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4} className={classes.gridItem}>
+            <FormControl>
+                {/* <InputLabel htmlFor="PS">Select PS</InputLabel> */}
+                <Select native name="listPs2" id="PS" required onChange={e => handleChange(e)}>
+                    <option value="">Select PS</option>
+                    {ps.map((managers, i) => {
+                        return <option key={i} name="PS" id="listPS" value={managers.ps} onChange={e => handleChange(e)}>{managers.ps}</option>
+                    })}
+                </Select>
+            </FormControl>
+        </Grid>
+        </Fragment>
     )
 }
 

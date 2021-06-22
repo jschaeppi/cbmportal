@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext} from 'react'
 import {useHistory} from 'react-router-dom';
 import CbmContext from '../context/cbm/cbmContext';
 import axios from 'axios';
-import '../css/propane.css';
+// import '../css/propane.css';
 const Propane = () => {
     
     const cbmContext = useContext(CbmContext);

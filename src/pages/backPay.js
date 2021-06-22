@@ -1,11 +1,53 @@
+import { Button, Grid, makeStyles, TextField, ButtonGroup } from '@material-ui/core';
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-//import SignatureCanvas from 'react-signature-canvas'
+import Notes from '../Components/Notes';
+import Stores from '../Components/Stores';
 import SigPad from '../Components/sigPad';
-import '../css/backPay.css';
+// import '../css/backPay.css';
 import CbmContext from '../context/cbm/cbmContext';
+import { Fragment } from 'react';
+import MainHeading from '../Components/MainHeading';
+
+
+const useStyles = makeStyles((theme) => ({
+    container: {
+        justifyContent: 'center',
+        width: '40vw !important',
+        margin: '0 auto',
+        marginTop: '10rem'
+    },
+    gridItem: {
+        paddingBottom: '24px',
+        justifyContent: 'center'
+    },
+    dateTime: {
+        width: '100%',
+        paddingTop: '24px',
+        alignItems: 'flex-start'
+    },
+    form: {
+      width: '80%',
+      padding: '0 4rem'
+    },
+    mainHeading: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    sig: {
+      display: 'flex',
+      justifyContent: 'center',
+      width: '50%'
+    },
+    subBut: {
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: '2rem'
+    }
+}))
 
 function BackPay() {
+    const classes = useStyles();
     const cbmContext = useContext(CbmContext);
     const { loginStatus, isAuthenticated, loading, user, formSubmit, success, stores } = cbmContext;
     let rows = [];
@@ -133,74 +175,78 @@ function BackPay() {
     }
     }
         return (
-            <div className="container">
-                <h1 className="mainHeading" id="heading">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Back Pay</span></h1><br />
-                    <form onSubmit={e => onSubmit(e)} className="mainForm">
-                        <div className="wrapper1">
-                            <div id="employeeInfo">
-                                <label htmlFor="employeenum">Employee #:</label><br />
-                                <input type="text" id="employeeNum" name="employeeNum" minLength="1" maxLength="6" required title="Please enter required information" onChange={e => handleInputChange(e)}/>
-                            </div>
-                            <div id="employeeInfo">
-                                <label htmlFor="employeename"> Employee Name:</label>
-                                <input type="text" id="employeeName" name="employeeName"  required title="Please enter required information" onChange={e => handleInputChange(e)}/>
-                            </div>
-                        </div>
-                        <br /><br />
-                        <div className="wrapper1">
-                        { backPays.map((row, index) => { 
-                            const incIndex = index + 1;
-                            const date = `Date ${incIndex}`;
-                            const inName =`In ${incIndex}`;
-                            const left_lunchName = `Left for lunch ${incIndex}`;
-                            const return_lunchName = `Return From Lunch ${incIndex}`;
-                            const outName = `Out ${incIndex}`;
-                            return (
-                                <div key={index} id="backPays">
-                                    <label htmlFor={date}>{date}</label><br />
-                                    <input key={date} type="date" id={date} name={date} title="Please enter required information" onChange={e => handleInputChange(e, index)} /><br />
-                                    <label htmlFor={inName}>{inName}</label><br />
-                                    <input key={inName} type="time" id={inName} name={inName} title="Please enter required information" onChange={e => handleInputChange(e, index)} /><br />
-                                    <label htmlFor={left_lunchName}>{left_lunchName}</label><br />
-                                    <input key={left_lunchName} type="time" id={left_lunchName} name={left_lunchName} onChange={e =>handleInputChange(e, index)} /><br />
-                                    <label htmlFor={return_lunchName}>{return_lunchName}</label><br />
-                                    <input key={return_lunchName} type="time" id={return_lunchName} name={return_lunchName} onChange={e => handleInputChange(e, index)} /><br />
-                                    <label htmlFor={outName}>{outName}</label><br />
-                                    <input key={outName} type="time" id={outName} name={outName} title="Please enter required information" onChange={e => handleInputChange(e, index)} /><br />
-                                    {backPays.length !== 1 && <button onClick={e => handleRemoveRow(e,index)} id="backPayRemoveButton">Remove</button>}
-                                    {backPays.length - 1 === index && <button onClick={handleAddBackPay} id="backPayAddButton">Add Back Pay</button>}
-                                </div>
-                            );
-                        })}
-                        </div>
-                        <br />
-                        <div className="wrapper1">
-                            <label>&nbsp;&nbsp;&nbsp;&nbsp;Choose store location:</label>
-                            <br />
-                            <select name="storeList" id="stores" required title="Please select an option" onChange={e => handleInputChange(e)}>
-                                <option name="storeSelect">Select a location</option>
-                                {stores.map((store, i) => {
-                                return <option key={i} name="stores" id="store">{store.store}</option>
-                                })}
-                            </select>
-                        </div>
-                        <div className="wrapper1">
-                            <div id="missedReasonBox">
-                                <label htmlFor="comments">Reason why this pay was missed:</label><br />
-                                <textarea name="comments" id="payMissed" required title="Please enter required information" onChange={e => handleInputChange(e)}></textarea>
-                            </div>
-                        </div>
-                        <div className="wrapper1">
-                            <div id="signature">
-                                <SigPad sigPad={managerPad} clearPad={e => clearPad(e)} />
-                            </div>
-                        </div>
-                        <br />
-                        <br />
-                        <br />
-                        <input type="submit" id="bpSub" className="btn" />
-                    </form>
-            </div>
+            <Grid container className={classes.container}>
+                <Grid container className={classes.mainHeading}>
+                    <MainHeading heading="BackPay" />
+                </Grid>
+                <form onSubmit={e => onSubmit(e)} className={classes.form}>
+                            <Grid container spacing={0} direction="row">
+                                <Grid item xs={12} sm={6} className={classes.gridItem}>
+                                    <TextField id="employeeNum" name="employeeNum" label="Employee Id" type="text" inputProps={{ height: '2rem'}} required onChange={e => handleInputChange(e)}/>
+                                </Grid>
+                                <Grid item xs={12} sm={6} className={classes.gridItem}>
+                                    <TextField id="employeeName" name="employeeName" label="Employee Name" type="text" required onChange={e => handleInputChange(e)}/>
+                                </Grid>
+                    {/*Generating dynamic date times*/}
+                    { backPays.map((row, index) => { 
+                        const incIndex = index + 1;
+                        const date = `Date ${incIndex}`;
+                        const inName =`In ${incIndex}`;
+                        const left_lunchName = `Left for lunch ${incIndex}`;
+                        const return_lunchName = `Return From Lunch ${incIndex}`;
+                        const outName = `Out ${incIndex}`;
+                        return (
+                            <Fragment>
+                                <Grid container wrap="nowrap" key={date} direction="row" spacing={1} className={classes.dateTime}>
+                                    <Grid item xs={12} sm={6} >
+                                        <TextField size="medium" label="Date" id={date} name={date} type="date" onChange={e => handleInputChange(e, index)} />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} >
+                                        <TextField label="In Time" id={inName} name={inName} type="time" onChange={e => handleInputChange(e, index)} />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} >
+                                        <TextField label="Lunch" id={left_lunchName} name={left_lunchName} type="time" onChange={e => handleInputChange(e, index)} />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} >
+                                        <TextField label="Return" id={return_lunchName} name={return_lunchName} type="time" onChange={e => handleInputChange(e, index)} />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} className={classes.gridItem} >
+                                        <TextField label="Out time" id={outName} name={outName} type="time" onChange={e => handleInputChange(e, index)} />
+                                    </Grid>
+                                </Grid>
+                                <Grid container>
+                                    <Grid item xs={12} sm={6} className={classes.gridItem}>
+                                        <ButtonGroup variant="contained" size="small">
+                                            {backPays.length !== 1 && <Button xs={12} sm={6} onClick={e => handleRemoveRow(e,index)} id="backPayRemoveButton">Remove</Button>}
+                                            {backPays.length - 1 === index && <Button xs={12} sm={6} onClick={handleAddBackPay} id="backPayAddButton">Add Back Pay</Button>}
+                                        </ButtonGroup>
+                                    </Grid>
+                                </Grid>
+                            </Fragment>
+                        );
+                    })}
+
+                    {/*Generating Store List*/}
+                    <Grid container direction="column" spacing={0}>
+                        <Stores stores={stores} storeData={handleInputChange} selectedStore={backPays.stores} />
+                    </Grid>
+
+                    <Grid container direction="column">
+                        <Notes label="Reason pay was missed" id="payMissed" notesData={handleInputChange} />
+                    </Grid>
+                    <Grid container className={classes.sig}>
+                        <SigPad sigPad={managerPad} clearPad={e => clearPad(e)} />
+                    </Grid>
+                    <Grid container className={classes.subBut}>
+                        <Grid item >
+                            <Button component="button" variant="contained" size="small">
+                                Submit Form    
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </form>
+        </Grid>
         )
 }
 

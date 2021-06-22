@@ -33,7 +33,7 @@
     text-align: center;
     margin: 0 5px;
 }
-#ssnInfo > input[type="text"], input[type="password"] {
+#ssnInfo > input[type="text"] {
     width: 50%;
 }
 

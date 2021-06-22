@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../css/threeMonth.css';
+// import '../css/threeMonth.css';
 export class threeMonth extends Component {
     constructor() {
         super();

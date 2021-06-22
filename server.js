@@ -122,11 +122,12 @@ app.get('*', (req, res) => {
     console.log(req.ip);
 })
 
-https.createServer({
+/* https.createServer({
     key: fs.readFileSync(process.env['nodeSSLKey']),
     cert: fs.readFileSync(process.env['nodeSSLCert']),
     passphrase: process.env['nodePassphrase'],
-},
- app).listen(PORT,() => {
+}, */
+
+ app.listen(PORT,() => {
     console.log(`Server is running on ${PORT}`);
 })

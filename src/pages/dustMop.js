@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useHistory } from 'react-router-dom';
-import '../css/dustmop.css';
+// import '../css/dustmop.css';
 import axios from 'axios';
 import CbmContext from '../context/cbm/cbmContext';
 const DustMop = () => {

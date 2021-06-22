@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import '../css/New_Hire.css';
+// import '../css/New_Hire.css';
 import Stores from '../Components/Stores';
 import { useHistory } from 'react-router-dom';
 import CbmContext from '../context/cbm/cbmContext';

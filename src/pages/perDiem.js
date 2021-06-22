@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Stores from '../Components/Stores';
-import '../css/perDiem.css';
+// import '../css/perDiem.css';
 import CbmContext from '../context/cbm/cbmContext';
 
 function PerDiem() {

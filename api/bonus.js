@@ -7,7 +7,7 @@ const fsPromises = fs.promises;
 const moment = require('moment');
 const apiFunc = require('../config/api_funcs');
 const HTML = require('../config/html');
-let { transporter, mailOptions, message } = require('../config/mailer');
+let { transporter, mailOptions, message } = require('../config/api_funcs');
 require('../config/html')
 const Bonuses = require('../src/Model/bonusModel');
 const DepartmentModel = require('../src/Model/departmentModel');

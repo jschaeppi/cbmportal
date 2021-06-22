@@ -1,4 +1,4 @@
-#loginForm {
+/* #loginForm {
     margin: 5% 15%;
     padding: 0 10%;
     height: 5rem;
@@ -8,7 +8,7 @@
     width: 500px;
     box-sizing: border-box;
     background-color: #b8c1cf
-}
+} */
 form {
     padding: 2rem 0;
 }
@@ -17,11 +17,11 @@ form {
     margin-left: 2rem;
 }
 
-#loginForm input {
+/* #loginForm input {
     width: 100%;
     border-radius: 10px;
     margin-bottom: 1rem;
-}
+} */
 
 #loginFormBtn {
     margin: -1rem 18%;
@@ -37,7 +37,7 @@ form {
 @media screen and (min-width: 769px) and (max-width: 1024px) {
     #loginForm {
         margin: 5% 4%;
-        padding: 0 10%;
+            dding: 0 10%;
         height: 5rem;
         grid-template-columns: 1fr;
         grid-column-start: 1;

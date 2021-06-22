@@ -5,7 +5,7 @@ import Nofirstday from '../Components/Nofirstday';
 import Other from '../Components/Other';
 import { useHistory } from 'react-router-dom';
 import CbmContext from '../context/cbm/cbmContext';
-import '../css/term.css';
+// import '../css/term.css';
 
 const Term = () => {
     const cbmContext = useContext(CbmContext);

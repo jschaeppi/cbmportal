@@ -1,11 +1,12 @@
 import React, {useContext, useEffect, Fragment } from 'react'
-import '../css/main.css';
+// import '../css/main.css';
 import CbmContext from '../context/cbm/cbmContext';
 
 const Main = (props) => {
     const cbmContext = useContext(CbmContext);
     const { loginStatus, loading, isAuthenticated, getStores, getStates, user, success, clearSuccess } = cbmContext;
     let { successMessage } = cbmContext;
+    
     useEffect(() =>{
         if (!isAuthenticated && user && !loading) {
             loginStatus();
@@ -26,7 +27,7 @@ const Main = (props) => {
                 {(isAuthenticated && user) ? (
                 <div style={{width: '500px', textAlign: 'center', margin: '0 auto'}}>
                     {(success && !loading) ? (clearSuccess()):(' ')}<p>{successMessage}</p>
-                {`Welcome, ${user.userFirst} ${user.userLast}`}
+                    <h2>{`Welcome, ${user.userFirst} ${user.userLast}`}</h2>
                 </div>) : ('')}
             </Fragment>
         )

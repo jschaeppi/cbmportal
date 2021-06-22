@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import SignatureCanvas from 'react-signature-canvas'
-import '../css/timeAdjustment.css';
+// import '../css/timeAdjustment.css';
 import { useHistory } from 'react-router-dom';
 import CbmContext from '../context/cbm/cbmContext';
 const TimeAdjustment = () => {

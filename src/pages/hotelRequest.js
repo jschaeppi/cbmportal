@@ -1,18 +1,61 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Grid, makeStyles, TextField, Select, FormControlLabel, FormControl, InputLabel } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import NewPS from '../Components/newPS';
 import PSList from '../Components/PSList';
-import '../css/hotelRequest.css';
+// import '../css/hotelRequest.css';
 import CbmContext from '../context/cbm/cbmContext';
+import Notes from '../Components/Notes';
+import Store from '../Components/Stores';
+import MainHeading from '../Components/MainHeading';
+import { CheckBox } from '@material-ui/icons';
+import SubBtn from '../Components/SubBtn';
+
+const useStyles = makeStyles((theme => ({
+    container: {
+        justifyContent: 'center',
+        width: '40vw !important',
+        margin: '0 auto',
+        marginTop: '10rem'
+    },
+    gridItem: {
+        paddingBottom: '24px',
+        justifyContent: 'center'
+    },
+    // dateTime: {
+    //     width: '100%',
+    //     paddingTop: '24px',
+    //     alignItems: 'flex-start'
+    // },
+    form: {
+      width: '100%',
+      padding: '0 4rem'
+    },
+    mainHeading: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    sig: {
+      display: 'flex',
+      justifyContent: 'center',
+      width: '50%'
+    },
+    subBut: {
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: '2rem'
+    }
+})))
 
 function HotelRequest() {
+    const classes = useStyles();
     const cbmContext = useContext(CbmContext);
     const { loginStatus, isAuthenticated,loading, getStores, stores, user, formSubmit, success } = cbmContext;
     const { district } = cbmContext.user;
     let body = '';
     const history = useHistory();
     const [psList, setPsList] = useState([]);
-    let   [psToggle, setToggle] = useState(false);
+    const   [psToggle, setToggle] = useState(false);
     const [formData, setFormData] = useState([
         {
             peopleNum: '1',
@@ -112,94 +155,96 @@ function HotelRequest() {
     }
 }
         return (
-            <div className="container">
-                <h1 className="mainHeading"><span>Hotel Request</span></h1><br />
-                    <form onSubmit={e => onSubmit(e)} className="mainForm">
-                        <div className="wrapper1">
-                            <div id="hotelStores">
-                                <label>Store:</label>
-                                <br />
-                                <select name="store" required title="Please select an option" onChange={e => handleChange(e)}>
-                                    <option name="storeSelect">Select a location</option>
-                                    {stores.map((store, i) => {
-                                        return <option key={i} name="store" id="store">{store.store}</option>
-                                    })}
-                                </select>
-                            </div>
-                        </div>
-                        <br />
-                        <br />
-                        <div className="wrapper1">
-                            <div id="hotelCheckIn">
-                                <label forhtml="checkIn">Check In Date:</label>
-                                <input type="date" id="checkIn" name="checkIn" required title="Please enter the required information" onChange={e => handleChange(e)}/>
-                    
-                            </div>
-                            <div id="hotelCheckIn">
-                                <label forhtml="checkOut">Check Out Date:</label>
-                                <input type="date" id="checkOut" name="checkOut" required title="Please enter the required information" onChange={e => handleChange(e)}/>
-                            </div>
-                        </div>
-                        <br /><br />
-                        <div className="wrapper1" id="rooms">
-                            <div>
-                                <label forhtml="roomNum">How many rooms:</label>
-                                <select id="roomNum" name="roomNum" required title="Please select an option" onChange={e => handleChange(e)}>
-                                    <option value="">Number of Rooms:</option>
-                                    <option value="1">1 room</option>
+            <Grid container className={classes.container}>
+                <MainHeading heading="Hotel Request" />
+                    <form onSubmit={e => onSubmit(e)} className={classes.form}>
+                        <Store  storeData={handleChange} selectedStore={formData.store} name="store" stores={stores} />
+                        <Grid container>
+                            <Grid item className={classes.gridItem} xs={12} sm={6}>
+                                <TextField 
+                                type="date" 
+                                variant="standard" 
+                                id="checkIn" 
+                                label="Check In Date" 
+                                name="checkIn" 
+                                required 
+                                InputLabelProps = {{shrink: true}}
+                                onChange={e => handleChange(e)} 
+                                />
+                            </Grid>
+                            <Grid item class={classes.gridItem} xs={12} sm={6}>
+                                <TextField 
+                                type="date" 
+                                variant="standard" 
+                                id="checkOut" 
+                                label="Check Out Date" 
+                                name="checkOut" 
+                                required 
+                                InputLabelProps = {{shrink: true}}
+                                onChange={e => handleChange(e)} 
+                                />
+                            </Grid>
+                        </Grid>
+                        <Grid container>
+                            <Grid item xs={12} sm={6} className={classes.gridItem}>
+                                <Select native id="roomNum" name="roomNum" required onChange={e => handleChange(e)}>
+                                    <option value="">Number of rooms:</option>
+                                    <option value="1">1 room </option>
                                     <option value="2">2 rooms</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label forhtml="peopleNum" >How many people in room:</label><br />
-                                <select id="peopleNum" name="peopleNum" required title="Please select an option" onChange={e => handleChange(e)}>
-                                    <option value="">Number of People:</option>
+                                </Select>
+                            </Grid>
+                            <Grid item xs={12} sm={6} className={classes.gridItem} >
+                                <Select native id="peopleNum" name="peopleNum" required onChange={e => handleChange(e)}>
+                                    <option value="">Number of people:</option>
                                     <option value="1">One Person</option>
                                     <option value="2">Two People</option>
-                                </select>
+                                </Select>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
                                 {numBeds()}
-                            </div>
-                        </div>
-                        <br />
-                        <br />
-                        <div className="wrapper1">
-                            <div id="psToggleDiv">
-                                <label forhtml="newPS">New PS:</label>
-                                <input type="checkbox" name="psToggle" id="psToggle" onChange={e => toggleChange(e)}></input>
-                            </div>
-                                {addNewPS()}
-                        </div>
-                            <br />
-                        <div className="wrapper1" id="hotelInfo">
-                            <div id="hotelInfo">
-                                <label forhtml="hotelReason">Reason for Hotel:</label>
-                                <select name="hotelReason" required title="Please select an option" onChange={e => handleChange(e)}>
-                                    <option value="">Select an option</option>
-                                    <option value="VATs">VATs</option>
-                                    <option value="Full SR">Full SR</option>
-                                    <option value="Partial SR">Partial SR</option>
-                                    <option value="Full DSR">Full DSR</option>
-                                    <option value="Partial DSR">Partial DSR</option>
-                                    <option value="Full Carpet Extraction">Full Carpet Extraction</option>
-                                    <option value="Covering Location">Covering Location</option>
-                                    <option value="Closing WOs">Closing WOs</option>
-                                    <option value="Store Remodel">Store Remodel</option>
-                                </select>
-                            </div>
-                            <div id="hotelInfo">
-                                <label forhtml="workTicket">Enter Work Ticket:</label>
-                                <input type="number" name="WT" id="workTicket" required title="Please enter the required information" onChange={e => handleChange(e)} />
-                            </div>
-                        </div>
-                        <br /><br />
-                        <div className="wrapper1">
-                                <label forhtml="notes" >Notes:</label><br />
-                                <textarea name="notes" id="hotelNotes" onChange={e => handleChange(e)}></textarea>
-                        </div>
-                        <br /><br />
-                        <input type="submit" className="btn" />
+                            </Grid>
+                        </Grid>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} sm={6} md={4} className={classes.gridItem} >
+                                <FormControlLabel
+                                control = {
+                                <CheckBox checked={psToggle} label="New PS" type="checkbox" id="psToggle" name="psToggle" onChange={e => toggleChange(e)} />
+                                }
+                                label="New PS"
+                                />
+                                </Grid>
+                            {addNewPS()}
+                        </Grid>
+                            <Grid container>
+                                <Grid item xs={12} sm={6} className={classes.gridItem}>
+                                    <FormControl>
+                                        <InputLabel shrink htmlFor="hotelReason">Reason for hotel</InputLabel>
+                                        <Select native name="hotelReason" required onChange={e => handleChange(e)}>
+                                            <option value="">Select an option</option>
+                                            <option value="VATs">VATs</option>
+                                            <option value="Full SR">Full SR</option>
+                                            <option value="Partial SR">Partial SR</option>
+                                            <option value="Full DSR">Full DSR</option>
+                                            <option value="Partial DSR">Partial DSR</option>
+                                            <option value="Full Carpet Extraction">Full Carpet Extraction</option>
+                                            <option value="Covering Location">Covering Location</option>
+                                            <option value="Closing WOs">Closing WOs</option>
+                                            <option value="Store Remodel">Store Remodel</option>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} sm={6} className={classes.gridItem}>
+                                        <TextField variant="standard" type="number" name="WT" id="workTicket" label="Enter Work Ticket" required onChange={e => handleChange(e)} />
+                                </Grid>
+                            </Grid>
+                            <Grid container direction="column">
+                                <Notes name="notes" label="Notes" notesData={handleChange} />
+                            </Grid>
+                            <Grid container className={classes.subBut}>
+                                <SubBtn />
+                            </Grid>
                     </form>
-            </div>
+            </Grid>
         )
     }
 

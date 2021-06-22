@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import '../css/uniform.css';
+// import '../css/uniform.css';
 import SignatureCanvas from 'react-signature-canvas'
 import { useHistory } from 'react-router-dom';
 import CbmContext from '../context/cbm/cbmContext';

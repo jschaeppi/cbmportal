@@ -110,7 +110,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     }
     const getStores = async (district) => {
         try {
-        const res = await axios.get(`https://portal.cbmportal.com:5001/testserv/testapi/stores/${district}`)
+        const res = await axios.get(`http://localhost:5000/api/stores/${district}`)
         dispatch({
             type: GET_STORES,
             payload: res.data,
@@ -138,7 +138,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
         }
     try {
 
-        const res = await axios.get('https://portal.cbmportal.com:5001/testserv/testapi/users/loginSub');
+        const res = await axios.get('http://localhost:5000/api/users/loginSub');
     
     dispatch({
         type: GET_AUTH,
@@ -159,7 +159,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
     const loginUser = async (user, pass) => {
             setLoading();
             try {
-        const res = await axios.post('https://portal.cbmportal.com:5001/testserv/testapi/users/loginSub', { 
+        const res = await axios.post('http://localhost:5000/api/users/loginSub', { 
             data: {
                 username: user,
                 password: pass,
@@ -187,7 +187,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
         setLoading();
         try {
             if (form === 'newhire') {
-                await axios.post(`https://portal.cbmportal.com:5001/testserv/testapi/${form}`, body);
+                await axios.post(`http://localhost:5000/api/${form}`, body);
                 dispatch({
                     type: FORM_SUBMISSION,
                     successMessage: 'Your form has been submitted successfully!',
@@ -201,7 +201,7 @@ const [state, dispatch] = useReducer(cbmReducer, initialState);
                     history.push('/')
                 }
             } else {
-            fetch(`https://portal.cbmportal.com:5001/testserv/testapi/${form}`, { 
+            fetch(`http://localhost:5000/api/${form}`, { 
                 method: 'POST',
                 body: body,
                 headers: {

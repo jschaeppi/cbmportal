@@ -1,11 +1,51 @@
+import { TextField, Grid, makeStyles, ButtonGroup, Button } from '@material-ui/core';
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import '../css/bonus.css';
-//import SignatureCanvas from 'react-signature-canvas'
+import MainHeading from '../Components/MainHeading';
+import Notes from '../Components/Notes';
 import SigPad from '../Components/sigPad';
+import Store from '../Components/Stores';
 import CbmContext from '../context/cbm/cbmContext';
 
+const useStyles = makeStyles((theme => ({
+    container: {
+        justifyContent: 'center',
+        width: '40vw !important',
+        margin: '0 auto',
+        marginTop: '10rem'
+    },
+    gridItem: {
+        paddingBottom: '24px',
+        justifyContent: 'center'
+    },
+    dateTime: {
+        width: '100%',
+        paddingTop: '24px',
+        alignItems: 'flex-start'
+    },
+    form: {
+      width: '80%',
+      padding: '0 4rem'
+    },
+    mainHeading: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    sig: {
+      display: 'flex',
+      justifyContent: 'center',
+      width: '50%'
+    },
+    subBut: {
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: '2rem'
+    }
+})))
+
+
 function Bonus() {
+    const classes = useStyles();
     const cbmContext = useContext(CbmContext);
     const { loginStatus, getStores, stores, isAuthenticated, loading, user, formSubmit, success } = cbmContext;
     const { district} = cbmContext.user;
@@ -18,7 +58,7 @@ function Bonus() {
         getStores(district);
         // eslint-disable-next-line
     }, [district])
-    let [formData, setFormData] = useState([
+    const [formData, setFormData] = useState([
         {
             bonus: '',
             date: '',
@@ -42,8 +82,10 @@ function Bonus() {
         const { name, value } = e.target;
         const list = [...formData];
         if (e.target.name === `Bonus ${index}`) {
+            console.log(name, value);
             list[index-1].bonus = e.target.value;
         } else if (e.target.name === `Location ${index}`) {
+            console.log(name, value);
             list[index-1].location = e.target.value;
         } else if (e.target.name === `Date ${index}`) {
             list[index-1].date = e.target.value;
@@ -114,72 +156,60 @@ function Bonus() {
 
         return (
                 
-            <div className="container">
+            // <div className="container">
+            <Grid container className={classes.container}>
                 <div id="success"></div>
-                    <h1 className="mainHeading"><span>Bonus</span></h1><br />
-                        <form className="mainForm" onSubmit={e => onSubmit(e)}>
-                            <div className="wrapper1">
-                                <div>
-                                    <label htmlFor="employeenum">Employee #:</label><br />
-                                    <input type="number" id="employeenum" name="employeeNum" required title="Please enter the required information" onChange={e => handleChange(e, 1)}/>
-                                </div>
-                                <div>
-                                    <label htmlFor="employeename"> Employee Name:</label>
-                                    <input type="text" id="employeename" name="employeeName"required title="Please enter the required information"  onChange={e => handleChange(e, 1)}/>
-                                </div>
-                            </div>
-                            <br /><br />
-                        
-                            { formData.map((row, index) => { 
-                                const incIndex = index + 1;
-                                const bonusName =`Bonus ${incIndex}`
-                                const locationName = `Location ${incIndex}`
-                                const dateName = `Date ${incIndex}` 
-                                return (
-                                    <div key={index}>
-                                        <div id="addBP">
-                                            <div className="wrapper1" id="BP">
-                                                <div>
-                                                    <label htmlFor={dateName}>{dateName}</label><br />
-                                                    <input key={dateName} pattern="\d{2}-\d{2}-\d{4}}" type="date" id="date" name={dateName} required title="Please enter the required information" onChange={e => handleChange(e, incIndex)} ></input>
-                                                </div>
-                                                <div>
-                                                    <label htmlFor={locationName}>{locationName}</label><br />
-                                                    <select name={locationName} id="stores" required title="Please select an option" onChange={e => handleChange(e, incIndex)}>
-                                                        <option name="storeSelect">Select a location</option>
-                                                        {stores.map((store, i) => {
-                                                        return <option key={i} name={locationName} id="store">{store.store}</option>
-                                                        })}
-                                                    </select>
-                                                </div>
-                                                 <div>
-                                                    <label htmlFor={bonusName}>{bonusName}</label><br />
-                                                    <input key={bonusName} type="number" step="any" id="bonusInput" name={bonusName} required title="Please enter the required information" onChange={e => handleChange(e, incIndex)}></input>
-                                                </div>
-                                            </div>
-                                            {formData.length !== 1 && <button onClick={e => handleRemoveRow(e,index)} id="bonusRemoveButton">Remove</button>}
-                                            {formData.length - 1 === index && <button onClick={handleAddRow} id="bonusAddButton">Add Bonus</button>}
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                            <br />
-                            <br />
-                            <div className="wrapper1">
-                                <div id="bonusSig">
-                                    <SigPad sigPad={managerPad} clearPad={e => clearPad(e)} />
-                                </div>
-                            </div>
-                            <div className="wrapper1">
-                                <div id="bonusComments">
-                                    <label>Comments:</label>
-                                    <textarea required title="Please enter the required information" onChange={e => handleChange(e,1)} name="comments"></textarea>
-                                </div>
-                            </div>
-                            <br />
-                            <input type="submit" className="btn" />
-                         </form>
-            </div>
+                    <Grid container className={classes.mainHeading}>
+                        <MainHeading heading="Bonus" />
+                    </Grid>
+                    <form className={classes.form} onSubmit={e => onSubmit(e)}>
+                        <Grid container>
+                            <Grid item xs={12} sm={6} className={classes.gridItem}>
+                                <TextField type="text" label="Employee #" onChange={e => handleChange(e, 1)} id="employeeNum" name="employeeNum" required></TextField>
+                            </Grid>
+                            <Grid item xs={12} sm={6} className={classes.gridItem}>
+                                <TextField type="text" label="Employee Name" onChange={e => handleChange(e, 1)} id="employeeName" name="employeeName" required></TextField>
+                            </Grid>
+                        </Grid>
+                    
+                        { formData.map((row, index) => { 
+                            const incIndex = index + 1;
+                            const bonusName =`Bonus ${incIndex}`
+                            const locationName = `Location ${incIndex}`
+                            const dateName = `Date ${incIndex}` 
+                            return (
+                                <Grid container key={index}>
+                                    <Grid item className={classes.gridItem} xs={12} sm={6}>
+                                        <TextField type="date" id="date" name={dateName} required onChange={e => handleChange(e, incIndex)}></TextField>
+                                    </Grid>
+                                        <Store storeData={handleChange} selectedStore={formData.location} name={locationName} index={incIndex} stores={stores} />
+                                    <Grid item xs={12} sm={6} className={classes.gridItem}>
+                                        <TextField type="number" key={bonusName} step="any" id="bonusInput" name={bonusName} label={bonusName} required onChange={e => handleChange(e, incIndex)}></TextField>
+                                    </Grid>
+                                    <Grid item xs={12} className={classes.gridItem}>
+                                        <ButtonGroup color="primary" size="small" variant="contained">
+                                            {formData.length !== 1 && <Button xs={12} sm={6} onClick={e => handleRemoveRow(e,index)} id="bonusRemoveButton">Remove</Button>}
+                                            {formData.length - 1 === index && <Button xs={12} sm={6} onClick={handleAddRow} id="bonusAddButton">Add Bonus</Button>}
+                                        </ButtonGroup>
+                                    </Grid>
+                                </Grid>
+                            );
+                        })}
+                            <Grid container direction="column">
+                                <Notes label="Comments" name="comments" notesData={handleChange} required />
+                            </Grid>
+                            <Grid container>
+                                <SigPad sigPad={managerPad} clearPad={e => clearPad(e)} />
+                            </Grid>
+                            <Grid container className={classes.subBut}>
+                                <Grid item >
+                                    <Button component="button" variant="contained" size="small">
+                                        Submit Form    
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                    </form>
+            </Grid>
         )
     }
 
