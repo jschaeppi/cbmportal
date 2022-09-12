@@ -9,6 +9,7 @@ const config = require('config');
 const storeRouter = require('./updateStores');
 const MongoStore = require('connect-mongo');
 const sessionLookup = require('../src/Model/sessionValidate');
+const os = require('os');
 //require('./passport')(passport);
 router.use(cors({
     origin: ['https://portal.cbmportal.com','https://portal.cbmportal.com:5000', 'https://127.0.0.1:3000', 'https://localhost:3000'],
@@ -20,6 +21,7 @@ router.use(cors({
 
 router.get('/loginSub', async (req, res, next) => {
     const token = req.header('x-auth-token');
+    console.log(req.socket.remoteAddress);
     try {
     const decoded = await jwt.verify(token, process.env['jwtSecret']);
     const { exp } = decoded;

@@ -25,15 +25,22 @@ newhireRouter.post('/', formidable(), async (req, res, next) => {
         firstDay = moment(firstDay).format('MMM DD YYYY');
         dob = moment(dob).format('MMM DD YYYY');
         firstName = firstName.trim();
-        firstLast = firstLast.trim();
+        firstLast = firstLast.split(' ').join('-').trim();
+        firstLast = firstLast.split(' ').join('-').trim();
+        file1.name = `I-9-Page-1${path.extname(file1.name)}`
+        file2.name = `I-9-Page-2${path.extname(file2.name)}`
+        file3.name = file3.name.split(' ').join('-').trim();
+        console.log(firstLast);
+        console.log(file3.name);
+        console.log(firstLast);
         const receiver = await DepartmentModel.findOne({ department: 'New Hires'});
         if (file1.name === file2.name) {
             file2.name = path.basename(file2.name, path.extname(file2.name)) + "(1)" + path.extname(file2.name);
         }
-            await fsPromises.mkdir(`${uploadsDir}images/newhires/${firstName}-${firstLast}`.split(' ').join(''),{ recursive: true });
-            await fsPromises.rename(file1.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`);
-            await fsPromises.rename(file2.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`);
-            await fsPromises.rename(file3.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join(''));
+            await fsPromises.mkdir(`${uploadsDir}images/newhires/${firstName}-${firstLast}`,{ recursive: true });
+            await fsPromises.rename(file1.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file1.name}`);
+            await fsPromises.rename(file2.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file2.name}`);
+            await fsPromises.rename(file3.path, `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file3.name}`);
         
         let pdfFile = `Employee-${firstName}-${firstLast}-${secondLast}`;
         // Stripping special characters
@@ -69,16 +76,16 @@ newhireRouter.post('/', formidable(), async (req, res, next) => {
             path: `${uploadsDir}pdf/newhires/${pdfFile}`
         },
         {
-            filename: `I-9 Page 1${path.extname(file2.name)}`,
-            path: `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`.split(' ').join('')
+            filename: file1.name,
+            path: `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file1.name}`
         },
         {
-            filename: `I-9 Page 2${path.extname(file2.name)}`,
-            path: `${uploadsDir}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`.split(' ').join('')
+            filename: file2.name,
+            path: `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file2.name}`
         },
         {
             filename: file3.name,
-            path: `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join('')
+            path: `${uploadsDir}images/newhires/${firstName}-${firstLast}/${file3.name}`
         },
         ]
     };
@@ -112,9 +119,9 @@ newhireRouter.post('/', formidable(), async (req, res, next) => {
         form.language = language;
         form.ssn = ssn;
         form.newHireNotes = newHireNotes;
-        form.i91 = `${baseSite}images/newhires/${firstName}-${firstLast}/I-9-Page-1${path.extname(file1.name)}`.split(' ').join('');
-        form.i92 =  `${baseSite}images/newhires/${firstName}-${firstLast}/I-9-Page-2${path.extname(file2.name)}`.split(' ').join('');
-        form.idbadge = `${baseSite}images/newhires/${firstName}-${firstLast}/${file3.name}`.split(' ').join('');
+        form.i91 = `${baseSite}images/newhires/${firstName}-${firstLast}/${file1.name}`;
+        form.i92 =  `${baseSite}images/newhires/${firstName}-${firstLast}/${file2.name}`;
+        form.idbadge = `${baseSite}images/newhires/${firstName}-${firstLast}/${file3.name}`;
         form.save(function(err) {
             if (err) {
                 next(err);

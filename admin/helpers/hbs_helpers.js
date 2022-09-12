@@ -320,5 +320,27 @@ module.exports = {
             result = await WT.findOne({_id: id}).lean();
             return result;
         }
+    },
+    setDistrict: function(district) {
+        console.log(district);
+       return (
+        `<option value="MN RETAIL DIST" ${district.indexOf('MN RETAIL DIST') > -1 ? 'selected' : ''}>MN Retail District</option>
+       <option value="MN Northern Dist" ${district.indexOf('MN Northern Dist') > -1 ? 'selected' : ''}>MN Northern District</option>
+       <option value="MN Grocery-Retail" ${district.indexOf('MN Grocery-Retail') > -1 ? 'selected' : ''}>MN Grocery-Retail</option>
+       <option value="Hospitality" ${district === 'Hospitality' ? 'selected' : ''}>Hospitality</option>
+       <option value="IA-IL" ${district === 'IA-IL' ? 'selected' : ''}>IA-IL</option>
+       <option value="IL-WI" ${district === 'IL-WI' ? 'selected' : ''}>IL-WI</option>
+       <option value="ND-NW-MN" ${district === 'ND-NW-MN' ? 'selected' : ''}>ND-NW-MN</option>
+       <option value="NEB-SD-Western-IA" ${district === 'NEB-SD-Western-IA' ? 'selected' : ''}>NEB-SD-Western-IA</option>
+        <option value="office,MN RETAIL DIST,MN Northern Dist,MN Grocery-Retail,IA-IL,IL-WI,ND-NW-MN,NEB-SD-Western-IA" ${district.indexOf('office') > -1 ? 'selected' : ''}>Office</option>
+    `)
+    },
+    setUserPermission: function(permissionLevel) {
+        return (`
+            <option value="5" ${permissionLevel === '5' ? 'selected' : ''}>Super User</option>
+            <option value="4" ${permissionLevel === '4' ? 'selected' : ''}>Office</option>
+            <option value="3" ${permissionLevel === '3' ? 'selected' : ''}>DM</option>
+            <option value="2" ${permissionLevel === '2' ? 'selected' : ''}>PS/OS</option>
+        `)
     }
 }

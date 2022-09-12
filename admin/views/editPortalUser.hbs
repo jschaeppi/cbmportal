@@ -14,12 +14,12 @@
             <input type="text" class="form-control" value="{{username}}" id="inputusername" name="username" placeholder="Username for employee">
             </div>
         </div>
-        <div class="form-group row w-50 mx-auto">
+        {{!-- <div class="form-group row w-50 mx-auto">
             <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
             <div class="col-sm-10">
             <input type="password" class="form-control" id="inputPassword" name="password" placeholder="password">
             </div>
-        </div>
+        </div> --}}
         <div class="form-group row w-50 mx-auto">
             <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
             <div class="col-sm-10">
@@ -29,25 +29,16 @@
         <div class="form-group row w-50 mx-auto">
             <label for="inputDistrict" class="col-sm-2 col-form-label">District</label>
             <div class="col-sm-10">
-                <select class="form-control" id="inputDistrict" value={{district}} name="district" placeholder="District">
-                    <option value="MN RETAIL DIST">MN Retail District</option>
-                    <option value="MN Northern Dist">MN Northern District</option>
-                    <option value="MN Grocery-Retail">MN Grocery-Retail</option>
-                    <option value="IA-IL">IA-IL</option>
-                    <option value="IL-WI">IL-WI</option>
-                    <option value="ND-NW-MN">ND-NW-MN</option>
-                     <option value="office,MN RETAIL DIST,MN Northern Dist,MN Grocery-Retail,IA-IL,IL-WI,ND-NW-MN,NEB-SD-Western-IA">Office</option>
+                <select class="form-control" id="inputDistrict" name="district" placeholder="District">
+                    {{{setDistrict district}}}
                 </select>
             </div>
         </div>
         <div class="form-group row w-50 mx-auto">
-            <label for="inputPermission" class="col-sm-2 col-form-label">District</label>
+            <label for="inputPermission" class="col-sm-2 col-form-label">Permission Level</label>
             <div class="col-sm-10">
                 <select class="form-control" id="inputPermission" value={{permission}} name="permission" placeholder="Permission">
-                    <option value="5">Super User</option>
-                    <option value="4">Office</option>
-                    <option value="3">DM</option>
-                    <option value="2">PS/OS</option>
+                    {{{setUserPermission permission}}}
                 </select>
             </div>
         </div>

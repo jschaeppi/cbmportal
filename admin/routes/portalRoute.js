@@ -26,7 +26,7 @@ portalUserRouter.get('/editPortalUser/:puID', checkAuth, cors(), async (req, res
     const { permission } = req.user;
     
     if (permission > 3) {
-        let result = await User.findOne({ _id: puID }).select('-password').lean();
+        let result = await User.findOne({ _id: puID }).lean();
         res.render('editPortalUser', {result, user: req.user })
     } else {
         res.redirect(`/admin/dashboard/portalUsers?allowed=false`)
@@ -36,7 +36,6 @@ portalUserRouter.get('/editPortalUser/:puID', checkAuth, cors(), async (req, res
  portalUserRouter.post('/editPortalUser/', checkAuth, cors(), async (req, res) => {
     const { fullName, permission, email, district, id, username } = req.body;
     const saltRounds = 12;
-    let { password } = req.body; 
     const userSplit = fullName.split(' ');
         
         try {
@@ -48,10 +47,7 @@ portalUserRouter.get('/editPortalUser/:puID', checkAuth, cors(), async (req, res
                 userLast = userSplit[1];
             }
     if (district != null && fullName != null && permission != null && email != null && username != null) {
-        if (password != null) {
-        password = await bcrypt.hash(password, saltRounds);
-        }
-        let result = await User.updateOne({ _id: id}, {$set: { fullName, district, permission, email, password, username }}).lean();
+        let result = await User.updateOne({ _id: id}, {$set: { fullName, district, permission, email, username }}).lean();
         result = await User.findOne({ _id: id }).lean();
         if (result) {
             res.redirect(`/admin/dashboard/portalUsers?portalUser=${result.fullName}&updated=true` );
@@ -73,7 +69,7 @@ portalUserRouter.post('/createPortalUser', checkAuth, cors(), async (req, res) =
     let { password } = req.body; 
     let userFirst = "",
         userLast = "";
-    const userSplit = fullName.split(' ');
+    const userSplit = fullName.split(' '), userNameSplit = email.split('@');
         
         try {
             if (userSplit.length > 2) {
@@ -94,7 +90,7 @@ portalUserRouter.post('/createPortalUser', checkAuth, cors(), async (req, res) =
                 form.password = password;
                 form.fullName = fullName;
                 form.permission = permission;
-                form.username = userSplit[0].toLowerCase();
+                form.username = userNameSplit[0];
                 form.email = email;
                 form.save(function(err) {
                 if (err) {

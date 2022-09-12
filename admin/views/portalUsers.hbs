@@ -11,7 +11,7 @@
       <th scope="col">District</th>
       <th scope="col">E-Mail</th>
       <th scope="col">Portal User</th>
-      <th scope="col">Delete Job</th>
+      <th scope="col" style="width: 10%">Delete User</th>
     </tr>
   </thead>
   <tbody>
@@ -21,7 +21,7 @@
       <td scope="row">{{district}}</td>
       <td scope="row">{{email}}</td>
       <td scope="row">{{{makeLink "portalUsers/editPortalUser" _id 'primary' fullName}}}</td>
-      <td scope="row">{{{makeLink "portalUsers/removePortalUser" _id  'danger' "Delete"}}}</td>
+      <td scope="row" style="width: 10%">{{{makeLink "portalUsers/removePortalUser" _id  'danger' "Delete"}}}</td>
     </tr>
 {{/each}}
 

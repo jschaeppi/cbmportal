@@ -20,7 +20,7 @@ const uploadsDir = apiFunc.uploadsDir();
 uniformRouter.post('/', async (req, res, next) => {
     try {
         const { employeeNum, firstName, lastName, address, apt, city, state, zip, cost, quantity, size, date, dm, sig } = req.body;
-        const receiver = await DepartmentModel.findOne({ department: 'Payroll'});
+        const receiver = await DepartmentModel.findOne({ department: 'Human Resource'});
         let base64String = sig;
         // Remove header
         let base64Data = base64String.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
